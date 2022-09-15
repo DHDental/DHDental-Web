@@ -1,0 +1,14 @@
+.groupIcon {
+  position: absolute;
+  width: 1519px;
+  height: 100%;
+  /* top: 0;
+  right: -4.53%;
+  bottom: -21.03%;
+  left: 0;
+  max-width: 100%;
+  max-height: 100%; */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
