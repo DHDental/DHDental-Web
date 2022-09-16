@@ -69,7 +69,7 @@ const Sidebar = () => {
                     </Logo>
                 </Link>
                 {sideBarStaffConfig.map((item, i) => (
-                    <NavLink to={item.path}>
+                    <NavLink to={item.path} key={i}>
                         <Item>
                             {item.icon}
                             {item.name}

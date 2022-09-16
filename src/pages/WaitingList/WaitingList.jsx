@@ -5,8 +5,6 @@ import StartFirebase from '../../components/firebaseConfig'
 
 const db = StartFirebase()
 const WaitingList = () => {
-    var w = window.innerWidth / 18.5;
-    console.log(w);
     const [dataPatient, setDataPatient] = useState([])
 
     useEffect(() => {
@@ -76,7 +74,7 @@ const WaitingList = () => {
                                 <TableCell
                                     align='center'
                                     sx={{
-                                        backgroundColor: i === 1 && '#4c8eec',
+                                        backgroundColor: i === 0 && '#4c8eec',
                                         fontSize: '18px',
                                         fontWeight: '500'
                                     }}
