@@ -1,7 +1,10 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 
 import { RequireAuth, Login, SidebarDentist } from '../components';
-import { Appointment, WaitingList, Treatment, Patients, NotFound } from '../pages';
+import {
+    Appointment, WaitingList, Treatment, Patients, NotFound,
+    MedicalRegistration
+} from '../pages';
 import { StaffLayout } from '../components/layouts';
 
 
@@ -19,6 +22,7 @@ export default function Router() {
                         { path: 'ds-dat-kham', element: <Appointment /> },
 
                         { path: 'benh-nhan', element: <Patients /> },
+                        { path: 'dang-ki-kham-benh', element: <MedicalRegistration /> }
                     ]
                 }
             ]

@@ -1,13 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
 import styled from "styled-components";
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import PortraitIcon from '@mui/icons-material/Portrait';
-import ArticleIcon from '@mui/icons-material/Article';
-import AppsOutageIcon from '@mui/icons-material/AppsOutage';
-import NhaKhoaLogo from '../../../assets/images/logo.png';
 
-import { STAFF_BENHNHAN, STAFF_DSDATKHAM, STAFF_DS_CHO_KHAM } from '../../../common/constants/pathConstants';
-import { sideBarStaffConfig } from '../../../common/constants/sidebarConfig'
+import { STAFF_DSDATKHAM } from '../../../common/constants/pathConstants';
+import { sideBarStaffConfig } from '../../../common/constants/sidebarConfig';
 
 const Container = styled.div`
     flex:1;
