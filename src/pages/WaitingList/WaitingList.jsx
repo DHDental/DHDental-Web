@@ -1,9 +1,7 @@
+import { Box, Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { onValue, ref } from 'firebase/database'
+import { useEffect, useState } from 'react'
 import StartFirebase from '../../components/firebaseConfig'
-import { ref, onValue } from 'firebase/database'
-import { Box, debounce, Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
-import { useState } from 'react'
-import { useEffect } from 'react'
-import { fontSize, fontWeight } from '@mui/system'
 
 const db = StartFirebase()
 const WaitingList = () => {

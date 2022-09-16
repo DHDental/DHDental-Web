@@ -7,6 +7,7 @@ import AppsOutageIcon from '@mui/icons-material/AppsOutage';
 import NhaKhoaLogo from '../../../assets/images/logo.png';
 
 import { STAFF_BENHNHAN, STAFF_DSDATKHAM, STAFF_DS_CHO_KHAM } from '../../../common/constants/pathConstants';
+import { sideBarStaffConfig } from '../../../common/constants/sidebarConfig'
 
 const Container = styled.div`
     flex:1;
@@ -72,7 +73,15 @@ const Sidebar = () => {
                         Nha Khoa Đức Hạnh
                     </Logo>
                 </Link>
-                <NavLink to={STAFF_DSDATKHAM}>
+                {sideBarStaffConfig.map((item, i) => (
+                    <NavLink to={item.path}>
+                        <Item>
+                            {item.icon}
+                            {item.name}
+                        </Item>
+                    </NavLink>
+                ))}
+                {/* <NavLink to={STAFF_DSDATKHAM}>
                     <Item>
                         <EventNoteIcon />
                         Danh sách đặt khám
@@ -89,7 +98,7 @@ const Sidebar = () => {
                         <AppsOutageIcon />
                         Danh sách chờ khám
                     </Item>
-                </NavLink>
+                </NavLink> */}
             </Wrapper>
         </Container >
     )

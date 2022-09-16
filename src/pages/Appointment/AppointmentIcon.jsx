@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { BiCheckCircle } from 'react-icons/bi'
 import { MdOutlineCancel } from 'react-icons/md'
 
-import { axiosPublic } from '../api/axiosInstance';
-import { BOOKING_CHECKIN } from '../common/constants/apiConstants';
+import { axiosPublic } from '../../api/axiosInstance';
+import { BOOKING_CHECKIN } from '../../common/constants/apiConstants';
 
 const AppointmentIcon = ({ user }) => {
     const [click, setClick] = useState(0)

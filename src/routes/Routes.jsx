@@ -1,9 +1,8 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 
 import { RequireAuth, Login, SidebarDentist } from '../components';
-import { Appointment, Receipt, Treatment, Patients, NotFound } from '../pages';
+import { Appointment, WaitingList, Treatment, Patients, NotFound } from '../pages';
 import { StaffLayout } from '../components/layouts';
-import WaitingList from '../pages/WaitingList/WaitingList';
 
 
 export default function Router() {
