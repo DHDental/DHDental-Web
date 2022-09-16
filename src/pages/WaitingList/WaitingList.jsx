@@ -42,25 +42,24 @@ const WaitingList = () => {
 
                     }}>Phòng khám nha khoa Đức Hạnh</Typography>
             </Grid>
-            <Box sx={{
-                backgroundColor: 'orange', padding: '15px',
-                paddingLeft: w
-            }}>
-                {dataPatient.map((item, i) => (
-                    <Box
-                    // sx={{
-                    //     display: "flex",
-                    //     justifyContent: "center"
-                    // }}
-                    >
+            <Grid
+                container
+                alignItems="center"
+                justifyContent="center"
+                backgroundColor='orange'
+            >
+                <Box>
+                    {dataPatient.map((item, i) => (
+
                         <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
                             {item?.data?.status === 1 ?
                                 `${item?.key} - ${item?.data?.name}`
                                 : null}
                         </Typography>
-                    </Box>
-                ))}
-            </Box>
+
+                    ))}
+                </Box>
+            </Grid>
             <Table>
                 <TableHead sx={{
                     backgroundColor: 'green',
