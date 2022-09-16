@@ -17,6 +17,7 @@ function createData(ten, sdt, date, time, color) {
     return { ten, sdt, date, time, color };
 }
 
+
 const rows = [
     createData('Sơn', "0123456789", "2/9/2021", "Sáng", '#04b205'),
     createData('Tài', "7896541230", "3/9/2022", "Chiều", '#4036364d'),
