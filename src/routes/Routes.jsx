@@ -3,7 +3,8 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import { RequireAuth, Login, SidebarDentist } from '../components';
 import {
     Appointment, WaitingList, Treatment, Patients, NotFound,
-    MedicalRegistration
+    MedicalRegistration,
+    StaffWaitingList
 } from '../pages';
 import { StaffLayout } from '../components/layouts';
 
@@ -14,7 +15,8 @@ export default function Router() {
             path: '/staff',
             element: <RequireAuth allowedRoles={["staff"]} />,
             children: [
-                { path: 'ds-bn-cho-kham', element: <WaitingList /> },
+
+                { path: 'man-hinh-cho-kham', element: <WaitingList /> },
                 {
                     element: <StaffLayout />,
                     children: [
@@ -22,7 +24,8 @@ export default function Router() {
                         { path: 'ds-dat-kham', element: <Appointment /> },
 
                         { path: 'benh-nhan', element: <Patients /> },
-                        { path: 'dang-ki-kham-benh', element: <MedicalRegistration /> }
+                        { path: 'dang-ki-kham-benh', element: <MedicalRegistration /> },
+                        { path: 'ds-bn-kham', element: <StaffWaitingList /> },
                     ]
                 }
             ]

@@ -1,6 +1,7 @@
-import { Box, Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Divider, Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Typography } from '@mui/material'
 import { onValue, ref } from 'firebase/database'
 import { useEffect, useState } from 'react'
+
 import StartFirebase from '../../components/firebaseConfig'
 
 const db = StartFirebase()
@@ -29,16 +30,53 @@ const WaitingList = () => {
                 container
                 alignItems="center"
                 justifyContent="center"
-                backgroundColor='blue'
+            // backgroundColor='blue'
             >
                 <Typography
                     variant='h4'
                     sx={{
-                        color: 'white'
+                        color: 'blue'
 
-                    }}>Phòng khám nha khoa Đức Hạnh</Typography>
+                    }}>MỜI BỆNH NHÂN CÓ SỐ</Typography>
+
             </Grid>
-            <Grid
+            <Grid container>
+                <Grid xs={5.75}>
+                    <Table>
+                        <TableHead>
+                            <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Vào phòng</TableCell>
+                            <TableRow>
+                                <TableCell>
+                                    Số điện thoại
+                                </TableCell>
+                                <TableCell>
+                                    Họ và tên
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+
+                    </Table>
+                </Grid>
+                <Divider orientation="vertical" flexItem />
+                <Grid xs={5.75}>
+                    <Table>
+                        <TableHead>
+                            <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Chuẩn bị</TableCell>
+                            <TableRow>
+                                <TableCell>
+                                    Số điện thoại
+                                </TableCell>
+                                <TableCell>
+                                    Họ và tên
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                    </Table>
+                </Grid>
+            </Grid>
+
+
+            {/* <Grid
                 container
                 alignItems="center"
                 justifyContent="center"
@@ -93,7 +131,7 @@ const WaitingList = () => {
                     )}
 
                 </TableBody>
-            </Table>
+            </Table> */}
         </Stack >
     )
 }
