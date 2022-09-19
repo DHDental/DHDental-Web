@@ -7,15 +7,15 @@ import PatientOn from './PatientOn'
 const StaffWaitingList = () => {
     return (
         <Grid container spacing={1}>
-            <Grid xs={3.3}>
+            <Grid item xs={3.3}>
                 <PatientOn />
             </Grid>
             <Divider orientation='vertical' flexItem />
-            <Grid xs={3.3}>
+            <Grid item xs={3.3}>
                 <PatientAppointment />
             </Grid>
             <Divider orientation='vertical' flexItem />
-            <Grid xs={3.3}>
+            <Grid item xs={3.3}>
                 <PatientOff />
             </Grid>
 

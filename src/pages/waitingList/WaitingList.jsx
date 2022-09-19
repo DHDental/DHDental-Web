@@ -32,48 +32,73 @@ const WaitingList = () => {
                 justifyContent="center"
             // backgroundColor='blue'
             >
+
                 <Typography
                     variant='h4'
                     sx={{
-                        color: 'blue'
-
+                        color: 'blue',
+                        // fontWeight: '500'
                     }}>MỜI BỆNH NHÂN CÓ SỐ</Typography>
 
             </Grid>
-            <Grid container>
-                <Grid xs={5.75}>
+            <Grid container >
+                <Grid item xs={6} >
                     <Table>
                         <TableHead>
-                            <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Vào phòng</TableCell>
                             <TableRow>
-                                <TableCell>
-                                    Số điện thoại
-                                </TableCell>
-                                <TableCell>
-                                    Họ và tên
-                                </TableCell>
+                                <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Vào phòng</TableCell>
                             </TableRow>
-                        </TableHead>
+                            <TableRow>
 
-                    </Table>
-                </Grid>
-                <Divider orientation="vertical" flexItem />
-                <Grid xs={5.75}>
-                    <Table>
-                        <TableHead>
-                            <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Chuẩn bị</TableCell>
-                            <TableRow>
-                                <TableCell>
-                                    Số điện thoại
-                                </TableCell>
                                 <TableCell>
                                     Họ và tên
                                 </TableCell>
+                                <TableCell>
+                                    Số điện thoại
+                                </TableCell>
                             </TableRow>
                         </TableHead>
+                        <TableBody>
+                            {dataPatient.map((item, i) => (
+                                item?.data.status === 1 ?
+                                    (<TableRow key={i}>
+                                        <TableCell>{item?.data.fullName}</TableCell>
+                                        <TableCell>{item?.data.sdt}</TableCell>
+                                    </TableRow>) : null
+                            ))}
+                        </TableBody>
                     </Table>
                 </Grid>
-            </Grid>
+
+                <Divider orientation="vertical" flexItem />
+
+                <Grid item xs={5.95} >
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Chuẩn bị</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>
+                                    Họ và tên
+                                </TableCell>
+                                <TableCell>
+                                    Số điện thoại
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {dataPatient.map((item, i) => (
+                                (item?.data.status === 0 || item?.data.status === -1) ?
+                                    (<TableRow key={i}>
+                                        <TableCell >{item?.data.fullName}</TableCell>
+                                        <TableCell >{item?.data.sdt}</TableCell>
+                                    </TableRow>) : null
+                            ))}
+                        </TableBody>
+                    </Table>
+                </Grid>
+            </Grid >
 
 
             {/* <Grid

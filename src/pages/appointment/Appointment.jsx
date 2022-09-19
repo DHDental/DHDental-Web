@@ -10,6 +10,7 @@ import {
     BOOKING_SEARCH_BOOKING_SCHEDULE
 } from '../../common/constants/apiConstants';
 import { formatDateMonthYear, formatYearMonthDate } from '../../common/utils/formatDate';
+import StartFirebase from '../../components/firebaseConfig';
 import AppointmentIcon from './AppointmentIcon';
 
 // data giả
@@ -24,6 +25,7 @@ const rows = [
     createData('Khôi', "9874563210", "4/9/2022", "Sáng", '#04b205'),
 ];
 
+const db = StartFirebase()
 const Appointment = () => {
     const [open, setOpen] = useState(false);
     // const handleClose = () => {
