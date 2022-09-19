@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Typography } from '@mui/material'
+import { Divider, Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 import { onValue, ref } from 'firebase/database'
 import { useEffect, useState } from 'react'
 
@@ -22,8 +22,6 @@ const WaitingList = () => {
 
     }, [])
 
-    console.log(dataPatient);
-
     return (
         <Stack direction='column'>
             <Grid
@@ -46,14 +44,14 @@ const WaitingList = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Vào phòng</TableCell>
+                                <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Vào phòng khám</TableCell>
                             </TableRow>
-                            <TableRow>
+                            <TableRow >
 
-                                <TableCell>
+                                <TableCell sx={{ fontSize: '17px' }}>
                                     Họ và tên
                                 </TableCell>
-                                <TableCell>
+                                <TableCell sx={{ fontSize: '17px' }}>
                                     Số điện thoại
                                 </TableCell>
                             </TableRow>
@@ -62,15 +60,17 @@ const WaitingList = () => {
                             {dataPatient.map((item, i) => (
                                 item?.data.status === 1 ?
                                     (<TableRow key={i}>
-                                        <TableCell>{item?.data.fullName}</TableCell>
-                                        <TableCell>{item?.data.sdt}</TableCell>
+                                        <TableCell sx={{ fontSize: '16px' }}>
+                                            {item?.data.fullName}{item?.data.statusSpecial === 1 && ' (đặt trước)'}
+                                        </TableCell>
+                                        <TableCell sx={{ fontSize: '16px' }}>******{item?.data.sdt.substr(-4)}</TableCell>
                                     </TableRow>) : null
                             ))}
                         </TableBody>
                     </Table>
                 </Grid>
 
-                <Divider orientation="vertical" flexItem />
+                <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#000', height: '90vh' }} />
 
                 <Grid item xs={5.95} >
                     <Table>
@@ -79,84 +79,28 @@ const WaitingList = () => {
                                 <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Chuẩn bị</TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell>
+                                <TableCell sx={{ fontSize: '17px' }}>
                                     Họ và tên
                                 </TableCell>
-                                <TableCell>
+                                <TableCell sx={{ fontSize: '17px' }}>
                                     Số điện thoại
                                 </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {dataPatient.map((item, i) => (
-                                (item?.data.status === 0 || item?.data.status === -1) ?
+                                (item?.data.status === 0) ?
                                     (<TableRow key={i}>
-                                        <TableCell >{item?.data.fullName}</TableCell>
-                                        <TableCell >{item?.data.sdt}</TableCell>
+                                        <TableCell sx={{ fontSize: '16px' }}>{item?.data.fullName}
+                                            {item?.data.statusSpecial === 1 && ' (đặt trước)'}
+                                        </TableCell>
+                                        <TableCell sx={{ fontSize: '16px' }}>******{item?.data.sdt.substr(-4)}</TableCell>
                                     </TableRow>) : null
                             ))}
                         </TableBody>
                     </Table>
                 </Grid>
             </Grid >
-
-
-            {/* <Grid
-                container
-                alignItems="center"
-                justifyContent="center"
-                backgroundColor='orange'
-            >
-                <Box>
-                    {dataPatient.map((item, i) => (
-
-                        <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
-                            {item?.data?.status === 1 ?
-                                `${item?.key} - ${item?.data?.name}`
-                                : null}
-                        </Typography>
-
-                    ))}
-                </Box>
-            </Grid>
-            <Table>
-                <TableHead sx={{
-                    backgroundColor: 'green',
-                }}>
-                    <TableRow>
-                        <TableCell align='center' sx={{ color: 'white', fontWeight: 'bold', fontSize: '18px' }}> STT</TableCell>
-                        <TableCell align='center' sx={{ color: 'white', fontWeight: 'bold', fontSize: '18px' }}> Bệnh nhân chờ</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {dataPatient.map((item, i) =>
-
-                    (
-                        item?.data.status === 0 ?
-                            (<TableRow key={i} >
-                                <TableCell
-                                    align='center'
-                                    sx={{
-                                        backgroundColor: i === 0 && '#4c8eec',
-                                        fontSize: '18px',
-                                        fontWeight: '500'
-                                    }}
-                                >{item?.key}</TableCell>
-                                <TableCell align='center' sx={{
-
-                                    fontSize: '18px',
-                                    fontWeight: '500'
-                                }}>{item?.data?.name}</TableCell>
-                            </TableRow>
-                            )
-                            : null
-
-                    )
-
-                    )}
-
-                </TableBody>
-            </Table> */}
         </Stack >
     )
 }

@@ -25,7 +25,8 @@ const AppointmentIcon = ({ user }) => {
             set(newUser, {
                 fullName: user.lastName + ' ' + user.middleName + ' ' + user.firstName,
                 sdt: user.phoneNumber,
-                status: -1,
+                status: 0,
+                statusSpecial: 1,
                 doctor: ''
             })
         } catch (error) {
