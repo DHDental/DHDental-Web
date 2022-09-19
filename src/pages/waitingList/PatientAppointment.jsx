@@ -4,12 +4,25 @@ import { useEffect, useState } from 'react'
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 
 import StartFirebase from '../../components/firebaseConfig'
+import CustomDialog from '../../components/CustomDialog';
 
 const db = StartFirebase()
 
 const PatientAppointment = () => {
+    const [open, setOpen] = useState(false);
     const [dataPatient, setDataPatient] = useState([])
+    const [name, setName] = useState()
+    const [user, setUser] = useState()
 
+    const handleClose = (event, reason) => {
+        if (reason && reason === "backdropClick")
+            return;
+        setOpen(false);
+    };
+    const handleYes = () => {
+        console.log(user); // update data firebase
+        setOpen(false);
+    }
     useEffect(() => {
         const dbRef = ref(db)
         onValue(dbRef, (snapshot) => {
@@ -49,15 +62,25 @@ const PatientAppointment = () => {
                                     <TableCell>{item?.data.fullName}</TableCell>
                                     <TableCell>{item?.data.sdt}</TableCell>
                                     <TableCell>{item?.data.timeBooking}</TableCell>
-                                    <TableCell><IconButton>
-                                        <ReplyAllIcon sx={{ color: 'orange' }} />
-                                    </IconButton></TableCell>
+                                    <TableCell>
+                                        <IconButton onClick={() => {
+                                            setName(item?.data.fullName)
+                                            setUser(item)
+                                            setOpen(true)
+
+                                        }}>
+                                            <ReplyAllIcon sx={{ color: 'orange' }} />
+                                        </IconButton>
+                                    </TableCell>
                                 </TableRow>) : null
                         ))}
 
                     </TableBody>
                 </Table>
             </TableContainer>
+            <CustomDialog open={open} handleClose={handleClose} handleYes={handleYes}
+                text={`Bạn chắc chắn muốn chuyển bệnh nhân ${name} vào khám`}
+            />
         </>
     )
 }
