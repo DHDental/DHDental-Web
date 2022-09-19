@@ -6,8 +6,7 @@ import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 import StartFirebase from '../../components/firebaseConfig'
 
 const db = StartFirebase()
-
-const PatientAppointment = () => {
+const PatientNotAppointment = () => {
     const [dataPatient, setDataPatient] = useState([])
 
     useEffect(() => {
@@ -26,29 +25,26 @@ const PatientAppointment = () => {
     }, [])
     return (
         <>
-
             <Typography variant='subtitle2' sx={{
                 color: 'blue',
                 fontWeight: '400',
                 marginBottom: '15px'
-            }}>Bệnh nhân đặt lịch trước</Typography>
+            }}>Bệnh nhân không đặt lịch trước</Typography>
             <TableContainer component={Paper} square>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>Họ và tên</TableCell>
                             <TableCell>Số điện thoại</TableCell>
-                            <TableCell>Giờ hẹn</TableCell>
                             <TableCell>Vào khám</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {dataPatient.map((item, i) => (
-                            (item?.data.status === 0 && item?.data.statusSpecial === 1) ?
+                            (item?.data.status === 0 && item?.data.statusSpecial === 0) ?
                                 (<TableRow key={i}>
                                     <TableCell>{item?.data.fullName}</TableCell>
                                     <TableCell>{item?.data.sdt}</TableCell>
-                                    <TableCell>{item?.data.timeBooking}</TableCell>
                                     <TableCell><IconButton>
                                         <ReplyAllIcon sx={{ color: 'orange' }} />
                                     </IconButton></TableCell>
@@ -62,4 +58,4 @@ const PatientAppointment = () => {
     )
 }
 
-export default PatientAppointment
+export default PatientNotAppointment

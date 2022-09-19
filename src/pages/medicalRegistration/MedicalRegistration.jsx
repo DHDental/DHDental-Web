@@ -9,13 +9,13 @@ const MedicalRegistration = () => {
         <Grid container spacing={1}
             justifyContent='space-between'
         >
-            <Grid xs={7}>
+            <Grid item xs={7}>
                 <SearchPatient />
             </Grid>
             <Divider orientation="vertical" flexItem sx={{
                 backgroundColor: '#000'
             }} />
-            <Grid xs={4.5}>
+            <Grid item xs={4.5}>
                 <Card square>
                     <CardHeader
                         title='Đăng kí khám bệnh'

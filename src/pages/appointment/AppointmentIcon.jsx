@@ -27,6 +27,7 @@ const AppointmentIcon = ({ user }) => {
                 sdt: user.phoneNumber,
                 status: 0,
                 statusSpecial: 1,
+                timeBooking: user.slotBooking,
                 doctor: ''
             })
         } catch (error) {
