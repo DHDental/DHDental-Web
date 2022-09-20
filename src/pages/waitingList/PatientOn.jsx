@@ -10,6 +10,8 @@ const PatientOn = () => {
   const [dataPatient, setDataPatient] = useState([])
 
   useEffect(() => {
+    let isMounted = true;
+
     const dbRef = ref(db)
     onValue(dbRef, (snapshot) => {
       let records = [];
@@ -18,10 +20,12 @@ const PatientOn = () => {
         let data = childSnapshot.val();
         records.push({ "key": keyName, "data": data })
       })
-      setDataPatient(records)
-
+      isMounted && setDataPatient(records)
     })
 
+    return () => {
+      isMounted = false
+    }
   }, [])
   return (
     <>
