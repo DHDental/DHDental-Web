@@ -1,14 +1,27 @@
 import { Card, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import { onValue, ref } from 'firebase/database'
+import { onValue, ref, remove, update } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 import StartFirebase from '../../components/firebaseConfig'
+import CustomDialog from '../../components/CustomDialog';
 
 const db = StartFirebase()
 const PatientOn = () => {
   const [dataPatient, setDataPatient] = useState([])
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState()
+  const [user, setUser] = useState()
 
+  const handleClose = (event, reason) => {
+    if (reason && reason === "backdropClick")
+      return;
+    setOpen(false);
+  };
+  const handleYes = () => {
+    remove(ref(db, user.key))
+    setOpen(false);
+  }
   useEffect(() => {
     let isMounted = true;
 
@@ -49,15 +62,29 @@ const PatientOn = () => {
                 (<TableRow key={i}>
                   <TableCell>{item?.data.fullName}</TableCell>
                   <TableCell>{item?.data.sdt}</TableCell>
-                  <TableCell><IconButton><RemoveCircleOutlineIcon
-                    sx={{ color: 'red' }}
-                  /></IconButton></TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => {
+                      setName(item?.data.fullName)
+                      setUser(item)
+                      setOpen(true)
+                    }}>
+                      <RemoveCircleOutlineIcon
+                        sx={{ color: 'red' }}
+                      /></IconButton>
+                  </TableCell>
                 </TableRow>) : null
             ))}
 
           </TableBody>
         </Table>
       </TableContainer>
+      <CustomDialog open={open} handleClose={handleClose} handleYes={handleYes}
+        text={`Bạn chắc chắn muốn xóa bệnh nhân ${name} khỏi vào khám`}
+      // text={<span>Bạn chắc chắn muốn  xóa bệnh nhân
+      //   <span style={{ color: 'red' }}> {name} </span>
+      //   khỏi vào khám
+      // </span>}
+      />
     </>
   )
 }

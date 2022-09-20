@@ -1,5 +1,5 @@
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import { onValue, ref } from 'firebase/database'
+import { onValue, ref, update } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 
@@ -20,8 +20,9 @@ const PatientAppointment = () => {
         setOpen(false);
     };
     const handleYes = () => {
-        console.log(user); // update data firebase
-
+        update(ref(db, user.key), {
+            status: 1
+        })
         setOpen(false);
     }
     useEffect(() => {
@@ -40,6 +41,7 @@ const PatientAppointment = () => {
         })
         return () => {
             isMounted = false
+            // onValue(dbRef)
         }
     }, [])
     return (
@@ -72,7 +74,6 @@ const PatientAppointment = () => {
                                             setName(item?.data.fullName)
                                             setUser(item)
                                             setOpen(true)
-
                                         }}>
                                             <ReplyAllIcon sx={{ color: 'orange' }} />
                                         </IconButton>
