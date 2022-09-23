@@ -1,10 +1,10 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 
-import { RequireAuth, Login, SidebarDentist } from '../components';
+import { RequireAuth, SidebarDentist } from '../components';
 import {
     Appointment, WaitingList, Treatment, Patients, NotFound,
     MedicalRegistration,
-    StaffWaitingList
+    StaffWaitingList, Login
 } from '../pages';
 import { StaffLayout } from '../components/layouts';
 
