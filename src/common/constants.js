@@ -30,4 +30,5 @@ export const STAFF_DSDATKHAM = '/staff/ds-dat-kham'
 /*
 color check #04b205
 color not check #4036364d
+#8fc9ff màu xanh sidebar cũ
 */

@@ -4,7 +4,7 @@ import PatientNotAppointment from './PatientNotAppointment'
 
 import PatientOn from './PatientOn'
 
-const StaffWaitingList = () => {
+const DentistWaitingList = () => {
     return (
         <Grid container spacing={1}>
             <Grid item xs={3.5} >
@@ -40,4 +40,4 @@ const StaffWaitingList = () => {
     )
 }
 
-export default StaffWaitingList
+export default DentistWaitingList
