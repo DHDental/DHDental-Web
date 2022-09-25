@@ -1,16 +1,15 @@
+import jwtDecode from "jwt-decode";
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 
 const RequireAuth = ({ allowedRoles }) => {
-    // role này sau khi login sẽ lưu role user vào local storage
-    // giờ chưa có login nên tạo dữ liệu giả vậy
-    // if (!localStorage.getItem("role"))
-    //     localStorage.setItem('role', 'staff')
-    const role = localStorage.getItem('role')
-    // console.log(role);
+    const loginInfo = JSON.parse(localStorage.getItem('loginInfo'))
+    console.log(loginInfo);
+    const user = jwtDecode(loginInfo?.token)
+    const roleID = user?.roleID[0].authority
     const location = useLocation();
 
     return (
-        allowedRoles?.includes(role)
+        allowedRoles?.includes(roleID)
             ? <Outlet />
             : <Navigate to="/login" state={{ from: location }} replace />
 

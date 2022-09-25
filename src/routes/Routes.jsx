@@ -15,7 +15,7 @@ export default function Router() {
     return useRoutes([
         {
             path: '/staff',
-            element: <RequireAuth allowedRoles={["staff"]} />,
+            element: <RequireAuth allowedRoles={['2']} />,
             children: [
 
                 { path: 'man-hinh-cho-kham', element: <WaitingList /> },
@@ -33,7 +33,7 @@ export default function Router() {
         },
         {
             path: '/dentist',
-            element: <RequireAuth allowedRoles={["dentist"]} />,
+            element: <RequireAuth allowedRoles={['3']} />,
             children: [
                 {
                     element: <DentistLayout />,
