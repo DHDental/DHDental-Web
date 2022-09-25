@@ -4,9 +4,11 @@ import { RequireAuth } from '../components';
 import {
     Appointment, WaitingList, Treatment, Patients, NotFound,
     MedicalRegistration,
-    DentistWaitingList, Login
+    DentistWaitingList, Login,
+    PatientTreatment, PatientInfo, PatientRecordHistory, DentalCareRecord
 } from '../pages';
 import { StaffLayout, DentistLayout } from '../components/layouts';
+
 
 
 export default function Router() {
@@ -38,6 +40,14 @@ export default function Router() {
                     children: [
                         { path: 'ds-bn-kham', element: <DentistWaitingList /> },
                         { path: 'kham-benh', element: <Treatment /> },
+                        {
+                            path: 'kham-benh/:id', element: <PatientTreatment />,
+                            children: [
+                                { path: 'thong-tin-bn', element: <PatientInfo /> },
+                                { path: 'lich-su-kham-benh', element: <PatientRecordHistory /> },
+                                { path: 'create-dental-care-record', element: <DentalCareRecord /> },
+                            ]
+                        },
                     ]
                 }
             ]

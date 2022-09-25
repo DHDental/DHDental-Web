@@ -26,30 +26,31 @@ const LoginForm = () => {
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
+            console.log(values)
             // alert(JSON.stringify(values, null, 2));
             try {
                 const response = await axiosPublic.post(LOGIN, {
                     "username": values.phone,
                     "password": values.password
                 })
+                console.log(response.data);
 
-
-                if (localStorage.getItem('role') === 'staff')
-                    navigate('/staff/ds-dat-kham', { replace: true });
-                if (localStorage.getItem('role') === 'dentist')
-                    navigate('/dentist/kham-benh', { replace: true });
-                if (!localStorage.getItem("role"))
-                    localStorage.setItem("role", "dentist");
-                navigate('/dentist/kham-benh', { replace: true });
+                // if (localStorage.getItem('role') === 'staff')
+                //     navigate('/staff/ds-dat-kham', { replace: true });
+                // if (localStorage.getItem('role') === 'dentist')
+                //     navigate('/dentist/kham-benh', { replace: true });
+                // if (!localStorage.getItem("role"))
+                //     localStorage.setItem("role", "dentist");
+                // navigate('/dentist/kham-benh', { replace: true });
             } catch (error) {
-                console.log("error");
-                if (localStorage.getItem('role') === 'staff')
-                    navigate('/staff/ds-dat-kham', { replace: true });
-                if (localStorage.getItem('role') === 'dentist')
-                    navigate('/dentist/kham-benh', { replace: true });
-                if (!localStorage.getItem("role"))
-                    localStorage.setItem("role", "dentist");
-                navigate('/dentist/kham-benh', { replace: true });
+                console.log("error:", error);
+                // if (localStorage.getItem('role') === 'staff')
+                //     navigate('/staff/ds-dat-kham', { replace: true });
+                // if (localStorage.getItem('role') === 'dentist')
+                //     navigate('/dentist/kham-benh', { replace: true });
+                // if (!localStorage.getItem("role"))
+                //     localStorage.setItem("role", "dentist");
+                // navigate('/dentist/kham-benh', { replace: true });
             }
 
 
