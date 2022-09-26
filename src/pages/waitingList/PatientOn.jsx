@@ -2,12 +2,19 @@ import { Card, IconButton, Paper, Table, TableBody, TableCell, TableContainer, T
 import { onValue, ref, remove, update } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import jwtDecode from 'jwt-decode';
+import { NavLink } from 'react-router-dom';
 
 import StartFirebase from '../../components/firebaseConfig'
 import CustomDialog from '../../components/CustomDialog';
+import { KHAM_BENH } from '../../common/constants/pathConstants';
+
 
 const db = StartFirebase()
 const PatientOn = () => {
+  const loginInfo = JSON.parse(localStorage.getItem("loginInfo"))
+  const dentist = jwtDecode(loginInfo?.token)
+
   const [dataPatient, setDataPatient] = useState([])
   const [open, setOpen] = useState(false);
   const [name, setName] = useState()
@@ -58,21 +65,39 @@ const PatientOn = () => {
           </TableHead>
           <TableBody>
             {dataPatient.map((item, i) => (
-              item?.data.status === 1 ?
-                (<TableRow key={i}>
-                  <TableCell>{item?.data.fullName}</TableCell>
-                  <TableCell>{item?.data.sdt}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => {
-                      setName(item?.data.fullName)
-                      setUser(item)
-                      setOpen(true)
-                    }}>
-                      <RemoveCircleOutlineIcon
-                        sx={{ color: 'red' }}
-                      /></IconButton>
-                  </TableCell>
-                </TableRow>) : null
+              (item?.data.status === 1
+                // && item?.data.dentistPhone === dentist.sub
+                && item?.data.room === '01'
+              ) ?
+                (
+
+                  <TableRow key={i}>
+
+                    <TableCell >
+                      <NavLink to={`${KHAM_BENH}/${item?.data.sdt}/thong-tin-bn `}
+                        style={{
+                          color: 'blue',
+                          fontWeight: '500',
+                          textDecoration: 'underline',
+                        }}>
+                        {item?.data.fullName}
+                      </NavLink>
+                    </TableCell>
+
+                    <TableCell >{item?.data.sdt}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => {
+                        setName(item?.data.fullName)
+                        setUser(item)
+                        setOpen(true)
+                      }}>
+                        <RemoveCircleOutlineIcon
+                          sx={{ color: 'red' }}
+                        /></IconButton>
+                    </TableCell>
+                  </TableRow>
+
+                ) : null
             ))}
 
           </TableBody>

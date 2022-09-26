@@ -49,7 +49,7 @@ const WaitingList = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Vào phòng khám</TableCell>
+                                <TableCell colSpan={3} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Vào phòng khám</TableCell>
                             </TableRow>
                             <TableRow >
 
@@ -59,6 +59,9 @@ const WaitingList = () => {
                                 <TableCell sx={{ fontSize: '17px' }}>
                                     Số điện thoại
                                 </TableCell>
+                                <TableCell align='center' sx={{ fontSize: '17px' }}>
+                                    Phòng số
+                                </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -66,9 +69,10 @@ const WaitingList = () => {
                                 item?.data.status === 1 ?
                                     (<TableRow key={i}>
                                         <TableCell sx={{ fontSize: '16px' }}>
-                                            {item?.data.fullName}{item?.data.statusSpecial === 1 && ' (đặt trước)'}
+                                            {item?.data.fullName}{item?.data.statusSpecial === 1 && ` (đặt trước nha sĩ ${item?.data.dentistName})`}
                                         </TableCell>
                                         <TableCell sx={{ fontSize: '16px' }}>******{item?.data.sdt.substr(-4)}</TableCell>
+                                        <TableCell align='center' sx={{ fontSize: '16px' }}>{item?.data.room}</TableCell>
                                     </TableRow>) : null
                             ))}
                         </TableBody>
@@ -97,7 +101,7 @@ const WaitingList = () => {
                                 (item?.data.status === 0) ?
                                     (<TableRow key={i}>
                                         <TableCell sx={{ fontSize: '16px' }}>{item?.data.fullName}
-                                            {item?.data.statusSpecial === 1 && ' (đặt trước)'}
+                                            {item?.data.statusSpecial === 1 && ` (đặt trước nha sĩ ${item?.data.dentistName})`}
                                         </TableCell>
                                         <TableCell sx={{ fontSize: '16px' }}>******{item?.data.sdt.substr(-4)}</TableCell>
                                     </TableRow>) : null

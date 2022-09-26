@@ -20,7 +20,8 @@ const PatientNotAppointment = () => {
     };
     const handleYes = () => {
         update(ref(db, user.key), {
-            status: 1
+            status: 1,
+            room: '01',
         })
         setOpen(false);
     }

@@ -5,10 +5,14 @@ import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 
 import StartFirebase from '../../components/firebaseConfig'
 import CustomDialog from '../../components/CustomDialog';
+import jwtDecode from 'jwt-decode';
 
 const db = StartFirebase()
 
 const PatientAppointment = () => {
+    const loginInfo = JSON.parse(localStorage.getItem("loginInfo"))
+    const dentist = jwtDecode(loginInfo?.token)
+
     const [open, setOpen] = useState(false);
     const [dataPatient, setDataPatient] = useState([])
     const [name, setName] = useState()
@@ -21,7 +25,8 @@ const PatientAppointment = () => {
     };
     const handleYes = () => {
         update(ref(db, user.key), {
-            status: 1
+            status: 1,
+            room: '01',
         })
         setOpen(false);
     }
@@ -64,7 +69,7 @@ const PatientAppointment = () => {
                     </TableHead>
                     <TableBody>
                         {dataPatient.map((item, i) => (
-                            (item?.data.status === 0 && item?.data.statusSpecial === 1) ?
+                            (item?.data.status === 0 && item?.data.statusSpecial === 1 && item?.data.dentistPhone === dentist.sub) ?
                                 (<TableRow key={i}>
                                     <TableCell>{item?.data.fullName}</TableCell>
                                     <TableCell>{item?.data.sdt}</TableCell>
