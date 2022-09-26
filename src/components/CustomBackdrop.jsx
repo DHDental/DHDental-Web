@@ -1,7 +1,6 @@
 import { Backdrop, CircularProgress } from '@mui/material'
 
 const CustomBackdrop = ({ open }) => {
-    console.log(open);
     return (
         <>
             <Backdrop

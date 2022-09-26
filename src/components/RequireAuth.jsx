@@ -3,7 +3,6 @@ import { useLocation, Navigate, Outlet } from "react-router-dom";
 
 const RequireAuth = ({ allowedRoles }) => {
     const loginInfo = JSON.parse(localStorage.getItem('loginInfo'))
-    console.log(loginInfo);
     const user = jwtDecode(loginInfo?.token)
     const roleID = user?.roleID[0].authority
     const location = useLocation();

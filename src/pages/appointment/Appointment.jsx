@@ -67,6 +67,9 @@ const Appointment = () => {
                 // console.log('ok');
                 setUserBookingList([])
                 setMessageNodata(error.response.data)
+            } else {
+                setUserBookingList([])
+                setMessageNodata(error.message)
             }
 
         }
@@ -98,11 +101,16 @@ const Appointment = () => {
 
         } catch (error) {
             setOpen(false)
+            console.log(error)
             // console.log(error.response);
             if (error.response.status === 417) {
                 setUserBookingList([])
                 setMessageNodata(error.response.data)
                 // console.log(userBookingList.length)
+            }
+            else {
+                setUserBookingList([])
+                setMessageNodata(error.message)
             }
         }
     }
@@ -237,7 +245,7 @@ const Appointment = () => {
                                                 {/* {user?.slotBooking } */}
                                                 {handleSlot(user?.slotBooking)}
                                             </TableCell>
-                                            <TableCell>{user?.dentistName}</TableCell>
+                                            <TableCell align='center'>{user?.dentistName}</TableCell>
                                             <TableCell align='center'>
 
                                                 <AppointmentIcon user={user} />

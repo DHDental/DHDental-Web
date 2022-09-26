@@ -53,10 +53,14 @@ const AppointmentIcon = ({ user }) => {
                 status: 0,
                 statusSpecial: 1,
                 timeBooking: user.slotBooking,
-                doctor: ''
+                dentistName: user.dentistName,
+                dentistPhone: user.dentistPhoneNumber,
+                room: '',
             })
         } catch (error) {
             setOpenBackdrop(false)
+            setTextSnackbar('Check in không thành công')
+            setOpenSnackbar(true)
         }
     }
     return (
