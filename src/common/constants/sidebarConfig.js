@@ -9,8 +9,8 @@ import { DENTIST_DS_KHAM, KHAM_BENH, STAFF_BENHNHAN, STAFF_DANG_KI_KHAM, STAFF_D
 
 export const sideBarStaffConfig = [
     { name: 'Danh sách đặt khám', icon: <EventNoteIcon />, path: STAFF_DSDATKHAM },
-    { name: 'Bệnh nhân', icon: <PortraitIcon />, path: STAFF_BENHNHAN },
     { name: 'Đăng kí khám bệnh', icon: <PostAddIcon />, path: STAFF_DANG_KI_KHAM },
+    { name: 'Bệnh nhân', icon: <PortraitIcon />, path: STAFF_BENHNHAN },
     { name: "Màn hình chờ khám", icon: <AirplayIcon />, path: STAFF_MAN_HINH_CHO_KHAM },
 ]
 

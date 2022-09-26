@@ -204,6 +204,7 @@ const Appointment = () => {
                                 <TableCell align='center'>Số điện thoại</TableCell>
                                 <TableCell align='center'>Ngày đặt hẹn</TableCell>
                                 <TableCell align='center'>Giờ hẹn</TableCell>
+                                <TableCell align='center'>Bác sĩ đặt hẹn</TableCell>
                                 <TableCell align='center'>Check in</TableCell>
                             </TableRow>
                         </TableHead>
@@ -211,14 +212,14 @@ const Appointment = () => {
                             {
                                 userBookingList.length === 0 && messageNodata === '' ?
                                     (<TableRow>
-                                        <TableCell colSpan={7} align='center'>
+                                        <TableCell colSpan={8} align='center'>
                                             <CircularProgress />
                                         </TableCell>
                                     </TableRow>) : null
                             }
                             {userBookingList.length === 0 && messageNodata !== '' ?
                                 (<TableRow style={{ height: 50 }}>
-                                    <TableCell colSpan={7} align='center'>{messageNodata}</TableCell>
+                                    <TableCell colSpan={8} align='center'>{messageNodata}</TableCell>
                                 </TableRow>) : null}
                             {(rowsPerPage > 0
                                 ? userBookingList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -236,6 +237,7 @@ const Appointment = () => {
                                                 {/* {user?.slotBooking } */}
                                                 {handleSlot(user?.slotBooking)}
                                             </TableCell>
+                                            <TableCell>{user?.dentistName}</TableCell>
                                             <TableCell align='center'>
 
                                                 <AppointmentIcon user={user} />
