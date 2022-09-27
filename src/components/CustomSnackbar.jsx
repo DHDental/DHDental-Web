@@ -1,5 +1,4 @@
 import { Alert, Snackbar } from '@mui/material'
-import React from 'react'
 
 const CustomSnackbar = ({ handleClose, open, text, severity, variant, vertical, horizontal }) => {
     return (
@@ -7,7 +6,7 @@ const CustomSnackbar = ({ handleClose, open, text, severity, variant, vertical, 
             anchorOrigin={{ vertical: vertical, horizontal: horizontal }}
             open={open}
             onClose={handleClose}
-            autoHideDuration={2000}
+            autoHideDuration={4000}
         >
             <Alert severity={severity} variant={variant}>{text}</Alert>
         </Snackbar>
