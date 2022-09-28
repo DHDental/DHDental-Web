@@ -1,17 +1,17 @@
-import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Divider, Grid, Stack, TextField, Typography } from '@mui/material'
-import { useFormik } from 'formik'
-import * as yup from 'yup';
-import { format, parse } from 'date-fns';
-import { useState } from 'react';
+import { Button, Card, CardContent, CardHeader, CircularProgress, Grid, Stack, TextField } from '@mui/material';
 import dayjs from 'dayjs';
 import { push, ref, set } from "firebase/database";
+import { useFormik } from 'formik';
+import { useState } from 'react';
+import * as yup from 'yup';
 
+import { DatePicker } from '@mui/x-date-pickers';
 import { axiosPublic } from '../../api/axiosInstance';
-import SearchPatient from './SearchPatient'
-import { DANGKIKHAMVANLAI } from '../../common/constants/apiConstants'
-import { formatYearMonthDate } from '../../common/utils/formatDate'
+import { DANGKIKHAMVANLAI } from '../../common/constants/apiConstants';
+import { formatYearMonthDate } from '../../common/utils/formatDate';
 import CustomSnackbar from '../../components/CustomSnackbar';
 import StartFirebase from '../../components/firebaseConfig';
+import SearchPatient from './SearchPatient';
 
 const db = StartFirebase()
 const validationSchema = yup.object({
@@ -19,11 +19,9 @@ const validationSchema = yup.object({
     middleName: yup.string().required('Bạn cần nhập tên đệm'),
     firstName: yup.string().required('Bạn cần nhập tên'),
     dob: yup.date().required('Bạn cần nhập ngày sinh')
-        .transform((value, originalValue) => parse(originalValue, 'dd/MM/yyyy', new Date()))
         .typeError("Cần nhập ngày đúng và theo định dạng dd/MM/yyyy")
-        .min('01/01/1880', 'Ngày sinh quá xa so với hiện tại')
-        .max(String(format(new Date(), 'dd/MM/yyyy')), "Vui lòng nhập ngày sinh, bạn đang nhập ngày trong tương lai")
-    ,
+        .min('1900/01/01', 'Ngày sinh quá xa so với hiện tại')
+        .max(new Date(), "Vui lòng nhập ngày sinh, bạn đang nhập ngày trong tương lai"),
     address: yup.string().required('Bạn cần nhập địa chỉ')
 })
 const MedicalRegistration = () => {
@@ -31,7 +29,6 @@ const MedicalRegistration = () => {
     const [textSnackbar, setTextSnackbar] = useState('');
     const [severity, setSeverity] = useState('success');
     const [title, setTitle] = useState('');
-
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false)
     }
@@ -41,8 +38,9 @@ const MedicalRegistration = () => {
             middleName: "",
             firstName: "",
             phoneNumber: "",
-            dob: "",
-            address: ""
+            dob: null,
+            address: "",
+            symptom: ""
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -66,6 +64,7 @@ const MedicalRegistration = () => {
                     dentistName: '',
                     dentistPhone: '',
                     room: '',
+                    symptom: values.symptom,
                 })
                 setTextSnackbar('Đăng kí thành công')
                 setSeverity('success')
@@ -88,19 +87,18 @@ const MedicalRegistration = () => {
             }
         }
     })
-
     return (
         <>
-            <Grid container spacing={1}
+            <Grid container spacing={0.5}
                 justifyContent='space-between'
             >
-                <Grid item xs={7}>
+                <Grid item xs={5.75}>
                     <SearchPatient />
                 </Grid>
-                <Divider orientation="vertical" flexItem sx={{
+                {/* <Divider orientation="vertical" flexItem sx={{
                     backgroundColor: '#000'
-                }} />
-                <Grid item xs={4.5}>
+                }} /> */}
+                <Grid item xs={6}>
                     <Card square>
                         <CardHeader
                             title='Đăng kí khám bệnh'
@@ -111,61 +109,81 @@ const MedicalRegistration = () => {
                         >
                         </CardHeader>
                         <CardContent>
-                            <Stack direction='column' spacing={1}
+                            <Stack direction='column' spacing={2}
                                 component='form' onSubmit={formik.handleSubmit}>
+                                <Stack direction='row' spacing={2} >
+                                    <TextField
+                                        name='lastName'
+                                        variant='standard'
+                                        label="Họ"
+                                        value={formik.values.lastName}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                                        helperText={formik.touched.lastName && formik.errors.lastName}
+                                    />
+                                    <TextField
+                                        name='middleName'
+                                        variant='standard'
+                                        label="Tên đệm"
+                                        value={formik.values.middleName}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.middleName && Boolean(formik.errors.middleName)}
+                                        helperText={formik.touched.middleName && formik.errors.middleName} />
+                                    <TextField
+                                        name='firstName'
+                                        variant='standard'
+                                        label="Tên"
+                                        value={formik.values.firstName}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                                        helperText={formik.touched.firstName && formik.errors.firstName}
+                                    />
+                                </Stack>
+                                <Stack direction='row' spacing={2} >
+                                    <TextField
+                                        name='phoneNumber'
+                                        variant='standard'
+                                        label="Số điện thoại"
+                                        value={formik.values.phoneNumber}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+                                        helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+                                    />
+                                    <DatePicker
+                                        label='Ngày sinh'
+                                        value={formik.values.dob}
+                                        onChange={value => formik.setFieldValue("dob", value)}
+                                        inputFormat="DD/MM/YYYY"
+                                        placeholder="DD/MM/YYYY"
+                                        maxDate={dayjs().format('YYYY-MM-DD')}
+                                        renderInput={(params) =>
+                                            <TextField {...params}
+                                                variant='standard'
+                                                name='dob'
+                                                id='dob'
+                                                error={formik.touched.dob && Boolean(formik.errors.dob)}
+                                                helperText={formik.touched.dob && formik.errors.dob}
+                                            />
+
+                                        }
+                                    />
+                                </Stack>
+
                                 <TextField
-                                    name='lastName'
-                                    variant='standard'
-                                    label="Họ"
-                                    value={formik.values.lastName}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                                    helperText={formik.touched.lastName && formik.errors.lastName}
-                                />
-                                <TextField
-                                    name='middleName'
-                                    variant='standard'
-                                    label="Tên đệm"
-                                    value={formik.values.middleName}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.middleName && Boolean(formik.errors.middleName)}
-                                    helperText={formik.touched.middleName && formik.errors.middleName} />
-                                <TextField
-                                    name='firstName'
-                                    variant='standard'
-                                    label="Tên"
-                                    value={formik.values.firstName}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                                    helperText={formik.touched.firstName && formik.errors.firstName}
-                                />
-                                <TextField
-                                    name='phoneNumber'
-                                    variant='standard'
-                                    label="Số điện thoại"
-                                    value={formik.values.phoneNumber}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
-                                    helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                                />
-                                <TextField
-                                    name='dob'
-                                    variant='standard' label="Ngày sinh"
-                                    placeholder='dd/MM/yyyy'
-                                    value={formik.values.dob}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.dob && Boolean(formik.errors.dob)}
-                                    helperText={formik.touched.dob && formik.errors.dob}
-                                />
-                                <TextField
+                                    multiline
                                     name='address'
-                                    variant='standard' label="Địa chỉ"
+                                    variant='standard'
+                                    label="Địa chỉ"
                                     value={formik.values.address}
                                     onChange={formik.handleChange}
                                     error={formik.touched.address && Boolean(formik.errors.address)}
                                     helperText={formik.touched.address && formik.errors.address}
                                 />
-                                {/* <TextField variant='standard' label="Triệu chứng" /> */}
+                                <TextField
+                                    multiline variant='standard' label="Triệu chứng" name='symptom'
+                                    value={formik.values.symptom}
+                                    onChange={formik.handleChange}
+                                />
                                 <br />
                                 <Button type='submit' variant="contained"
                                     disabled={formik.isSubmitting}

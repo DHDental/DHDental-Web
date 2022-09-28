@@ -56,6 +56,7 @@ const AppointmentIcon = ({ user }) => {
                 dentistName: user.dentistName,
                 dentistPhone: user.dentistPhoneNumber,
                 room: '',
+                // trieuChung: user.trieuChung,
             })
         } catch (error) {
             setOpenBackdrop(false)
