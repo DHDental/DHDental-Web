@@ -2,17 +2,18 @@ import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Divider, 
 import { useFormik } from 'formik'
 import * as yup from 'yup';
 import { format, parse } from 'date-fns';
+import { useState } from 'react';
+import dayjs from 'dayjs';
+import { push, ref, set } from "firebase/database";
 
 import { axiosPublic } from '../../api/axiosInstance';
 import SearchPatient from './SearchPatient'
 import { DANGKIKHAMVANLAI } from '../../common/constants/apiConstants'
 import { formatYearMonthDate } from '../../common/utils/formatDate'
-import dayjs from 'dayjs';
 import CustomSnackbar from '../../components/CustomSnackbar';
-import { useState } from 'react';
+import StartFirebase from '../../components/firebaseConfig';
 
-
-
+const db = StartFirebase()
 const validationSchema = yup.object({
     lastName: yup.string().required('Bạn cần nhập tên họ'),
     middleName: yup.string().required('Bạn cần nhập tên đệm'),
@@ -29,6 +30,7 @@ const MedicalRegistration = () => {
     const [openSnackbar, setOpenSnackbar] = useState();
     const [textSnackbar, setTextSnackbar] = useState('');
     const [severity, setSeverity] = useState('success');
+    const [title, setTitle] = useState('');
 
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false)
@@ -53,16 +55,33 @@ const MedicalRegistration = () => {
                     "dob": formatYearMonthDate(dayjs(values.dob, "DD/MM/YYYY")),
                     "address": values.address
                 })
+                const dbRef = ref(db)
+                const newUser = push(dbRef)
+                set(newUser, {
+                    fullName: values.lastName + ' ' + values.middleName + ' ' + values.firstName,
+                    sdt: values.phoneNumber,
+                    status: 0,
+                    statusSpecial: 0,
+                    timeBooking: '',
+                    dentistName: '',
+                    dentistPhone: '',
+                    room: '',
+                })
                 setTextSnackbar('Đăng kí thành công')
                 setSeverity('success')
                 setOpenSnackbar(true)
                 console.log('res', response);
 
             } catch (error) {
-                console.log("error:", error.response.data)
+                console.log("error:", error)
                 if (error.response.status === 417) {
                     setTextSnackbar(error.response.data.message)
                     setSeverity('error')
+                    setOpenSnackbar(true)
+                } else {
+                    setTextSnackbar('Có gì đó không ổn, không đăng kí được, vui lòng thực hiện lại')
+                    setSeverity('error')
+                    setTitle(error.message)
                     setOpenSnackbar(true)
                 }
 
@@ -165,7 +184,9 @@ const MedicalRegistration = () => {
                 severity={severity}
                 variant='standard'
                 vertical='top'
-                horizontal='right' />
+                horizontal='right'
+                title={title}
+            />
         </>
     )
 }

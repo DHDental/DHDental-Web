@@ -26,7 +26,7 @@ const PatientAppointment = () => {
     const handleYes = () => {
         update(ref(db, user.key), {
             status: 1,
-            room: '01',
+            room: dentist.DentistRoom,
         })
         setOpen(false);
     }
@@ -69,7 +69,7 @@ const PatientAppointment = () => {
                     </TableHead>
                     <TableBody>
                         {dataPatient.map((item, i) => (
-                            (item?.data.status === 0 && item?.data.statusSpecial === 1 && item?.data.dentistPhone === dentist.sub) ?
+                            (item?.data.status === 0 && item?.data.statusSpecial === 1 && item?.data.dentistPhone === dentist.PhoneNumber) ?
                                 (<TableRow key={i}>
                                     <TableCell>{item?.data.fullName}</TableCell>
                                     <TableCell>{item?.data.sdt}</TableCell>

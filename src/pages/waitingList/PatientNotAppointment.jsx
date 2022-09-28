@@ -2,12 +2,15 @@ import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHe
 import { onValue, ref, update } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
+import jwtDecode from 'jwt-decode';
 
 import StartFirebase from '../../components/firebaseConfig'
 import CustomDialog from '../../components/CustomDialog';
 
 const db = StartFirebase()
 const PatientNotAppointment = () => {
+    const loginInfo = JSON.parse(localStorage.getItem("loginInfo"))
+    const dentist = jwtDecode(loginInfo?.token)
     const [dataPatient, setDataPatient] = useState([])
     const [open, setOpen] = useState(false);
     const [name, setName] = useState()
@@ -21,7 +24,7 @@ const PatientNotAppointment = () => {
     const handleYes = () => {
         update(ref(db, user.key), {
             status: 1,
-            room: '01',
+            room: dentist.DentistRoom,
         })
         setOpen(false);
     }

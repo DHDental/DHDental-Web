@@ -66,8 +66,7 @@ const PatientOn = () => {
           <TableBody>
             {dataPatient.map((item, i) => (
               (item?.data.status === 1
-                // && item?.data.dentistPhone === dentist.sub
-                && item?.data.room === '01'
+                && item?.data.room === dentist.DentistRoom
               ) ?
                 (
 
