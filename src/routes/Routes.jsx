@@ -45,7 +45,7 @@ export default function Router() {
                             children: [
                                 { path: 'thong-tin-bn', element: <PatientInfo /> },
                                 { path: 'lich-su-kham-benh', element: <PatientRecordHistory /> },
-                                { path: 'create-dental-care-record', element: <DentalCareRecord /> },
+                                { path: 'tao-dental-care-record', element: <DentalCareRecord /> },
                             ]
                         },
                     ]

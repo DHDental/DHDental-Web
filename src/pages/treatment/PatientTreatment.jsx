@@ -25,8 +25,8 @@ const PatientTreatment = () => {
                     </NavLink>
                 </Grid>
                 <Grid item>
-                    <NavLink to={`${KHAM_BENH}/${params?.id}/create-dental-care-record`}>
-                        <Typography className='pt_active'>Dental care record</Typography>
+                    <NavLink to={`${KHAM_BENH}/${params?.id}/tao-dental-care-record`}>
+                        <Typography className='pt_active'>Khám bệnh</Typography>
                     </NavLink>
                 </Grid>
             </Grid>

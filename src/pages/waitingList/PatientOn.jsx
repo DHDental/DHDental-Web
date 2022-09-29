@@ -73,12 +73,13 @@ const PatientOn = () => {
                   <TableRow key={i}>
 
                     <TableCell >
-                      <NavLink to={`${KHAM_BENH}/${item?.data.sdt}/thong-tin-bn `}
+                      <NavLink to={`${KHAM_BENH}/${item?.data.sdt}/tao-dental-care-record`}
                         style={{
                           color: 'blue',
                           fontWeight: '500',
                           textDecoration: 'underline',
-                        }}>
+                        }}
+                        state={{ symtom: item?.data.symtom }}>
                         {item?.data.fullName}
                       </NavLink>
                     </TableCell>
