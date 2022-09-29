@@ -57,7 +57,7 @@ const MedicalRegistration = () => {
                 const newUser = push(dbRef)
                 set(newUser, {
                     fullName: values.lastName + ' ' + values.middleName + ' ' + values.firstName,
-                    sdt: values.phoneNumber,
+                    sdt: response.data.phoneNumber,
                     status: 0,
                     statusSpecial: 0,
                     timeBooking: '',
@@ -69,7 +69,7 @@ const MedicalRegistration = () => {
                 setTextSnackbar('Đăng kí thành công')
                 setSeverity('success')
                 setOpenSnackbar(true)
-                console.log('res', response);
+                // console.log('res', response);
 
             } catch (error) {
                 console.log("error:", error)
@@ -87,7 +87,7 @@ const MedicalRegistration = () => {
             }
         }
     })
-    console.log(formik.values.dentalCareExamReason);
+    // console.log(formik.values.dentalCareExamReason);
     return (
         <>
             <Grid container spacing={0.5}
