@@ -8,13 +8,16 @@ import {
     DialogTitle,
     DialogContent,
     DialogContentText,
-    DialogActions
+    DialogActions,
+    Grid,
+    Typography
 } from "@mui/material"
-import { equalTo, get, onValue, orderByChild, query, ref } from "firebase/database";
+import { equalTo, get, onValue, orderByChild, push, query, ref, set } from "firebase/database";
 import { useEffect, useState } from "react"
 
 import { axiosPublic } from '../../api/axiosInstance';
 import StartFirebase from '../../components/firebaseConfig';
+import { formatStringtoDate } from '../../common/utils/formatDate'
 
 const db = StartFirebase()
 
@@ -52,10 +55,14 @@ const SearchPatient = () => {
     const [loading, setLoading] = useState(false)
     const [messageNodata, setMessageNodata] = useState('')
     const [openPopup, setOpenPopup] = useState(false)
+    const [currentPatient, setCurrentPatient] = useState({})
+    const [currentPatientReason, setCurrentPatientReason] = useState('')
 
     const handleSubmit = async (e) => {
         if (searchTerm === '') {
             e.preventDefault()
+            setPatient([])
+            setMessageNodata("Mời bạn nhập từ tìm kiếm")
             return
         }
         e.preventDefault()
@@ -70,7 +77,7 @@ const SearchPatient = () => {
             setPatient(response.data)
             setLoading(false)
         } catch (error) {
-            setPatient([])
+
             setLoading(false)
             console.log(error);
             if (error.response.status === 417) {
@@ -80,9 +87,28 @@ const SearchPatient = () => {
             }
         }
     }
-    const handleClosePopup = () => {
+    const handleClosePopup = (event, reason) => {
+        if (reason && reason === "backdropClick")
+            return;
         setOpenPopup(false);
     };
+    const handleYesPopup = () => {
+        const dbRef1 = ref(db)
+        const newUser = push(dbRef1)
+        set(newUser, {
+            fullName: currentPatient.fullName,
+            sdt: currentPatient.phoneNumber,
+            status: 0,
+            statusSpecial: 0,
+            timeBooking: '',
+            dentistName: '',
+            dentistPhone: '',
+            room: '',
+            dentalCareExamReason: currentPatientReason,
+        })
+        setOpenPopup(false)
+        setCurrentPatientReason('')
+    }
     return (
         <>
             <Box
@@ -135,15 +161,18 @@ const SearchPatient = () => {
                         {
                             patient.map((item, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{item?.fullName}</TableCell>
-                                    <TableCell>{item?.phoneNumber}</TableCell>
-                                    <TableCell>{item?.dob}</TableCell>
+                                    <TableCell align="left">{item?.fullName}</TableCell>
+                                    <TableCell align="left">{item?.phoneNumber}</TableCell>
+                                    <TableCell align="left">{formatStringtoDate(item?.dob, "YYYY-MM-DD", "DD/MM/YYYY")}</TableCell>
                                     <TableCell align="center">
                                         <Button
                                             size="small"
                                             variant="contained"
                                             disabled={checkRegister(item?.phoneNumber)}
-                                            onClick={() => (setOpenPopup(true))}
+                                            onClick={() => {
+                                                setOpenPopup(true)
+                                                setCurrentPatient(item)
+                                            }}
                                         >
                                             {checkRegister(item?.phoneNumber) ? 'Đã đăng kí' : 'Đăng kí'}
                                         </Button>
@@ -155,26 +184,75 @@ const SearchPatient = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Dialog open={openPopup} onClose={handleClosePopup}>
-                <DialogTitle>Subscribe</DialogTitle>
+            <Dialog open={openPopup} onClose={handleClosePopup}
+                PaperProps={{ sx: { position: 'fixed', top: '25px' } }}
+                fullWidth
+            >
                 <DialogContent>
-                    <DialogContentText>
-                        To subscribe to this website, please enter your email address here. We
-                        will send updates occasionally.
-                    </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Email Address"
-                        type="email"
-                        fullWidth
-                        variant="standard"
-                    />
+                    <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
+                        <Typography variant="h6" sx={{
+
+                            color: '#0f3eb4'
+                        }}>Đăng kí khám bệnh</Typography>
+                    </Box>
+                    <Box>
+                        <Grid container spacing={2} direction='row'>
+                            <Grid item xs={3}>
+                                <Typography>Bệnh nhân</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <Typography>{currentPatient?.fullName}</Typography>
+                            </Grid>
+                        </Grid>
+                        <br />
+                        <Grid container spacing={2} direction='row'>
+                            <Grid item xs={3}>
+                                <Typography>Số điện thoại</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <Typography>{currentPatient?.phoneNumber}</Typography>
+                            </Grid>
+                        </Grid>
+                        <br />
+                        <Grid container spacing={2} direction='row'>
+                            <Grid item xs={3}>
+                                <Typography>Ngày sinh</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <Typography>{formatStringtoDate(currentPatient?.dob, "YYYY-MM-DD", "DD/MM/YYYY")}</Typography>
+                            </Grid>
+                        </Grid>
+                        <br />
+                        <Grid container spacing={2} direction='row'>
+                            <Grid item xs={3}>
+                                <Typography>Địa chỉ</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <Typography>{currentPatient?.address}</Typography>
+                            </Grid>
+                        </Grid>
+                        <br />
+                        <Grid container spacing={2} direction='row' sx={{ alignItems: 'flex-end' }}>
+                            <Grid item xs={3}>
+                                <Typography >Lí do khám bệnh</Typography>
+                            </Grid>
+                            <Grid item xs={7} >
+                                <TextField
+                                    id="dentalCareExamReason"
+                                    name="dentalCareExamReason"
+                                    onChange={(e) => {
+                                        setCurrentPatientReason(e.target.value)
+                                    }}
+                                    variant="standard"
+                                    fullWidth
+                                />
+                            </Grid>
+                        </Grid>
+                    </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClosePopup}>Cancel</Button>
-                    <Button onClick={handleClosePopup}>Subscribe</Button>
+                    <Button onClick={handleClosePopup}>Hủy</Button>
+                    <Button onClick={handleYesPopup}>Đăng kí</Button>
                 </DialogActions>
             </Dialog>
         </>

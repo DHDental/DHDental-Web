@@ -70,7 +70,7 @@ const MedicalRegistration = () => {
                 setSeverity('success')
                 setOpenSnackbar(true)
                 // console.log('res', response);
-
+                formik.resetForm();
             } catch (error) {
                 console.log("error:", error)
                 if (error.response.status === 417) {
