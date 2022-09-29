@@ -40,7 +40,7 @@ const MedicalRegistration = () => {
             phoneNumber: "",
             dob: null,
             address: "",
-            symptom: ""
+            dentalCareExamReason: ""
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -64,7 +64,7 @@ const MedicalRegistration = () => {
                     dentistName: '',
                     dentistPhone: '',
                     room: '',
-                    symptom: values.symptom,
+                    dentalCareExamReason: values.dentalCareExamReason,
                 })
                 setTextSnackbar('Đăng kí thành công')
                 setSeverity('success')
@@ -87,6 +87,7 @@ const MedicalRegistration = () => {
             }
         }
     })
+    console.log(formik.values.dentalCareExamReason);
     return (
         <>
             <Grid container spacing={0.5}
@@ -180,8 +181,8 @@ const MedicalRegistration = () => {
                                     helperText={formik.touched.address && formik.errors.address}
                                 />
                                 <TextField
-                                    multiline variant='standard' label="Triệu chứng" name='symptom'
-                                    value={formik.values.symptom}
+                                    multiline variant='standard' label="Lí do khám bệnh" name='dentalCareExamReason'
+                                    value={formik.values.dentalCareExamReason}
                                     onChange={formik.handleChange}
                                 />
                                 <br />

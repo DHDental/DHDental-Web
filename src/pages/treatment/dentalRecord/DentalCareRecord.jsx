@@ -9,7 +9,7 @@ import { useLocation } from 'react-router-dom'
 
 const DentalCareRecord = () => {
     const location = useLocation();
-    console.log(location?.state?.symtom);
+    console.log(location?.state?.dentalCareExamReason);
 
     return (
         <>
