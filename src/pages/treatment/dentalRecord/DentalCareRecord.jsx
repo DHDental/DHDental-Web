@@ -1,15 +1,17 @@
 import { Button, Grid, TextField } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import ServiceBill from './ServiceBill'
 import CreateRecord from './CreateRecord'
 import PatientInfoDR from './PatientInfoDR'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
+import { axiosPublic } from '../../../api/axiosInstance'
+import { GET_USER_INFO } from '../../../common/constants/apiConstants'
 
 
 const DentalCareRecord = () => {
-    const location = useLocation();
-    console.log(location?.state?.dentalCareExamReason);
+    // const location = useLocation();
+    // console.log(location?.state?.dentalCareExamReason);
 
     return (
         <>
@@ -21,9 +23,9 @@ const DentalCareRecord = () => {
                 <Grid container item>
                     <ServiceBill />
                 </Grid>
-                <Grid container item>
+                {/* <Grid container item>
                     <CreateRecord />
-                </Grid>
+                </Grid> */}
             </Grid>
         </>
     )
