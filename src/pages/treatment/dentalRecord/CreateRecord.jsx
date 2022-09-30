@@ -1,53 +1,210 @@
-import { FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material'
-import { useEffect, useState } from 'react';
+import { Button, Grid, IconButton, Typography } from '@mui/material'
+import { Formik, Form, Field, FieldArray } from 'formik'
+import { TextField } from 'formik-mui'
+import React from 'react'
+import { array, object, string } from 'yup'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
-const CreateRecord = ({ billId }) => {
-
-    const [bill, setBill] = useState('');
-    const handleChange = (event) => {
-        setBill(event.target.value);
-    };
-    useEffect(() => {
-        console.log('change');
-        setBill(billId.billId)
-    }, [billId])
+const emptyDescription = { desc: '' }
+const emptyMedicine = { medicine: '' }
+const emptyService = { service: '' }
+const CreateRecord = () => {
     return (
         <>
-            <Typography variant='subtitle1' sx={{
-                fontWeight: '500'
-            }}>
-                II. Tạo Dental Care Record
-            </Typography>
-            <Grid container spacing={2}
-                sx={{ alignItems: 'center' }}
-            >
-                <Grid item>
-                    <Typography>1. Dental care record liên quan đến lần điều trị có ngày bắt đầu</Typography>
-                </Grid>
-                <Grid item >
-                    <FormControl
-                        variant="standard"
-                        sx={{ m: 1, minWidth: 120, }}>
-                        {/* <InputLabel id="demo-simple-select-standard-label">Ngày bắt đầu điều trị</InputLabel> */}
-                        <Select
-                            // labelId="demo-simple-select-standard-label"
-                            id="demo-simple-select-standard"
-                            value={bill}
-                            onChange={handleChange}
-                            label="Ngày"
-                            defaultValue={'00'}
-                        >
-                            <MenuItem value={'00'}>
-                                Không có (Tạo mới)
-                            </MenuItem>
-                            {billId?.billId !== '' ?
-                                <MenuItem value={billId?.billId}>{billId?.startDay}</MenuItem> : null
-                            }
+            <Formik
+                initialValues={{
+                    descriptions: [emptyDescription],
+                    medicines: [emptyMedicine],
+                    services: [emptyService]
+                }}
+                validationSchema={
+                    object({
+                        descriptions: array(object({
+                            desc: string().required('Cần nhập mô tả bệnh lí, công tác điều trị,...'),
+                        })).min(1, 'Cần có ít nhất một mô tả'),
+                    })
+                }
+                onSubmit={() => {
 
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
+                }}
+            >
+                {({ values, errors, isSubmitting }) => (<Form>
+                    <Grid container spacing={0.5} direction='column'>
+                        <Grid item>
+                            <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>2. Mô tả</Typography>
+                        </Grid>
+
+                        <FieldArray name='descriptions'>
+                            {
+                                ({ push, remove, }) => (
+                                    <>
+                                        {
+                                            values.descriptions.map((_, index) => (
+                                                <Grid container item key={index} spacing={1} direction='row'>
+                                                    <Grid item xs={5.5}>
+                                                        <Field
+                                                            component={TextField}
+                                                            name={`descriptions.${index}.desc`}
+                                                            multiline
+                                                            helperText='Mô tả bệnh lí, công tác điều trị,...'
+                                                            variant="standard"
+                                                            fullWidth
+                                                        // sx={{ width: '100%' }}
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item xs={4}>
+                                                        {/* <Button onClick={() => remove(index)}>Xóa</Button> */}
+                                                        <IconButton onClick={() => remove(index)}>
+                                                            <DeleteForeverIcon sx={{ color: 'red' }} />
+                                                        </IconButton>
+                                                    </Grid>
+                                                </Grid>
+                                            ))
+                                        }
+                                        <br />
+                                        <Grid item>
+                                            {typeof errors.descriptions === 'string' ?
+                                                <>
+                                                    <Typography sx={{ color: 'red' }}>
+                                                        {errors.descriptions}
+                                                    </Typography>
+                                                    <br />
+                                                </>
+                                                : null}
+                                        </Grid>
+                                        <Grid item>
+                                            <Button
+                                                variant="outlined"
+                                                onClick={() => push(emptyDescription)}>
+                                                <PlaylistAddIcon />
+                                                Thêm mô tả
+                                            </Button>
+                                        </Grid>
+                                    </>
+                                )
+                            }
+                        </FieldArray>
+                        <br />
+
+                        <Grid item>
+                            <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>3. Đơn thuốc</Typography>
+                        </Grid>
+
+                        <FieldArray name='medicines'>
+                            {
+                                ({ push, remove, }) => (
+                                    <>
+                                        {
+                                            values.medicines.map((_, index) => (
+                                                <Grid container item key={index} spacing={1} direction='row'>
+                                                    <Grid item xs={5.5}>
+                                                        <Field
+                                                            component={TextField}
+                                                            name={`medicines.${index}.medicine`}
+                                                            // multiline
+                                                            helperText='Thuốc'
+                                                            variant="standard"
+                                                            fullWidth
+                                                        // sx={{ width: '100%' }}
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item xs={4}>
+                                                        {/* <Button onClick={() => remove(index)}>Xóa</Button> */}
+                                                        <IconButton onClick={() => remove(index)}>
+                                                            <DeleteForeverIcon sx={{ color: 'red' }} />
+                                                        </IconButton>
+                                                    </Grid>
+                                                </Grid>
+                                            ))
+                                        }
+                                        <br />
+                                        <Grid item>
+                                            {typeof errors.medicines === 'string' ?
+                                                <>
+                                                    <Typography sx={{ color: 'red' }}>
+                                                        {errors.medicines}
+                                                    </Typography>
+                                                    <br />
+                                                </>
+                                                : null}
+                                        </Grid>
+                                        <Grid item>
+                                            <Button
+                                                variant="outlined"
+                                                onClick={() => push(emptyMedicine)}>
+                                                <PlaylistAddIcon />
+                                                Thêm Thuốc
+                                            </Button>
+                                        </Grid>
+                                    </>
+                                )
+                            }
+                        </FieldArray>
+                        <br />
+                        <Grid item>
+                            <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>4. Dịch vụ</Typography>
+                        </Grid>
+                        <FieldArray name='services'>
+                            {
+                                ({ push, remove, }) => (
+                                    <>
+                                        {
+                                            values.services.map((_, index) => (
+                                                <Grid container item key={index} spacing={1} direction='row'>
+                                                    <Grid item xs={5.5}>
+                                                        <Field
+                                                            component={TextField}
+                                                            name={`services.${index}.service`}
+                                                            // multiline
+                                                            helperText='Dịch vụ'
+                                                            variant="standard"
+                                                            fullWidth
+                                                        // sx={{ width: '100%' }}
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item xs={4}>
+                                                        {/* <Button onClick={() => remove(index)}>Xóa</Button> */}
+                                                        <IconButton onClick={() => remove(index)}>
+                                                            <DeleteForeverIcon sx={{ color: 'red' }} />
+                                                        </IconButton>
+                                                    </Grid>
+                                                </Grid>
+                                            ))
+                                        }
+                                        <br />
+                                        <Grid item>
+                                            {typeof errors.services === 'string' ?
+                                                <>
+                                                    <Typography sx={{ color: 'red' }}>
+                                                        {errors.services}
+                                                    </Typography>
+                                                    <br />
+                                                </>
+                                                : null}
+                                        </Grid>
+                                        <Grid item>
+                                            <Button
+                                                variant="outlined"
+                                                onClick={() => push(emptyService)}>
+                                                <PlaylistAddIcon />
+                                                Thêm dịch vụ
+                                            </Button>
+                                        </Grid>
+                                    </>
+                                )
+                            }
+                        </FieldArray>
+                        <br />
+                    </Grid>
+
+                    <pre>{JSON.stringify({ values, errors }, null, 4)}</pre>
+                </Form>)
+                }
+            </Formik>
         </>
     )
 }

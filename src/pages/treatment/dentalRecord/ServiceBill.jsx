@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, CardHeader, Grid, IconButton, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, CardHeader, FormControl, Grid, IconButton, MenuItem, Select, TextField, Typography } from '@mui/material'
 import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { useState } from 'react';
@@ -24,6 +24,7 @@ const bill = [
             {
                 "recordName": 'record 1',
             }
+
         ]
     },
     {
@@ -48,17 +49,17 @@ const bill = [
 ]
 
 const ServiceBill = () => {
-    const [billId, setBillId] = useState({
-        'billId': '',
-        'startDay': '',
-    })
-
-    const handleClick = (item) => {
-        setBillId({
-            'billId': item?.billId,
-            'startDay': item?.startDay,
-        })
+    const [recordBillId, setRecordBillId] = useState('không có')
+    const [secondMenuItemSelect, setSecondMenuItemSelect] = useState()
+    const handleChange = (event) => {
+        setRecordBillId(event.target.value)
     }
+    const handleClickAddRecord = (item) => {
+
+        setSecondMenuItemSelect(item)
+        setRecordBillId(item.billId)
+    }
+    console.log("select", recordBillId);
     return (
         <Grid container spacing={1} direction='column'>
             <Grid item>
@@ -114,9 +115,14 @@ const ServiceBill = () => {
                                     </Grid>
                                     <Grid item>
                                         <Button variant='contained'
-                                            onClick={() => (handleClick(item))}
+                                            disabled={item.billId === recordBillId}
+                                            onClick={() => (handleClickAddRecord(item))}
                                         >
-                                            + Tạo dental care record</Button>
+                                            {item.billId === recordBillId ? 'Đã chọn, xuống mục II hoàn tất record'
+                                                : '+ Tạo dental care record'
+                                            }
+
+                                        </Button>
                                     </Grid>
 
                                 </Grid>
@@ -127,7 +133,47 @@ const ServiceBill = () => {
             </Grid>
             <br />
             {/* tạo record */}
-            <CreateRecord billId={billId} />
+            <Typography variant='subtitle1' sx={{
+                fontWeight: '500'
+            }}>
+                II. Tạo Dental Care Record
+            </Typography>
+            <Grid container spacing={2}
+                sx={{ alignItems: 'center' }}
+            >
+                <Grid item>
+                    <Typography variant='subtitle1' sx={{
+                        fontWeight: '500'
+                    }}>1. Dental care record liên quan đến lần điều trị có ngày bắt đầu</Typography>
+                </Grid>
+                <Grid item >
+                    <FormControl
+                        variant="standard"
+                        sx={{ m: 1, minWidth: 120, }}>
+                        {/* <InputLabel id="demo-simple-select-standard-label">Ngày bắt đầu điều trị</InputLabel> */}
+                        <Select
+                            // labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard"
+                            value={recordBillId}
+                            onChange={handleChange}
+                            label="Ngày"
+                        >
+                            <MenuItem value={'không có'}>
+                                Không có (Tạo mới)
+                            </MenuItem>
+                            {secondMenuItemSelect === undefined ? null :
+                                <MenuItem value={secondMenuItemSelect.billId}>
+                                    {secondMenuItemSelect.startDay}
+                                </MenuItem>
+                            }
+                        </Select>
+                    </FormControl>
+                </Grid>
+
+            </Grid>
+
+            <CreateRecord />
+
         </Grid >
     )
 }

@@ -12,7 +12,7 @@ const PatientInfoDR = () => {
     const location = useLocation();
     // console.log(location);
     const param = useParams()
-    console.log(param.id);
+    // console.log(param.id);
 
     const [patientInfo, setPatientInfo] = useState()
     const [openBackdrop, setOpenBackdrop] = useState(false)
