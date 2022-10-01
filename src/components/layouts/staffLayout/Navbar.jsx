@@ -11,6 +11,7 @@ top: 0;
 /* background-color:#8fc9ff94; */
 background-color:white;
 height: 56px;
+z-index: 9999;
 `
 const Wrapper = styled.div`
 display: flex;

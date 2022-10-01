@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, CardHeader, Grid, TextField } from '@mui/material'
+import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Grid, TextField } from '@mui/material'
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
@@ -117,8 +117,11 @@ const LoginForm = () => {
                                         variant="contained"
                                         fullWidth
                                         type='submit'
+                                        disabled={formik.isSubmitting}
+                                        startIcon={formik.isSubmitting ? <CircularProgress size='0.9rem' /> : null}
                                     >
-                                        Đăng nhập
+                                        {formik.isSubmitting ? 'Đang đăng nhập' : 'Đăng nhập'}
+
                                     </Button>
                                 </Grid>
                             </Grid>
