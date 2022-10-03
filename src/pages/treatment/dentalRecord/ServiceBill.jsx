@@ -8,17 +8,17 @@ import CreateRecord from './CreateRecord';
 // dữ liệu giả
 const bill = [
     {
-        'billId': '01',
+        'billId_serviceId': '01',
         "startDay": '30/09/2022',
         'services': [
             {
-                "serviceName": "Dịch vụ 1",
+                "serviceName": "Dịch vụ trám răng",
                 "status": "not done"
             },
-            {
-                "serviceName": "Dịch vụ 2",
-                "status": "not done"
-            }
+            // {
+            //     "serviceName": "Dịch vụ 2",
+            //     "status": "not done"
+            // }
         ],
         'record': [
             {
@@ -28,17 +28,17 @@ const bill = [
         ]
     },
     {
-        'billId': '02',
+        'billId_serviceId': '02',
         "startDay": '22/01/2022',
         'services': [
             {
-                "serviceName": "Dịch vụ 1",
+                "serviceName": "Dịch vụ trồng răng",
                 "status": "not done"
             },
-            {
-                "serviceName": "Dịch vụ 2",
-                "status": "not done"
-            }
+            // {
+            //     "serviceName": "Dịch vụ 2",
+            //     "status": "not done"
+            // }
         ],
         'record': [
             {
@@ -49,24 +49,24 @@ const bill = [
 ]
 
 const ServiceBill = () => {
-    const [recordBillId, setRecordBillId] = useState('không có')
+    const [recordbillId_serviceId, setRecordbillId_serviceId] = useState('không có')
     const [secondMenuItemSelect, setSecondMenuItemSelect] = useState()
     const handleChange = (event) => {
-        setRecordBillId(event.target.value)
+        setRecordbillId_serviceId(event.target.value)
     }
     const handleClickAddRecord = (item) => {
 
         setSecondMenuItemSelect(item)
-        setRecordBillId(item.billId)
+        setRecordbillId_serviceId(item.billId_serviceId)
     }
-    console.log("select", recordBillId);
+    console.log("select", recordbillId_serviceId);
     return (
         <Grid container spacing={1} direction='column'>
             <Grid item>
                 <Typography variant='subtitle1' sx={{
                     // color: 'blue',
                     fontWeight: '500'
-                }}>I. Các lần điều trị có dịch vụ chưa hoàn tất</Typography>
+                }}>I. Các dịch vụ điều trị chưa hoàn tất</Typography>
             </Grid>
 
             <Grid container item spacing={2} >
@@ -77,6 +77,7 @@ const ServiceBill = () => {
                             <CardContent>
                                 <Grid container spacing={2} direction='column'>
                                     <Grid item>
+
                                         <Typography
                                             sx={{
                                                 color: '#673ab7',
@@ -115,10 +116,10 @@ const ServiceBill = () => {
                                     </Grid>
                                     <Grid item>
                                         <Button variant='contained'
-                                            disabled={item.billId === recordBillId}
+                                            disabled={item.billId_serviceId === recordbillId_serviceId}
                                             onClick={() => (handleClickAddRecord(item))}
                                         >
-                                            {item.billId === recordBillId ? 'Đã chọn, xuống mục II hoàn tất record'
+                                            {item.billId_serviceId === recordbillId_serviceId ? 'Đã chọn, xuống mục II hoàn tất record'
                                                 : '+ Tạo dental care record'
                                             }
 
@@ -144,17 +145,17 @@ const ServiceBill = () => {
                 <Grid item>
                     <Typography variant='subtitle1' sx={{
                         fontWeight: '500'
-                    }}>1. Dental care record liên quan đến lần điều trị có ngày bắt đầu</Typography>
+                    }}>1. Dental care record liên quan đến công tác điều trị dịch vụ</Typography>
                 </Grid>
                 <Grid item >
                     <FormControl
                         variant="standard"
                         sx={{ m: 1, minWidth: 120, }}>
-                        {/* <InputLabel id="demo-simple-select-standard-label">Ngày bắt đầu điều trị</InputLabel> */}
+
                         <Select
                             // labelId="demo-simple-select-standard-label"
                             id="demo-simple-select-standard"
-                            value={recordBillId}
+                            value={recordbillId_serviceId}
                             onChange={handleChange}
                             label="Ngày"
                         >
@@ -162,8 +163,8 @@ const ServiceBill = () => {
                                 Không có (Tạo mới)
                             </MenuItem>
                             {secondMenuItemSelect === undefined ? null :
-                                <MenuItem value={secondMenuItemSelect.billId}>
-                                    {secondMenuItemSelect.startDay}
+                                <MenuItem value={secondMenuItemSelect.billId_serviceId}>
+                                    {`${secondMenuItemSelect.services[0].serviceName} - Ngày bắt đầu điều trị ${secondMenuItemSelect.startDay}`}
                                 </MenuItem>
                             }
                         </Select>
@@ -172,7 +173,7 @@ const ServiceBill = () => {
 
             </Grid>
 
-            <CreateRecord />
+            <CreateRecord recordbillId_serviceId={recordbillId_serviceId} />
 
         </Grid >
     )
