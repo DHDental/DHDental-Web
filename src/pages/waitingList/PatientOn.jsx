@@ -73,7 +73,7 @@ const PatientOn = () => {
                   <TableRow key={i}>
 
                     <TableCell >
-                      <NavLink to={`${KHAM_BENH}/${item?.data.sdt}/tao-dental-care-record`}
+                      <NavLink to={`${KHAM_BENH}/${item?.data.sdt}`}
                         style={{
                           color: 'blue',
                           fontWeight: '500',

@@ -25,6 +25,7 @@ const PatientNotAppointment = () => {
         update(ref(db, user.key), {
             status: 1,
             room: dentist.DentistRoom,
+            test: '0'
         })
         setOpen(false);
     }

@@ -41,7 +41,7 @@ export default function Router() {
                         { path: 'ds-bn-kham', element: <DentistWaitingList /> },
                         { path: 'kham-benh', element: <Treatment /> },
                         {
-                            path: 'kham-benh/:id', element: <PatientTreatment />,
+                            path: 'kham-benh/:id', element: <DentalCareRecord />,
                             children: [
                                 { path: 'thong-tin-bn', element: <PatientInfo /> },
                                 { path: 'lich-su-kham-benh', element: <PatientRecordHistory /> },

@@ -63,7 +63,14 @@ const PatientInfoDR = () => {
                     <Typography>{location?.state?.dentalCareExamReason}</Typography>
                 </Grid>
             </Grid>
-
+            <Grid container item spacing={1} direction='row'>
+                <Grid item sm={2}>
+                    <Typography>Lịch sử khám bệnh</Typography>
+                </Grid>
+                <Grid item sm={5}>
+                    <Typography></Typography>
+                </Grid>
+            </Grid>
             <CustomBackdrop open={openBackdrop} />
         </>
     )
