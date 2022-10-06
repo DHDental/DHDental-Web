@@ -118,7 +118,7 @@ const SearchPatient = () => {
                 <TextField
                     fullWidth
                     variant="standard"
-                    label="Tìm kiếm bệnh nhân..."
+                    label="Tìm kiếm bệnh nhân"
                     value={searchTerm}
                     onChange={(e) => {
                         setSearchTerm(e.target.value)
