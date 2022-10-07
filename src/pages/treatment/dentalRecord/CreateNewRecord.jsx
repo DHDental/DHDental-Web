@@ -1,25 +1,32 @@
-import { Box, Button, CircularProgress, Grid, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Grid, IconButton, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react/headless';
 import classNames from "classnames/bind"
+import { array, boolean, number, object, string, ValidationError } from 'yup';
 
 import styles from '../../../style/SearchTippy.module.scss'
 import { useDebounce } from "../../../hooks";
 import { axiosPublic } from '../../../api/axiosInstance';
 import { SEARCH_SERVICE } from '../../../common/constants/apiConstants';
+import { FieldArray, Form, Formik } from 'formik';
 
 const cx = classNames.bind(styles)
 
 const CreateNewRecord = () => {
     const [mota, setMota] = useState('')
     const [motaList, setMotaList] = useState([])
+
     const [loadingService, setLoadingService] = useState(false)
     const [searchServiceTerm, setSearchServiceTerm] = useState('')
     const [showServiceResult, setShowServiceResult] = useState(true)
     const [searchServiceResult, setSearchServiceResult] = useState([])
-    const debounced = useDebounce(searchServiceTerm, 400)
+    const debounced = useDebounce(searchServiceTerm, 500)
+    const [serviceList, setServiceList] = useState([])
+    const [openPopupUpdateService, setOpenPopupUpdateService] = useState(false)
+    const [currentService, setCurrentService] = useState({})
+
     const handleMotaList = () => {
         if (mota === '')
             return
@@ -30,7 +37,7 @@ const CreateNewRecord = () => {
     const removeInMotaList = (i) => {
         // console.log(i)
         const newList = [...motaList]
-        console.log(newList);
+        // console.log(newList);
         if (i !== -1) {
             newList.splice(i, 1);
             setMotaList(newList);
@@ -41,6 +48,41 @@ const CreateNewRecord = () => {
         setShowServiceResult(false)
     }
 
+    const handleChooseService = (item) => {
+        setShowServiceResult(!showServiceResult)
+        // console.log(item);
+        let newItem = { ...item }
+        newItem = { ...newItem, 'soLuong': 1, 'soLanDuKienThucHien': 1, 'gia': item?.expectedPrice }
+        // console.log(newItem);
+        setServiceList([...serviceList, newItem])
+    }
+
+    const removeInServiceList = (i) => {
+        const newList = [...serviceList]
+        // console.log(newList);
+        if (i !== -1) {
+            newList.splice(i, 1);
+            setServiceList(newList);
+        }
+    }
+    const handleUpdateService = (item, i) => {
+        setOpenPopupUpdateService(true)
+        setCurrentService(item)
+    }
+    const handleClosePopupUpdateService = (event, reason) => {
+        if (reason && reason === "backdropClick")
+            return;
+        setOpenPopupUpdateService(false);
+    };
+    const handleClosePopupService = (event, reason) => {
+        if (reason && reason === "backdropClick")
+            return;
+        setOpenPopupUpdateService(false);
+    }
+    const handleYesPopupService = () => {
+        console.log(currentService);
+    }
+    // console.log(serviceList);
     useEffect(() => {
         let isMounted = true;
         const getPatientInfo = async () => {
@@ -67,105 +109,295 @@ const CreateNewRecord = () => {
             isMounted = false;
         }
     }, [debounced])
+    // console.log(serviceList);
     // console.log(searchServiceResult);
     return (
-        <Grid container spacing={1} direction='column'>
-            <Grid item> <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>I. Tạo dental care record</Typography></Grid>
-            <Grid item>
-                <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>1. Mô tả</Typography>
-            </Grid>
-            <Grid item container spacing={2} direction='row' sx={{ alignItems: 'flex-end' }}>
-                <Grid item xs={5}>
-                    <TextField id="mota"
-                        label="Nhập mô tả bệnh lí, công tác điều trị"
-                        variant="standard" fullWidth
-                        value={mota}
-                        onChange={(e) => {
-                            setMota(e.target.value)
-                        }}
-                    // helperText='Nhập mô tả bệnh lí, công tác điều trị'
-                    />
+        <>
+            <Grid container spacing={1} direction='column'>
+                <Grid item> <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>I. Tạo dental care record</Typography></Grid>
+                <Grid item>
+                    <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>1. Mô tả</Typography>
                 </Grid>
-                <Grid item xs={4}>
-                    <Button onClick={handleMotaList} variant='outlined'><PlaylistAddIcon />Thêm mô tả</Button>
-                </Grid>
-
-            </Grid>
-
-            {motaList.length !== 0 ?
-                <>
-                    <br />
-                    <Grid item>
-                        <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Danh sách mô tả bệnh lí, công tác điều trị</Typography>
+                <Grid item container spacing={2} direction='row' sx={{ alignItems: 'flex-end' }}>
+                    <Grid item xs={5}>
+                        <TextField id="mota"
+                            label="Nhập mô tả bệnh lí, công tác điều trị"
+                            variant="standard" fullWidth
+                            value={mota}
+                            onChange={(e) => {
+                                setMota(e.target.value)
+                            }}
+                        // helperText='Nhập mô tả bệnh lí, công tác điều trị'
+                        />
                     </Grid>
-                    {motaList.map((item, i) => (
+                    <Grid item xs={4}>
+                        <Button onClick={handleMotaList} variant='outlined'><PlaylistAddIcon />Thêm mô tả</Button>
+                    </Grid>
 
-                        <Grid key={i} container item spacing={1} direction='row' sx={{ alignItems: 'center' }}>
-                            <Grid item xs={5.15}>
-                                <Typography >{item}</Typography>
+                </Grid>
+
+                {motaList.length !== 0 ?
+                    <>
+                        <br />
+                        <Grid item>
+                            <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Danh sách mô tả bệnh lí, công tác điều trị</Typography>
+                        </Grid>
+                        {motaList.map((item, i) => (
+
+                            <Grid key={i} container item spacing={1} direction='row' sx={{ alignItems: 'center' }}>
+                                <Grid item xs={5.15}>
+                                    <Typography >{item}</Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <IconButton
+                                        onClick={() => { removeInMotaList(i) }}
+                                    ><PlaylistRemoveIcon sx={{ color: 'red' }} /></IconButton>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={4}>
-                                <IconButton
-                                    onClick={() => { removeInMotaList(i) }}
-                                ><PlaylistRemoveIcon sx={{ color: 'red' }} /></IconButton>
+
+                        ))
+                        }
+                    </>
+
+                    : <p style={{ color: 'red' }}>Mời bạn nhập mô tả và bấm thêm mô tả</p>}
+
+                <Grid item>
+                    <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>2. Dịch vụ</Typography>
+                </Grid>
+
+                <Grid item>
+                    <br />
+                    <Tippy
+                        render={attrs => (
+                            <div className={cx('resultSearchBox')} tabIndex="-1" {...attrs}>
+                                {
+
+                                    searchServiceResult.map((item, i) => (
+                                        <div className={cx('resultSearchItem')} key={i}
+                                            onClick={() => {
+                                                handleChooseService(item)
+                                            }}>
+                                            <Typography>{item?.serviceDesc}</Typography>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        )}
+                        placement='bottom-start'
+                        interactive={true}
+                        visible={showServiceResult && searchServiceResult.length > 0}
+                        onClickOutside={handleHideServiceResult}
+                    >
+                        <TextField
+                            variant='standard'
+                            sx={{ width: '41.25%' }}
+                            value={searchServiceTerm}
+                            placeholder='Tìm kiếm dịch vụ...'
+                            onFocus={() => setShowServiceResult(true)}
+                            onChange={(e) => {
+                                setSearchServiceTerm(e.target.value)
+                            }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        {loadingService && <CircularProgress size='18px' />}
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Tippy>
+                </Grid>
+                {serviceList.length !== 0 ?
+                    <>
+                        <br />
+                        <Grid item><Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Danh sách dịch vụ</Typography></Grid>
+                        <Grid item>
+                            <Table size="small" >
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left">STT</TableCell>
+                                        <TableCell align="left">Dịch vụ</TableCell>
+                                        <TableCell align="left">Giá/dịch vụ</TableCell>
+                                        <TableCell align="center">Số lượng</TableCell>
+                                        <TableCell align="center">Số lần thực hiện (dự kiến)</TableCell>
+                                        <TableCell align="left"></TableCell>
+                                        <TableCell align="left"></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {serviceList.map((item, i) => {
+
+                                        return (
+                                            <TableRow key={i}>
+                                                <TableCell align='left' >{i + 1}</TableCell>
+                                                <TableCell align='left'>{item?.serviceDesc}</TableCell>
+                                                <TableCell align='left'>
+                                                    {new Intl.NumberFormat('vi-VN'
+                                                        , { style: 'currency', currency: 'VND' }
+                                                    ).format(item?.gia)}
+                                                </TableCell>
+                                                <TableCell align='center'>{item?.soLuong}</TableCell>
+                                                <TableCell align='center'>{item?.soLanDuKienThucHien}</TableCell>
+                                                <TableCell align='left'>
+                                                    <Button onClick={() => {
+                                                        handleUpdateService(item, i)
+                                                    }}>Cập nhật</Button>
+                                                </TableCell>
+                                                <TableCell align='left'>
+                                                    <IconButton onClick={() => { removeInServiceList(i) }}>
+                                                        <PlaylistRemoveIcon sx={{ color: 'red' }} />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                            // <Grid container item spacing={1} direction='row' key={i}>
+                                            //     <Grid item >
+                                            //         <TextField
+                                            //             disabled
+
+                                            //             variant='standard'
+                                            //             helperText='Dịch vụ'
+                                            //             value={item?.serviceDesc}
+                                            //         />
+                                            //     </Grid>
+                                            //     <Grid item >
+                                            //         <TextField
+                                            //             disabled
+                                            //             required
+                                            //             variant='standard'
+                                            //             helperText='Giá'
+                                            //             value={item?.expectedPrice}
+                                            //         />
+                                            //     </Grid>
+                                            //     <Grid item >
+                                            //         <TextField
+                                            //             disabled
+                                            //             required
+                                            //             variant='standard'
+                                            //             helperText='Số lượng'
+                                            //             value={item?.soLuong}
+                                            //         />
+                                            //     </Grid>
+                                            //     <Grid item >
+                                            //         <TextField
+                                            //             disabled
+
+                                            //             required
+                                            //             variant='standard'
+                                            //             helperText='Số lần dự kiến thực hiện'
+                                            //             value={item?.soLanDuKienThucHien}
+                                            //         />
+                                            //     </Grid>
+                                            //     <Grid item>
+                                            //         <IconButton
+                                            //             onClick={() => { removeInMotaList(i) }}
+                                            //         ><PlaylistRemoveIcon sx={{ color: 'red' }} /></IconButton>
+                                            //     </Grid>
+                                            // </Grid>
+
+                                        )
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </Grid>
+                    </> : null}
+            </Grid >
+
+            <Dialog open={openPopupUpdateService} onClose={handleClosePopupUpdateService}
+                PaperProps={{ sx: { position: 'fixed', top: '25px' } }}
+                fullWidth>
+                <DialogContent>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
+                        <Typography variant="h6" sx={{
+
+                            color: '#0f3eb4'
+                        }}>Cập nhật dịch vụ</Typography>
+                    </Box>
+                    <Grid container spacing={2} direction='column'>
+                        <Grid container item>
+                            <Grid item xs={3}>
+                                <Typography>Dịch vụ</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <Typography>{currentService?.serviceDesc}</Typography>
                             </Grid>
                         </Grid>
+                        <Grid container item sx={{ alignItems: 'flex-end' }}>
+                            <Grid item xs={3}>
+                                <Typography>Giá/dịch vụ</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <TextField
+                                    variant='standard'
+                                    // helperText='Giá'
+                                    value={currentService?.gia}
+                                    onChange={(e) => {
+                                        setCurrentService({ ...currentService, gia: e.target.value })
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid container item>
+                            <Grid item xs={3}>
+                                <Typography>Số lượng</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <TextField
+                                    type='number'
+                                    min={1}
+                                    variant='standard'
+                                    required
+                                    value={currentService?.soLuong}
+                                    onChange={(e) => {
+                                        var soLuongNhap = e.target.value
+                                        if (e.target.value < 1 && e.target.value !== '') soLuongNhap = 1
 
-                    ))
-                    }
-                </>
+                                        setCurrentService({ ...currentService, soLuong: soLuongNhap })
+                                    }}
+                                    InputProps={{
+                                        inputProps: {
+                                            // type: 'number',
+                                            min: 1
+                                        }
+                                    }}
+                                />
+                                {/* <Typography>{currentService?.soLuong}</Typography> */}
 
-                : <p style={{ color: 'red' }}>Mời bạn nhập mô tả và bấm thêm mô tả</p>}
+                            </Grid>
+                        </Grid>
+                        <Grid container item>
+                            <Grid item xs={3}>
+                                <Typography>Số lần thực hiện (dự kiến)</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <TextField
+                                    type='number'
+                                    min={1}
+                                    variant='standard'
+                                    required
+                                    value={currentService?.soLanDuKienThucHien}
+                                    onChange={(e) => {
+                                        var soLanDuKienThucHien = e.target.value
+                                        if (e.target.value < 1 && e.target.value !== '') soLanDuKienThucHien = 1
 
-            <Grid item>
-                <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>2. Dịch vụ</Typography>
-            </Grid>
-
-            <Grid item>
-                <br />
-                <Tippy
-                    render={attrs => (
-                        <div className={cx('resultSearchBox')} tabIndex="-1" {...attrs}>
-                            {
-
-                                searchServiceResult.map((item, i) => (
-                                    <div className={cx('resultSearchItem')} key={i}
-                                        onClick={() => {
-                                            setShowServiceResult(!showServiceResult)
-                                            console.log(item);
-                                        }}>
-                                        <Typography>{item?.serviceDesc}</Typography>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    )}
-                    placement='bottom-start'
-                    interactive={true}
-                    visible={showServiceResult && searchServiceResult.length > 0}
-                    onClickOutside={handleHideServiceResult}
-                >
-                    <TextField
-                        variant='standard'
-                        sx={{ width: '41.25%' }}
-                        value={searchServiceTerm}
-                        placeholder='Tìm kiếm dịch vụ...'
-                        onFocus={() => setShowServiceResult(true)}
-                        onChange={(e) => {
-                            setSearchServiceTerm(e.target.value)
-                        }}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    {loadingService && <CircularProgress size='18px' />}
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </Tippy>
-            </Grid>
-        </Grid >
-
+                                        setCurrentService({ ...currentService, soLanDuKienThucHien: soLanDuKienThucHien })
+                                    }}
+                                    InputProps={{
+                                        inputProps: {
+                                            // type: 'number',
+                                            min: 1
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClosePopupService}>Hủy</Button>
+                    <Button onClick={handleYesPopupService}>Cập nhật dịch vụ</Button>
+                </DialogActions>
+            </Dialog>
+        </>
     )
 }
 
