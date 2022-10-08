@@ -4,13 +4,11 @@ import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react/headless';
 import classNames from "classnames/bind"
-import { array, boolean, number, object, string, ValidationError } from 'yup';
 
 import styles from '../../../style/SearchTippy.module.scss'
-import { useDebounce } from "../../../hooks";
+// import { useDebounce } from "../../../hooks";
 import { axiosPublic } from '../../../api/axiosInstance';
-import { SEARCH_SERVICE } from '../../../common/constants/apiConstants';
-import { FieldArray, Form, Formik } from 'formik';
+import { LIST_SERVICE } from '../../../common/constants/apiConstants';
 
 const cx = classNames.bind(styles)
 
@@ -18,11 +16,13 @@ const CreateNewRecord = () => {
     const [mota, setMota] = useState('')
     const [motaList, setMotaList] = useState([])
 
+    const [allService, setAllService] = useState([])
     const [loadingService, setLoadingService] = useState(false)
     const [searchServiceTerm, setSearchServiceTerm] = useState('')
     const [showServiceResult, setShowServiceResult] = useState(true)
     const [searchServiceResult, setSearchServiceResult] = useState([])
-    const debounced = useDebounce(searchServiceTerm, 500)
+    // const debounced = useDebounce(searchServiceTerm, 500)
+
     const [serviceList, setServiceList] = useState([])
     const [openPopupUpdateService, setOpenPopupUpdateService] = useState(false)
     const [currentService, setCurrentService] = useState({})
@@ -83,32 +83,64 @@ const CreateNewRecord = () => {
         console.log(currentService);
     }
     // console.log(serviceList);
+    // useEffect(() => {
+    //     let isMounted = true;
+    //     const getPatientInfo = async () => {
+    //         if (!debounced.trim()) {
+    //             setSearchServiceResult([])
+    //             return
+    //         }
+    //         try {
+    //             setLoadingService(true)
+    //             const response = await axiosPublic.post(SEARCH_SERVICE, {
+    //                 "key": debounced
+    //             })
+    //             isMounted && setSearchServiceResult(response.data);
+
+    //             setLoadingService(false)
+    //         } catch (error) {
+    //             setSearchServiceResult([{ 'serviceDesc': 'Không tìm thấy dịch vụ' }])
+    //             setLoadingService(false)
+    //             console.log(error);
+    //         }
+    //     }
+    //     getPatientInfo()
+    //     return () => {
+    //         isMounted = false;
+    //     }
+    // }, [debounced])
+    const handleSearchChange = (e) => {
+        setSearchServiceTerm(e.target.value)
+        if (!e.target.value.trim()) {
+            setSearchServiceResult([])
+            return
+        }
+        const resultsArray = allService.filter(item =>
+            item.serviceDesc.toLowerCase().includes(e.target.value.trim().toLowerCase()))
+        if (resultsArray.length === 0) {
+            setSearchServiceResult([{ 'serviceDesc': 'Không tìm thấy dịch vụ' }])
+        } else { setSearchServiceResult(resultsArray) }
+    }
+
     useEffect(() => {
         let isMounted = true;
-        const getPatientInfo = async () => {
-            if (!debounced.trim()) {
-                setSearchServiceResult([])
-                return
-            }
+        const getService = async () => {
             try {
                 setLoadingService(true)
-                const response = await axiosPublic.post(SEARCH_SERVICE, {
-                    "key": debounced
-                })
-                isMounted && setSearchServiceResult(response.data);
-
+                const response = await axiosPublic.post(LIST_SERVICE)
+                // console.log(response.data);
+                isMounted && setAllService(response.data)
                 setLoadingService(false)
             } catch (error) {
-                setSearchServiceResult([{ 'serviceDesc': 'Không tìm thấy dịch vụ' }])
                 setLoadingService(false)
                 console.log(error);
             }
         }
-        getPatientInfo()
+        getService()
         return () => {
             isMounted = false;
         }
-    }, [debounced])
+    }, [])
     // console.log(serviceList);
     // console.log(searchServiceResult);
     return (
@@ -194,9 +226,7 @@ const CreateNewRecord = () => {
                             value={searchServiceTerm}
                             placeholder='Tìm kiếm dịch vụ...'
                             onFocus={() => setShowServiceResult(true)}
-                            onChange={(e) => {
-                                setSearchServiceTerm(e.target.value)
-                            }}
+                            onChange={handleSearchChange}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
@@ -206,6 +236,7 @@ const CreateNewRecord = () => {
                             }}
                         />
                     </Tippy>
+
                 </Grid>
                 {serviceList.length !== 0 ?
                     <>
