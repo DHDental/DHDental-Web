@@ -67,7 +67,7 @@ const CreateNewRecord = () => {
     }
     const handleUpdateService = (item, i) => {
         setOpenPopupUpdateService(true)
-        setCurrentService(item)
+        setCurrentService({ ...item, index: i })
     }
     const handleClosePopupUpdateService = (event, reason) => {
         if (reason && reason === "backdropClick")
@@ -81,6 +81,11 @@ const CreateNewRecord = () => {
     }
     const handleYesPopupService = () => {
         console.log(currentService);
+        const newList = [...serviceList]
+        newList[currentService.index] = currentService
+        console.log(newList);
+        setServiceList(newList)
+        setOpenPopupUpdateService(false);
     }
     // console.log(serviceList);
     // useEffect(() => {
@@ -402,8 +407,6 @@ const CreateNewRecord = () => {
                                         }
                                     }}
                                 />
-                                {/* <Typography>{currentService?.soLuong}</Typography> */}
-
                             </Grid>
                         </Grid>
                         <Grid container item>
