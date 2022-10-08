@@ -143,6 +143,17 @@ const CreateNewRecord = () => {
     }, [])
     // console.log(serviceList);
     // console.log(searchServiceResult);
+    // validate 
+    // useEffect(() => {
+    //     setGiaErrorMsg('')
+    //     // if ()
+    //     if (currentService.gia === '') {
+    //         setGiaErrorMsg('Giá không null')
+    //     }
+    //     else if (currentService.gia < currentService.expectedPrice) {
+    //         setGiaErrorMsg('Giá ko nhỏ hơn expectedPrice')
+    //     }
+    // }, [currentService])
     return (
         <>
             <Grid container spacing={1} direction='column'>
