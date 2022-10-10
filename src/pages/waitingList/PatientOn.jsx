@@ -79,7 +79,7 @@ const PatientOn = () => {
                           fontWeight: '500',
                           textDecoration: 'underline',
                         }}
-                        state={{ dentalCareExamReason: item?.data.dentalCareExamReason }}>
+                        state={{ dentalCareExamReason: item?.data.dentalCareExamReason, patient: item }}>
                         {item?.data.fullName}
                       </NavLink>
                     </TableCell>

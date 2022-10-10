@@ -4,15 +4,28 @@ import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react/headless';
 import classNames from "classnames/bind"
+import DoneIcon from '@mui/icons-material/Done';
 
 import styles from '../../../style/SearchTippy.module.scss'
 // import { useDebounce } from "../../../hooks";
 import { axiosPublic } from '../../../api/axiosInstance';
-import { LIST_SERVICE } from '../../../common/constants/apiConstants';
+import { LIST_SERVICE, TAO_HOADON } from '../../../common/constants/apiConstants';
+import { TaoHoaDonPopUp } from './TaoHoaDonPopUp';
+import { useLocation, useParams } from 'react-router-dom';
+import { CustomBackdrop } from '../../../components';
+import StartFirebase from '../../../components/firebaseConfig'
+import { onValue, ref, update } from 'firebase/database';
 
+const db = StartFirebase()
 const cx = classNames.bind(styles)
 
 const CreateNewRecord = () => {
+
+    const param = useParams()
+    const location = useLocation()
+    const patientFirebase = location?.state?.patient
+    console.log(patientFirebase);
+
     const [mota, setMota] = useState('')
     const [motaList, setMotaList] = useState([])
 
@@ -26,6 +39,12 @@ const CreateNewRecord = () => {
     const [serviceList, setServiceList] = useState([])
     const [openPopupUpdateService, setOpenPopupUpdateService] = useState(false)
     const [currentService, setCurrentService] = useState({})
+
+    const [openPopUpHoaDon, setOpenPopUpHoaDon] = useState(false)
+    const [openBackdropTaoHoaDon, setOpenBackdropTaoHoaDon] = useState(false)
+    const [taoHoaDon, setTaoHoaDon] = useState('') // rỗng-chưa tạo, dangTao, daTao 
+    const [dataFirebasePatient, setDataFirebasePatient] = useState([])
+
 
     const handleMotaList = () => {
         if (mota === '')
@@ -50,11 +69,15 @@ const CreateNewRecord = () => {
 
     const handleChooseService = (item) => {
         setShowServiceResult(!showServiceResult)
-        // console.log(item);
         let newItem = { ...item }
         newItem = { ...newItem, 'soLuong': 1, 'soLanDuKienThucHien': 1, 'gia': item?.expectedPrice }
-        // console.log(newItem);
-        setServiceList([...serviceList, newItem])
+        var count = 0
+        serviceList.forEach(element => {
+            if (newItem?.id === element?.id) count = 1;
+        });
+        if (count === 0)
+            setServiceList([...serviceList, newItem])
+        else return
     }
 
     const removeInServiceList = (i) => {
@@ -80,40 +103,13 @@ const CreateNewRecord = () => {
         setOpenPopupUpdateService(false);
     }
     const handleYesPopupService = () => {
-        console.log(currentService);
+        // console.log(currentService);
         const newList = [...serviceList]
         newList[currentService.index] = currentService
-        console.log(newList);
+        // console.log(newList);
         setServiceList(newList)
         setOpenPopupUpdateService(false);
     }
-    // console.log(serviceList);
-    // useEffect(() => {
-    //     let isMounted = true;
-    //     const getPatientInfo = async () => {
-    //         if (!debounced.trim()) {
-    //             setSearchServiceResult([])
-    //             return
-    //         }
-    //         try {
-    //             setLoadingService(true)
-    //             const response = await axiosPublic.post(SEARCH_SERVICE, {
-    //                 "key": debounced
-    //             })
-    //             isMounted && setSearchServiceResult(response.data);
-
-    //             setLoadingService(false)
-    //         } catch (error) {
-    //             setSearchServiceResult([{ 'serviceDesc': 'Không tìm thấy dịch vụ' }])
-    //             setLoadingService(false)
-    //             console.log(error);
-    //         }
-    //     }
-    //     getPatientInfo()
-    //     return () => {
-    //         isMounted = false;
-    //     }
-    // }, [debounced])
     const handleSearchChange = (e) => {
         setSearchServiceTerm(e.target.value)
         if (!e.target.value.trim()) {
@@ -126,7 +122,52 @@ const CreateNewRecord = () => {
             setSearchServiceResult([{ 'serviceDesc': 'Không tìm thấy dịch vụ' }])
         } else { setSearchServiceResult(resultsArray) }
     }
-
+    const handleTaoHoaDon = () => {
+        setOpenPopUpHoaDon(true);
+    }
+    const handleClosePopUpHoaDon = (event, reason) => {
+        if (reason && reason === "backdropClick")
+            return;
+        setOpenPopUpHoaDon(false);
+    }
+    const handleYesPopUpHoaDon = async () => {
+        // console.log(serviceList);
+        // console.log(param?.id);
+        setOpenPopUpHoaDon(false);
+        try {
+            var serviceRequest = []
+            serviceList.forEach((item) => {
+                serviceRequest = [...serviceRequest, {
+                    'serviceID': item?.id,
+                    'quantity': `${item?.soLuong}`,
+                    'price': `${item?.gia}`
+                }]
+            })
+            // console.log('serviceRequest', serviceRequest);
+            // open backdrop
+            setOpenBackdropTaoHoaDon(true)
+            setTaoHoaDon('dangTao')
+            // console.log({
+            //     "serviceRequest": serviceRequest,
+            //     "userId": param?.id
+            // });
+            const response = await axiosPublic.post(TAO_HOADON, {
+                "serviceRequest": serviceRequest,
+                "userId": param?.id
+            })
+            update(ref(db, patientFirebase?.key), {
+                paymentConfirmation: 0
+            })
+            setOpenBackdropTaoHoaDon(false)
+            setTaoHoaDon('daTao')
+            setSearchServiceTerm('')
+            // console.log(response.data);
+        } catch (error) {
+            setOpenBackdropTaoHoaDon(false)
+            setTaoHoaDon('')
+            console.log(error);
+        }
+    }
     useEffect(() => {
         let isMounted = true;
         const getService = async () => {
@@ -142,10 +183,26 @@ const CreateNewRecord = () => {
             }
         }
         getService()
+        const dbRef = ref(db)
+        onValue(dbRef, (snapshot) => {
+            let records = [];
+            snapshot.forEach(childSnapshot => {
+                if (childSnapshot.key === patientFirebase?.key) {
+                    let keyName = childSnapshot.key;
+                    let data = childSnapshot.val();
+                    records.push({ "key": keyName, "data": data })
+                }
+
+            })
+            isMounted && setDataFirebasePatient(records)
+        })
+
         return () => {
             isMounted = false;
         }
     }, [])
+    // if (dataFirebasePatient[0]?.data?.paymentConfirmation === 0)
+    // console.log(dataFirebasePatient[0]?.data?.paymentConfirmation);
     // console.log(serviceList);
     // console.log(searchServiceResult);
     // validate 
@@ -241,6 +298,7 @@ const CreateNewRecord = () => {
                             sx={{ width: '41.25%' }}
                             value={searchServiceTerm}
                             placeholder='Tìm kiếm dịch vụ...'
+                            disabled={taoHoaDon === 'daTao' ? true : false}
                             onFocus={() => setShowServiceResult(true)}
                             onChange={handleSearchChange}
                             InputProps={{
@@ -286,65 +344,61 @@ const CreateNewRecord = () => {
                                                 <TableCell align='center'>{item?.soLuong}</TableCell>
                                                 <TableCell align='center'>{item?.soLanDuKienThucHien}</TableCell>
                                                 <TableCell align='left'>
-                                                    <Button onClick={() => {
-                                                        handleUpdateService(item, i)
-                                                    }}>Cập nhật</Button>
+                                                    <Button
+                                                        disabled={taoHoaDon === 'daTao' ? true : false}
+                                                        onClick={() => {
+                                                            handleUpdateService(item, i)
+                                                        }}>Cập nhật</Button>
                                                 </TableCell>
                                                 <TableCell align='left'>
-                                                    <IconButton onClick={() => { removeInServiceList(i) }}>
-                                                        <PlaylistRemoveIcon sx={{ color: 'red' }} />
+                                                    <IconButton
+                                                        disabled={taoHoaDon === 'daTao' ? true : false}
+                                                        onClick={() => { removeInServiceList(i) }}>
+                                                        <PlaylistRemoveIcon sx={{
+                                                            color: `${taoHoaDon === 'daTao' ? 'grey' : 'red'}`
+                                                        }} />
                                                     </IconButton>
                                                 </TableCell>
                                             </TableRow>
-                                            // <Grid container item spacing={1} direction='row' key={i}>
-                                            //     <Grid item >
-                                            //         <TextField
-                                            //             disabled
-
-                                            //             variant='standard'
-                                            //             helperText='Dịch vụ'
-                                            //             value={item?.serviceDesc}
-                                            //         />
-                                            //     </Grid>
-                                            //     <Grid item >
-                                            //         <TextField
-                                            //             disabled
-                                            //             required
-                                            //             variant='standard'
-                                            //             helperText='Giá'
-                                            //             value={item?.expectedPrice}
-                                            //         />
-                                            //     </Grid>
-                                            //     <Grid item >
-                                            //         <TextField
-                                            //             disabled
-                                            //             required
-                                            //             variant='standard'
-                                            //             helperText='Số lượng'
-                                            //             value={item?.soLuong}
-                                            //         />
-                                            //     </Grid>
-                                            //     <Grid item >
-                                            //         <TextField
-                                            //             disabled
-
-                                            //             required
-                                            //             variant='standard'
-                                            //             helperText='Số lần dự kiến thực hiện'
-                                            //             value={item?.soLanDuKienThucHien}
-                                            //         />
-                                            //     </Grid>
-                                            //     <Grid item>
-                                            //         <IconButton
-                                            //             onClick={() => { removeInMotaList(i) }}
-                                            //         ><PlaylistRemoveIcon sx={{ color: 'red' }} /></IconButton>
-                                            //     </Grid>
-                                            // </Grid>
-
                                         )
                                     })}
                                 </TableBody>
                             </Table>
+                        </Grid>
+                        <Grid container item spacing={2}>
+                            <Grid item>
+                                <Button
+                                    variant='contained'
+                                    disableElevation
+                                    onClick={handleTaoHoaDon}
+                                    disabled={(taoHoaDon === 'daTao' || taoHoaDon === 'dangTao') ? true : false}
+                                    startIcon={(taoHoaDon === 'dangTao') ? <CircularProgress size='0.9rem' /> : null}
+                                >
+                                    {taoHoaDon === '' && 'Tạo hóa đơn'}
+                                    {taoHoaDon === 'dangTao' && 'Đang tạo hóa đơn'}
+                                    {taoHoaDon === 'daTao' && 'Đã tạo hóa đơn'}
+
+                                </Button>
+                            </Grid>
+                            {dataFirebasePatient[0]?.data?.paymentConfirmation !== undefined ?
+                                <Grid item>
+                                    <Button
+                                        variant='outlined'
+                                        disableElevation
+
+                                        // disabled={(taoHoaDon === 'daTao' || taoHoaDon === 'dangTao') ? true : false}
+                                        startIcon={(dataFirebasePatient[0]?.data.paymentConfirmation === 0) ? <CircularProgress size='0.9rem' />
+                                            : (dataFirebasePatient[0]?.data.paymentConfirmation === 1) ? <DoneIcon
+
+                                            />
+                                                : null}
+                                    >
+                                        {dataFirebasePatient[0]?.data.paymentConfirmation === 0 && 'Đang trong quá trình thanh toán'}
+                                        {dataFirebasePatient[0]?.data.paymentConfirmation === 1 && 'Đã thanh toán cho đợt điều trị này'}
+
+                                    </Button>
+                                </Grid> : null
+                            }
                         </Grid>
                     </> : null}
             </Grid >
@@ -442,6 +496,9 @@ const CreateNewRecord = () => {
                     <Button onClick={handleYesPopupService}>Cập nhật dịch vụ</Button>
                 </DialogActions>
             </Dialog>
+
+            <TaoHoaDonPopUp open={openPopUpHoaDon} handleClose={handleClosePopUpHoaDon} handleYes={handleYesPopUpHoaDon} />
+            <CustomBackdrop open={openBackdropTaoHoaDon} />
         </>
     )
 }
