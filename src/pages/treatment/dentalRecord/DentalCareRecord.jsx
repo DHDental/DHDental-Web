@@ -1,13 +1,8 @@
-import { Button, Grid, TextField } from '@mui/material'
-import { useEffect, useState } from 'react'
 
-import ServiceBill from './ServiceBill'
-import CreateRecord from './CreateRecord'
-import PatientInfoDR from './PatientInfoDR'
-import { useLocation, useParams } from 'react-router-dom'
-import { axiosPublic } from '../../../api/axiosInstance'
-import { GET_USER_INFO } from '../../../common/constants/apiConstants'
+import { useEffect } from 'react'
 import CreateNewRecord from './CreateNewRecord'
+import PatientInfoDR from './PatientInfoDR'
+import ServiceBill from './ServiceBill'
 
 const bill = [
     // {
@@ -54,6 +49,8 @@ const bill = [
 const DentalCareRecord = () => {
     // const location = useLocation();
     // console.log(location?.state?.dentalCareExamReason);
+
+    // console.log(location?.state?.patient);
 
     return (
         <>

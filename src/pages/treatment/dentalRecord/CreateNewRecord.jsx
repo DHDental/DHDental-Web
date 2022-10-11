@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Grid, IconButton, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, FormControl, Grid, IconButton, InputAdornment, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { useEffect, useState } from 'react';
@@ -19,13 +19,32 @@ import { onValue, ref, update } from 'firebase/database';
 const db = StartFirebase()
 const cx = classNames.bind(styles)
 
+// những thứ cần lưu trong 1 session khám bệnh :
+// motaList ?
+// serviceList -- sau khi tao hoa don, serviceHoaDon
+// taoHoaDon
+// thuocList ?
+
+const serviceHoaDonTest = [
+    {
+        "serviceName": "Trám răng",
+        "billDetailId": "1653db35-5061-4f23-bca0-fcc350f60a17",
+        "serviceStatus": '',
+    },
+    {
+        "serviceName": "Trồng răng",
+        "billDetailId": "2bb959ba-677d-41a8-b128-3133a8ec280c",
+        "serviceStatus": '',
+    }
+]
+
 const CreateNewRecord = () => {
+
 
     const param = useParams()
     const location = useLocation()
     const patientFirebase = location?.state?.patient
-    console.log(patientFirebase);
-
+    const [dataFirebasePatient, setDataFirebasePatient] = useState([])
     const [mota, setMota] = useState('')
     const [motaList, setMotaList] = useState([])
 
@@ -43,9 +62,9 @@ const CreateNewRecord = () => {
     const [openPopUpHoaDon, setOpenPopUpHoaDon] = useState(false)
     const [openBackdropTaoHoaDon, setOpenBackdropTaoHoaDon] = useState(false)
     const [taoHoaDon, setTaoHoaDon] = useState('') // rỗng-chưa tạo, dangTao, daTao 
-    const [dataFirebasePatient, setDataFirebasePatient] = useState([])
 
-
+    const [serviceHoaDon, setServiceHoaDon] = useState([])
+    // console.log(serviceHoaDon);
     const handleMotaList = () => {
         if (mota === '')
             return
@@ -140,7 +159,8 @@ const CreateNewRecord = () => {
                 serviceRequest = [...serviceRequest, {
                     'serviceID': item?.id,
                     'quantity': `${item?.soLuong}`,
-                    'price': `${item?.gia}`
+                    'price': `${item?.gia}`,
+                    'expectedNumberTimes': `${item?.soLanDuKienThucHien}`
                 }]
             })
             // console.log('serviceRequest', serviceRequest);
@@ -155,8 +175,13 @@ const CreateNewRecord = () => {
                 "serviceRequest": serviceRequest,
                 "userId": param?.id
             })
+            // dò trong cái list dịch vụ thêm bill detail id vào  
+            setServiceHoaDon(serviceHoaDonTest)
+
             update(ref(db, patientFirebase?.key), {
-                paymentConfirmation: 0
+                paymentConfirmation: 0,
+                treatment: serviceList,
+                serviceHoaDon: serviceHoaDonTest
             })
             setOpenBackdropTaoHoaDon(false)
             setTaoHoaDon('daTao')
@@ -195,12 +220,23 @@ const CreateNewRecord = () => {
 
             })
             isMounted && setDataFirebasePatient(records)
-        })
 
+        })
         return () => {
             isMounted = false;
         }
     }, [])
+
+    useEffect(() => {
+        if (dataFirebasePatient[0]?.data.treatment) {
+            // console.log('yes');
+            setServiceList(dataFirebasePatient[0]?.data.treatment)
+            setTaoHoaDon('daTao')
+            if (dataFirebasePatient[0]?.data.serviceHoaDon)
+                setServiceHoaDon(dataFirebasePatient[0]?.data.serviceHoaDon)
+        }
+    }, [dataFirebasePatient])
+
     // if (dataFirebasePatient[0]?.data?.paymentConfirmation === 0)
     // console.log(dataFirebasePatient[0]?.data?.paymentConfirmation);
     // console.log(serviceList);
@@ -400,7 +436,54 @@ const CreateNewRecord = () => {
                                 </Grid> : null
                             }
                         </Grid>
+                        {taoHoaDon === 'daTao' &&
+                            <>
+                                <br />
+                                <Grid item><Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Cập nhật trạng thái điều trị dịch vụ</Typography></Grid>
+                                {serviceHoaDon?.map((item, i) => {
+                                    // console.log(serviceHoaDon[i]);
+                                    return (
+
+                                        <Grid container item spacing={2} direction='row' sx={{ alignItems: 'center' }}
+                                            key={i}
+                                        >
+                                            <Grid item >{item?.serviceName}</Grid>
+                                            <Grid item >
+                                                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+
+                                                    <Select
+                                                        value={item?.serviceStatus}
+
+                                                        onChange={(event) => {
+                                                            var newList = [...serviceHoaDon]
+                                                            newList[i].serviceStatus = event.target.value
+                                                            setServiceHoaDon(newList)
+                                                            update(ref(db, patientFirebase?.key), {
+
+                                                                serviceHoaDon: serviceHoaDon
+                                                            })
+                                                        }}
+                                                    >
+                                                        <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
+                                                        <MenuItem value={'Done'}>Hoàn tất</MenuItem>
+                                                        <MenuItem value={'Cancel'}>Không làm (Bệnh nhân hủy dịch vụ)</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </Grid>
+
+
+
+                                        </Grid>)
+                                })}
+                            </>
+                        }
+
+
                     </> : null}
+
+                <Grid item>
+                    <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>3. Thuốc</Typography>
+                </Grid>
             </Grid >
 
             <Dialog open={openPopupUpdateService} onClose={handleClosePopupUpdateService}
