@@ -10,7 +10,7 @@ import { caculateAgeFromBirth } from '../../../common/utils/caculate'
 
 const PatientInfoDR = () => {
     const location = useLocation();
-    // console.log(location);
+    console.log(location);
     const param = useParams()
     // console.log(param.id);
 
@@ -44,7 +44,8 @@ const PatientInfoDR = () => {
                     <Typography>Bệnh nhân</Typography>
                 </Grid>
                 <Grid item sm={5}>
-                    <Typography>{patientInfo?.fullName}</Typography>
+                    {/* <Typography>{patientInfo?.fullName}</Typography> */}
+                    <Typography>{location?.state?.patient?.data?.fullName}</Typography>
                 </Grid>
             </Grid>
             <Grid container item spacing={1} direction='row'>

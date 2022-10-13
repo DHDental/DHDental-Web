@@ -64,7 +64,7 @@ const CreateNewRecord = () => {
     const [taoHoaDon, setTaoHoaDon] = useState('') // rỗng-chưa tạo, dangTao, daTao 
 
     const [serviceHoaDon, setServiceHoaDon] = useState([])
-    // console.log(serviceHoaDon);
+    console.log(serviceHoaDon);
     const handleMotaList = () => {
         if (mota === '')
             return
@@ -175,13 +175,13 @@ const CreateNewRecord = () => {
                 "serviceRequest": serviceRequest,
                 "userId": param?.id
             })
-            // dò trong cái list dịch vụ thêm bill detail id vào  
-            setServiceHoaDon(serviceHoaDonTest)
+
+            setServiceHoaDon(response.data.serviceBill)
 
             update(ref(db, patientFirebase?.key), {
                 paymentConfirmation: 0,
                 treatment: serviceList,
-                serviceHoaDon: serviceHoaDonTest
+                serviceHoaDon: response.data.serviceBill
             })
             setOpenBackdropTaoHoaDon(false)
             setTaoHoaDon('daTao')
@@ -480,10 +480,52 @@ const CreateNewRecord = () => {
 
 
                     </> : null}
-
+                <br />
                 <Grid item>
                     <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>3. Thuốc</Typography>
                 </Grid>
+                {/* <Grid item>
+                    <br />
+                    <Tippy
+                        render={attrs => (
+                            <div className={cx('resultSearchBox')} tabIndex="-1" {...attrs}>
+                                {
+
+                                    searchServiceResult.map((item, i) => (
+                                        <div className={cx('resultSearchItem')} key={i}
+                                            onClick={() => {
+                                                handleChooseService(item)
+                                            }}>
+                                            <Typography>{item?.serviceDesc}</Typography>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        )}
+                        placement='bottom-start'
+                        interactive={true}
+                        visible={showServiceResult && searchServiceResult.length > 0}
+                        onClickOutside={handleHideServiceResult}
+                    >
+                        <TextField
+                            variant='standard'
+                            sx={{ width: '41.25%' }}
+                            value={searchServiceTerm}
+                            placeholder='Tìm kiếm thuốc...'
+                            // disabled={taoHoaDon === 'daTao' ? true : false}
+                            onFocus={() => setShowServiceResult(true)}
+                            onChange={handleSearchChange}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        {loadingService && <CircularProgress size='18px' />}
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Tippy>
+
+                </Grid> */}
             </Grid >
 
             <Dialog open={openPopupUpdateService} onClose={handleClosePopupUpdateService}
