@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Grid, IconButton, InputAdornment, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, FormControl, Grid, IconButton, InputAdornment, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material'
 import Tippy from '@tippyjs/react/headless'
 import React, { useEffect, useState } from 'react'
 import classNames from "classnames/bind"
@@ -259,13 +259,13 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         <Table size="small" >
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="left">STT</TableCell>
-                                    <TableCell align="left">Dịch vụ</TableCell>
-                                    <TableCell align="left">Đặc tả</TableCell>
+                                    <TableCell align="center">STT</TableCell>
+                                    <TableCell align="center">Dịch vụ</TableCell>
+                                    <TableCell align="center">Đặc tả</TableCell>
                                     <TableCell align="center">Số lượng</TableCell>
                                     <TableCell align="center">Số lần thực hiện (dự kiến)</TableCell>
-                                    <TableCell align="left"></TableCell>
-                                    <TableCell align="left"></TableCell>
+                                    <TableCell align="center"></TableCell>
+                                    <TableCell align="center"></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -273,9 +273,9 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
                                     return (
                                         <TableRow key={i}>
-                                            <TableCell align='left' >{i + 1}</TableCell>
-                                            <TableCell align='left'>{item?.serviceDesc}</TableCell>
-                                            <TableCell align='left'>
+                                            <TableCell align='center' >{i + 1}</TableCell>
+                                            <TableCell align='center'>{item?.serviceDesc}</TableCell>
+                                            <TableCell align='center'>
                                                 {/* {new Intl.NumberFormat('vi-VN'
                                                     , { style: 'currency', currency: 'VND' }
                                                 ).format(item?.gia)} */}
@@ -283,14 +283,14 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                             </TableCell>
                                             <TableCell align='center'>{item?.soLuong}</TableCell>
                                             <TableCell align='center'>{item?.soLanDuKienThucHien}</TableCell>
-                                            <TableCell align='left'>
+                                            <TableCell align='center'>
                                                 <Button
                                                     disabled={taoHoaDon === 'daTao' ? true : false}
                                                     onClick={() => {
                                                         handleUpdateService(item, i)
                                                     }}>Cập nhật</Button>
                                             </TableCell>
-                                            <TableCell align='left'>
+                                            <TableCell align='center'>
                                                 <IconButton
                                                     disabled={taoHoaDon === 'daTao' ? true : false}
                                                     onClick={() => { removeInServiceList(i) }}
@@ -336,13 +336,58 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                         />
                                             : null}
                                 >
-                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 0 && 'Đang trong quá trình xác nhận thực hiện các công tác điều trị và thanh toán'}
+                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 0 && 'Chờ xử lí xác nhận thanh toán'}
                                     {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 1 && 'Đã xác nhận xong'}
 
                                 </Button>
                             </Grid> : null
                         }
                     </Grid>
+                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation == '1' ?
+                        <>
+                            <br />
+                            <Grid item>
+                                <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>
+                                    Cập nhật trạng thái công tác điều trị
+                                </Typography>
+                            </Grid>
+                            {serviceHoaDon?.map((item, i) => {
+                                return (
+
+                                    <Grid container item spacing={2} direction='row' sx={{ alignItems: 'center' }}
+                                        key={i}
+                                    >
+                                        <Grid item >{item?.serviceName}</Grid>
+                                        <Grid item >
+                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+
+                                                <Select
+                                                    value={item?.serviceStatus}
+
+                                                    onChange={(event) => {
+                                                        var newList = [...serviceHoaDon]
+                                                        newList[i].serviceStatus = event.target.value
+                                                        setServiceHoaDon(newList)
+                                                        update(ref(db, `${location?.state?.patient?.key}/record`), {
+
+                                                            serviceHoaDon: serviceHoaDon
+                                                        })
+                                                    }}
+                                                >
+                                                    <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
+                                                    <MenuItem value={'Done'}>Hoàn tất</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+
+
+
+                                    </Grid>)
+                            })}
+
+                        </>
+                        : null}
+
                 </>
                 : null}
             < Dialog open={openPopupChooseService} onClose={handleClosePopupChooseService}

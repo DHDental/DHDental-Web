@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material'
+import { Button, Grid, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { onValue, ref, update } from 'firebase/database';
 
@@ -7,6 +7,8 @@ import StartFirebase from '../../../../components/firebaseConfig'
 import { useLocation } from 'react-router-dom';
 import { CustomBackdrop } from '../../../../components';
 import Service from './Service';
+import Thuoc from './Thuoc';
+import HenTaiKham from './HenTaiKham';
 
 const db = StartFirebase()
 const NewRecord = () => {
@@ -19,6 +21,10 @@ const NewRecord = () => {
     const [serviceList, setServiceList] = useState([])
     const [serviceHoaDon, setServiceHoaDon] = useState([])
     const [taoHoaDon, setTaoHoaDon] = useState('')
+
+    const [thuocList, setThuocList] = useState([])
+
+    const [ngayTaiKham, setNgayTaiKham] = useState(null)
     // console.log(motaList);
     useEffect(() => {
         let isMounted = true;
@@ -73,6 +79,14 @@ const NewRecord = () => {
                     taoHoaDon={taoHoaDon} setTaoHoaDon={setTaoHoaDon}
                     dataFirebasePatient={dataFirebasePatient}
                 />
+                <br />
+                <Thuoc thuocList={thuocList} setThuocList={setThuocList} />
+                <br />
+                <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} />
+                <br />
+                <Grid item sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button variant='contained'>Lưu dental care record</Button>
+                </Grid>
             </Grid>
             <CustomBackdrop open={openBackdrop} />
         </>
