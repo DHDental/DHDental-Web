@@ -9,7 +9,7 @@ export const TaoHoaDonPopUp = ({ open, handleClose, handleYes }) => {
         >
             <DialogContent>
                 <DialogContentText sx={{ color: '#000' }}>
-                    Bạn chắc chắc muốn tạo hóa đơn
+                    Bạn chắc chắc muốn tạo chỉ định công tác điều trị các dịch vụ trong danh sách
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

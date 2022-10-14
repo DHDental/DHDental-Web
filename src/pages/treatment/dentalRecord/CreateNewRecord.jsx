@@ -64,7 +64,7 @@ const CreateNewRecord = () => {
     const [taoHoaDon, setTaoHoaDon] = useState('') // rỗng-chưa tạo, dangTao, daTao 
 
     const [serviceHoaDon, setServiceHoaDon] = useState([])
-    console.log(serviceHoaDon);
+    // console.log(serviceHoaDon);
     const handleMotaList = () => {
         if (mota === '')
             return
@@ -94,7 +94,9 @@ const CreateNewRecord = () => {
         serviceList.forEach(element => {
             if (newItem?.id === element?.id) count = 1;
         });
+
         if (count === 0)
+
             setServiceList([...serviceList, newItem])
         else return
     }
@@ -303,7 +305,7 @@ const CreateNewRecord = () => {
                     : <p style={{ color: 'red' }}>Mời bạn nhập mô tả và bấm thêm mô tả</p>}
 
                 <Grid item>
-                    <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>2. Dịch vụ</Typography>
+                    <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>2. Công tác điều trị</Typography>
                 </Grid>
 
                 <Grid item>
@@ -351,7 +353,7 @@ const CreateNewRecord = () => {
                 {serviceList.length !== 0 ?
                     <>
                         <br />
-                        <Grid item><Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Danh sách dịch vụ</Typography></Grid>
+                        <Grid item><Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Danh sách công tác điều trị</Typography></Grid>
                         <Grid item>
                             <Table size="small" >
                                 <TableHead>

@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import CreateNewRecord from './CreateNewRecord'
 import PatientInfoDR from './PatientInfoDR'
 import ServiceBill from './ServiceBill'
+import NewRecord from './newRecord'
 
 const bill = [
     // {
@@ -60,7 +61,10 @@ const DentalCareRecord = () => {
             {/* </Grid> */}
             <br />
             {/* <Grid container item> */}
-            {bill.length === 0 ? <CreateNewRecord /> : <ServiceBill />}
+            {bill.length === 0 ?
+                // <CreateNewRecord />
+                <NewRecord />
+                : <ServiceBill />}
 
 
             {/* </Grid> */}

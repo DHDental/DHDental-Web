@@ -10,7 +10,7 @@ import { caculateAgeFromBirth } from '../../../common/utils/caculate'
 
 const PatientInfoDR = () => {
     const location = useLocation();
-    console.log(location);
+    // console.log(location);
     const param = useParams()
     // console.log(param.id);
 
