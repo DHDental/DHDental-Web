@@ -5,7 +5,7 @@ import {
     Appointment, WaitingList, Treatment, Patients, NotFound,
     MedicalRegistration,
     DentistWaitingList, Login,
-    PatientTreatment, PatientInfo, PatientRecordHistory, DentalCareRecord, Bill
+    DentalCareRecord, Bill
 } from '../pages';
 import { StaffLayout, DentistLayout } from '../components/layouts';
 
@@ -44,11 +44,7 @@ export default function Router() {
                         { path: 'kham-benh', element: <Treatment /> },
                         {
                             path: 'kham-benh/:id', element: <DentalCareRecord />,
-                            children: [
-                                { path: 'thong-tin-bn', element: <PatientInfo /> },
-                                { path: 'lich-su-kham-benh', element: <PatientRecordHistory /> },
-                                { path: 'tao-dental-care-record', element: <DentalCareRecord /> },
-                            ]
+
                         },
                     ]
                 }

@@ -206,7 +206,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     return (
         <>
             <Grid item>
-                <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>2. Công tác điều trị</Typography>
+                <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>2. Phiếu chỉ định</Typography>
             </Grid>
 
             <Grid item>
@@ -254,13 +254,13 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             {serviceList.length !== 0 ?
                 <>
                     <br />
-                    <Grid item><Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Danh sách công tác điều trị</Typography></Grid>
+                    <Grid item><Typography variant='subtitle1' sx={{ fontWeight: '500' }}>Danh sách chỉ định</Typography></Grid>
                     <Grid item>
                         <Table size="small" >
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center">STT</TableCell>
-                                    <TableCell align="center">Dịch vụ</TableCell>
+                                    <TableCell align="center">Tên dịch vụ</TableCell>
                                     <TableCell align="center">Đặc tả</TableCell>
                                     <TableCell align="center">Số lượng</TableCell>
                                     <TableCell align="center">Số lần thực hiện (dự kiến)</TableCell>
