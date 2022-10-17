@@ -6,11 +6,11 @@ import StartFirebase from '../../components/firebaseConfig'
 // state dịch vụ thay đổi thì gọi lại
 const dichvu = [
     {
-        'tên': 'Trám răng',
+        'tên': 'Nhổ răng 1',
         'sốlầnthựchiện': '1',
         'sốlượng': '1',
-        'đơngiá': '300000',
-        'thànhtiền': '300000',
+        'đơngiá': '150000',
+        'thànhtiền': '150000',
         'trạngtháidịchvụ': 'not yet' // mới khởi tạo, hoàn tất, chưa hoàn tất,
         // hủy thì ko có trong ds này
     },
@@ -25,9 +25,9 @@ const dichvu = [
     // }
 ]
 const bill = {
-    tongtien: '300000',
+    tongtien: '150000',
     datra: '0',
-    conlai: '300000',
+    conlai: '150000',
     thongtinthanhtoan: 'Chưa thanh toán xong'
 }
 const db = StartFirebase()
@@ -37,11 +37,13 @@ const HoaDon = ({ dataFirebasePatient }) => {
     const handleThanhToan = () => {
         // check xem có có dataFirebasePatient hay ko, có payment Confirmation hay ko 
         // thì mới đụng tới firebase, không thì chỉ gọi api thanh toán thôi
-        if (dataFirebasePatient[0]?.key) {
+        if (dataFirebasePatient[0]?.key && dataFirebasePatient[0]?.data?.record?.paymentConfirmation == 0) {
             update(ref(db, '-NE0UKLIS4i7uY3mlPAQ/record'), {
                 paymentConfirmation: 1,
             })
             console.log('ok');
+        } else {
+            console.log('nok');
         }
     }
     const handleHuyBo = () => {

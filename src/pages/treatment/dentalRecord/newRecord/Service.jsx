@@ -166,11 +166,11 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                 "userId": param?.id
             })
 
-            setServiceHoaDon(response.data.serviceBill)
+            setServiceHoaDon(serviceList)
 
             update(ref(db, `${location?.state?.patient?.key}/record`), {
                 paymentConfirmation: 0,
-                serviceHoaDon: response.data.serviceBill
+                serviceHoaDon: serviceList
             })
             setOpenBackdrop(false)
             setTaoHoaDon('daTao')
@@ -357,7 +357,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                     <Grid container item spacing={2} direction='row' sx={{ alignItems: 'center' }}
                                         key={i}
                                     >
-                                        <Grid item >{item?.serviceName}</Grid>
+                                        <Grid item >{item?.serviceDesc}</Grid>
                                         <Grid item >
                                             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
 
