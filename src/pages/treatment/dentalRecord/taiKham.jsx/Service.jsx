@@ -7,18 +7,16 @@ import { onValue, ref, update } from 'firebase/database';
 import { useLocation, useParams } from 'react-router-dom';
 import DoneIcon from '@mui/icons-material/Done';
 
-// import styles from '../../../../style/SearchTippy.module.scss'
 import styles from '../../../../style/SearchTippy.module.scss'
 import { axiosPublic } from '../../../../api/axiosInstance'
 import { LIST_SERVICE, TAO_HOADON } from '../../../../common/constants/apiConstants'
-import StartFirebase from '../../../../components/firebaseConfig'
 import { TaoHoaDonPopUp } from '../TaoHoaDonPopUp';
 import { CustomBackdrop } from '../../../../components';
+import StartFirebase from "../../../../components/firebaseConfig"
 
-// Danh sách các công tác điều trị đã xác nhận thực hiện
-//đang trong quá trình xác nhận thanh toán để thực hiện theo chỉ định
 const db = StartFirebase()
 const cx = classNames.bind(styles)
+
 const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon, taoHoaDon, setTaoHoaDon,
     dataFirebasePatient
 }) => {
@@ -147,11 +145,10 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             var serviceRequest = []
             serviceList.forEach((item) => {
                 serviceRequest = [...serviceRequest, {
-                    'serviceID': `${item?.id}`,
+                    'serviceID': item?.id,
                     'quantity': `${item?.soLuong}`,
-                    'price': `${item?.expectedPrice}`,
-                    'serviceSpecification': `${item?.dacTa}`,
-                    'expectedTimes': `${item?.soLanDuKienThucHien}`
+                    'price': '100',
+                    'expectedNumberTimes': `${item?.soLanDuKienThucHien}`
                 }]
             })
             // console.log('serviceRequest', serviceRequest);
@@ -163,8 +160,8 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             //     "userId": param?.id
             // });
             const response = await axiosPublic.post(TAO_HOADON, {
-                "phoneNumber": param?.id,
-                "billDetailIds": serviceRequest
+                "serviceRequest": serviceRequest,
+                "userId": param?.id
             })
 
             setServiceHoaDon(serviceList)

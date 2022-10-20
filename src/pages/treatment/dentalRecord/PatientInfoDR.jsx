@@ -8,35 +8,35 @@ import { GET_USER_INFO } from '../../../common/constants/apiConstants';
 import { CustomBackdrop } from '../../../components';
 import { caculateAgeFromBirth } from '../../../common/utils/caculate'
 
-const PatientInfoDR = () => {
+const PatientInfoDR = ({ patientInfo }) => {
     const location = useLocation();
     // console.log(location);
-    const param = useParams()
+    // const param = useParams()
     // console.log(param.id);
 
-    const [patientInfo, setPatientInfo] = useState()
+    // const [patientInfo, setPatientInfo] = useState()
     const [openBackdrop, setOpenBackdrop] = useState(false)
 
-    useEffect(() => {
-        let isMounted = true;
-        const getPatientInfo = async () => {
-            try {
-                setOpenBackdrop(true)
-                const response = await axiosPublic.post(GET_USER_INFO, {
-                    "keySearch": param.id
-                })
-                isMounted && setPatientInfo(response.data[0])
-                setOpenBackdrop(false)
-            } catch (error) {
-                setOpenBackdrop(false)
-                console.log(error);
-            }
-        }
-        getPatientInfo()
-        return () => {
-            isMounted = false;
-        }
-    }, [param])
+    // useEffect(() => {
+    //     let isMounted = true;
+    //     const getPatientInfo = async () => {
+    //         try {
+    //             setOpenBackdrop(true)
+    //             const response = await axiosPublic.post(GET_USER_INFO, {
+    //                 "keySearch": param.id
+    //             })
+    //             isMounted && setPatientInfo(response.data[0])
+    //             setOpenBackdrop(false)
+    //         } catch (error) {
+    //             setOpenBackdrop(false)
+    //             console.log(error);
+    //         }
+    //     }
+    //     getPatientInfo()
+    //     return () => {
+    //         isMounted = false;
+    //     }
+    // }, [param])
     return (
         <>
             <Grid container item spacing={1} direction='row'>
@@ -53,7 +53,7 @@ const PatientInfoDR = () => {
                     <Typography>Tuổi</Typography>
                 </Grid>
                 <Grid item sm={5}>
-                    <Typography>{patientInfo ? caculateAgeFromBirth(patientInfo?.dob) : null}</Typography>
+                    <Typography>{patientInfo ? caculateAgeFromBirth(patientInfo?.dateOfBirth) : null}</Typography>
                 </Grid>
             </Grid>
             <Grid container item spacing={1} direction='row'>
@@ -72,7 +72,7 @@ const PatientInfoDR = () => {
                     <Typography></Typography>
                 </Grid>
             </Grid>
-            <CustomBackdrop open={openBackdrop} />
+            {/* <CustomBackdrop open={openBackdrop} /> */}
         </>
     )
 }

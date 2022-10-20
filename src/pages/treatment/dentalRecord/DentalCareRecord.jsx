@@ -1,9 +1,14 @@
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import CreateNewRecord from './CreateNewRecord'
 import PatientInfoDR from './PatientInfoDR'
 import ServiceBill from './ServiceBill'
 import NewRecord from './newRecord'
+import Record from './taiKham.jsx'
+import { useParams } from 'react-router-dom'
+import { axiosPublic } from '../../../api/axiosInstance'
+import { GETINFOEXAMINATE } from '../../../common/constants/apiConstants'
+import { CustomBackdrop } from '../../../components'
 
 const bill = [
     // {
@@ -11,7 +16,10 @@ const bill = [
     //     "startDay": '30/09/2022',
     //     'services': [
     //         {
+    //             "id": "TR1",
     //             "serviceName": "Dịch vụ trám răng",
+    //             "dacTa": 'r3',
+    //             "soLuong": '1',
     //             "status": "not done"
     //         },
     //         // {
@@ -32,6 +40,8 @@ const bill = [
     //     'services': [
     //         {
     //             "serviceName": "Dịch vụ trồng răng",
+    //             "dacTa": 'r3',
+    //             "soLuong": '1',
     //             "status": "not done"
     //         },
     //         // {
@@ -52,19 +62,44 @@ const DentalCareRecord = () => {
     // console.log(location?.state?.dentalCareExamReason);
 
     // console.log(location?.state?.patient);
-
+    const param = useParams()
+    const [openBackdrop, setOpenBackdrop] = useState(false)
+    const [patientInfo, setPatientInfo] = useState()
+    useEffect(() => {
+        let isMounted = true;
+        const getPatientInfo = async () => {
+            try {
+                setOpenBackdrop(true)
+                const response = await axiosPublic.post(GETINFOEXAMINATE, {
+                    "phoneNumber": param.id
+                })
+                isMounted && setPatientInfo(response.data)
+                setOpenBackdrop(false)
+            } catch (error) {
+                setOpenBackdrop(false)
+                console.log(error);
+            }
+        }
+        getPatientInfo()
+        return () => {
+            isMounted = false;
+        }
+    }, [param])
+    // console.log(patientInfo);
     return (
         <>
             {/* <Grid container direction='column' spacing={2}> */}
             {/* <Grid container item> */}
-            <PatientInfoDR />
+            <PatientInfoDR patientInfo={patientInfo} />
             {/* </Grid> */}
             <br />
             {/* <Grid container item> */}
             {bill.length === 0 ?
                 // <CreateNewRecord />
                 <NewRecord />
-                : <ServiceBill />}
+                // : <ServiceBill />
+                : <Record bill={bill} />
+            }
 
 
             {/* </Grid> */}
@@ -72,6 +107,7 @@ const DentalCareRecord = () => {
                     <CreateRecord />
                 </Grid> */}
             {/* </Grid> */}
+            <CustomBackdrop open={openBackdrop} />
         </>
     )
 }

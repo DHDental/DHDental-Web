@@ -8,6 +8,7 @@ import {
     DentalCareRecord, Bill
 } from '../pages';
 import { StaffLayout, DentistLayout } from '../components/layouts';
+import FindPatient from '../pages/bill/FindPatient';
 
 
 
@@ -25,7 +26,7 @@ export default function Router() {
 
                         { path: 'ds-dat-kham', element: <Appointment /> },
                         { path: 'benh-nhan', element: <Patients /> },
-                        { path: 'hoa-don', element: <Bill /> },
+                        { path: 'hoa-don', element: <FindPatient /> },
                         { path: 'hoa-don/:id', element: <Bill /> },
                         { path: 'dang-ki-kham-benh', element: <MedicalRegistration /> },
 
