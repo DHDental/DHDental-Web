@@ -16,7 +16,7 @@ export const sideBarStaffConfig = [
     { name: 'Danh sách đặt khám', icon: <EventNoteIcon />, path: STAFF_DSDATKHAM },
     { name: 'Đăng kí khám bệnh', icon: <PostAddIcon />, path: STAFF_DANG_KI_KHAM },
     // { name: 'Bệnh nhân', icon: <PortraitIcon />, path: STAFF_BENHNHAN },
-    { name: 'Hóa đơn', icon: <ReceiptIcon />, path: STAFF_HOADON },
+    { name: 'Thanh toán', icon: <ReceiptIcon />, path: STAFF_HOADON },
     { name: "Màn hình chờ khám", icon: <AirplayIcon />, path: STAFF_MAN_HINH_CHO_KHAM },
 ]
 

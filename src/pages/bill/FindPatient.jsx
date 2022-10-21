@@ -24,7 +24,7 @@ const FindPatient = () => {
             const response = await axiosPublic.post('/user/getUserInfo', {
                 "keySearch": searchTerm
             })
-            console.log(response.data);
+            // console.log(response.data);
             setPatient(response.data)
             setLoading(false)
         } catch (error) {
