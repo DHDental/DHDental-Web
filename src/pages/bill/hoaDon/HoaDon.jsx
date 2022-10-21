@@ -64,8 +64,8 @@ const bill = [
             {
                 tenDichVu: 'dv1',
                 soLuong: '1',
-                donGia: '200000',
-                thanhTien: '200000',
+                donGia: '500000',
+                thanhTien: '500000',
                 soLanDuKien: '2',
                 trangThaiDichVu: 'In Progress'
             }
@@ -76,10 +76,10 @@ const bill = [
     },
     {
         billID: '3',
-        ngayTaoBill: '20/10/2022',
+        ngayTaoBill: '21/10/2022',
         status: 'Unpaid',
-        tongTien: '500000',
-        soTienTraTruoc: '250000',
+        tongTien: '350000',
+        soTienTraTruoc: '175000',
         billDetails: [
             {
                 tenDichVu: 'dv1',
@@ -87,7 +87,7 @@ const bill = [
                 donGia: '200000',
                 thanhTien: '200000',
                 soLanDuKien: '3',
-                trangThaiDichVu: 'In Progress'
+                trangThaiDichVu: 'Not Yet'
             },
             {
                 tenDichVu: 'dv2',
@@ -95,7 +95,7 @@ const bill = [
                 donGia: '150000',
                 thanhTien: '150000',
                 soLanDuKien: '1',
-                trangThaiDichVu: 'done'
+                trangThaiDichVu: 'Not Yet'
             }
         ],
         trangThaiCoTheCapNhat: [
