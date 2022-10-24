@@ -15,6 +15,12 @@ const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
             >
                 <CardContent>
                     <Grid container direction='column' spacing={2}>
+                        <Grid item
+                            sx={{ color: 'red', fontStyle: 'italic' }}
+                        > {item?.billID == 1 ?
+                            '* Cần thanh toán cho lượt khám này'
+                            : null}
+                        </Grid>
                         <Grid container item direction='row' spacing={2}>
                             <Grid item sx={{ fontWeight: '500' }}>Ngày tạo hóa đơn:</Grid>
                             <Grid item>{item?.ngayTaoBill}</Grid>
@@ -27,7 +33,7 @@ const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
                                 }}
                             >
                                 {item?.status == 'Unpaid' ? 'Chưa thanh toán'
-                                    : 'Chưa thanh toán xong'
+                                    : 'Đã trả tiền cọc'
                                 }
                                 {/* {item?.status} */}
                             </Grid>
@@ -43,7 +49,7 @@ const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
                         {
                             item?.soTienTraTruoc ?
                                 <Grid container item direction='row' spacing={2}>
-                                    <Grid item sx={{ fontWeight: '500' }}>Số tiền trả trước:</Grid>
+                                    <Grid item sx={{ fontWeight: '500' }}>Số tiền cọc:</Grid>
                                     <Grid item>
                                         {new Intl.NumberFormat('vi-VN'
                                             , { style: 'currency', currency: 'VND' }
@@ -70,7 +76,9 @@ const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
                                     >
                                         {
                                             item?.trangThaiCoTheCapNhat?.map((statusChange, iStatus) => (
-                                                <MenuItem key={iStatus} value={statusChange}>{statusChange}</MenuItem>
+                                                <MenuItem key={iStatus} value={statusChange}>
+                                                    {statusChange == 'Paid' ? 'Đã thanh toán' : 'Đã trả tiền cọc'}
+                                                </MenuItem>
                                             ))
                                         }
                                     </Select>

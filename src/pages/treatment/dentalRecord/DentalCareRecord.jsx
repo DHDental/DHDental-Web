@@ -10,52 +10,52 @@ import { axiosPublic } from '../../../api/axiosInstance'
 import { GETINFOEXAMINATE } from '../../../common/constants/apiConstants'
 import { CustomBackdrop } from '../../../components'
 
-const bill = [
-    // {
-    //     'billId_serviceId': '01',
-    //     "startDay": '30/09/2022',
-    //     'services': [
-    //         {
-    //             "id": "TR1",
-    //             "serviceName": "Dịch vụ trám răng",
-    //             "dacTa": 'r3',
-    //             "soLuong": '1',
-    //             "status": "not done"
-    //         },
-    //         // {
-    //         //     "serviceName": "Dịch vụ 2",
-    //         //     "status": "not done"
-    //         // }
-    //     ],
-    //     'record': [
-    //         {
-    //             "recordName": 'record 1',
-    //         }
+// const bill = [
+//     // {
+//     //     'billId_serviceId': '01',
+//     //     "startDay": '30/09/2022',
+//     //     'services': [
+//     //         {
+//     //             "id": "TR1",
+//     //             "serviceName": "Dịch vụ trám răng",
+//     //             "dacTa": 'r3',
+//     //             "soLuong": '1',
+//     //             "status": "not done"
+//     //         },
+//     //         // {
+//     //         //     "serviceName": "Dịch vụ 2",
+//     //         //     "status": "not done"
+//     //         // }
+//     //     ],
+//     //     'record': [
+//     //         {
+//     //             "recordName": 'record 1',
+//     //         }
 
-    //     ]
-    // },
-    // {
-    //     'billId_serviceId': '02',
-    //     "startDay": '22/01/2022',
-    //     'services': [
-    //         {
-    //             "serviceName": "Dịch vụ trồng răng",
-    //             "dacTa": 'r3',
-    //             "soLuong": '1',
-    //             "status": "not done"
-    //         },
-    //         // {
-    //         //     "serviceName": "Dịch vụ 2",
-    //         //     "status": "not done"
-    //         // }
-    //     ],
-    //     'record': [
-    //         {
-    //             "recordName": 'record 1'
-    //         }
-    //     ]
-    // }
-]
+//     //     ]
+//     // },
+//     // {
+//     //     'billId_serviceId': '02',
+//     //     "startDay": '22/01/2022',
+//     //     'services': [
+//     //         {
+//     //             "serviceName": "Dịch vụ trồng răng",
+//     //             "dacTa": 'r3',
+//     //             "soLuong": '1',
+//     //             "status": "not done"
+//     //         },
+//     //         // {
+//     //         //     "serviceName": "Dịch vụ 2",
+//     //         //     "status": "not done"
+//     //         // }
+//     //     ],
+//     //     'record': [
+//     //         {
+//     //             "recordName": 'record 1'
+//     //         }
+//     //     ]
+//     // }
+// ]
 
 const DentalCareRecord = () => {
     // const location = useLocation();
@@ -94,11 +94,11 @@ const DentalCareRecord = () => {
             {/* </Grid> */}
             <br />
             {/* <Grid container item> */}
-            {bill.length === 0 ?
+            {patientInfo?.billDetailList?.length === 0 ?
                 // <CreateNewRecord />
                 <NewRecord />
                 // : <ServiceBill />
-                : <Record bill={bill} />
+                : <Record bill={patientInfo?.billDetailList} />
             }
 
 

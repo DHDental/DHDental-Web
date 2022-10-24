@@ -45,7 +45,6 @@ export default function Router() {
                         { path: 'kham-benh', element: <Treatment /> },
                         {
                             path: 'kham-benh/:id', element: <DentalCareRecord />,
-
                         },
                     ]
                 }
