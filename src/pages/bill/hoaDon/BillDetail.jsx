@@ -1,8 +1,11 @@
 import { Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import React, { useState } from 'react'
+import { formatDateMonthYear, formatDateMonthYear2 } from '../../../common/utils/formatDate';
 
 const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
-    console.log(dataFirebasePatient);
+    // console.log(dataFirebasePatient);
+    console.log(item);
+    console.log(formatDateMonthYear(item?.billDateCreate));
     const [trangThaiCapNhat, setTrangThaiCapNhat] = useState('')
     return (
         <Grid container item>
@@ -23,7 +26,7 @@ const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
                         </Grid>
                         <Grid container item direction='row' spacing={2}>
                             <Grid item sx={{ fontWeight: '500' }}>Ngày tạo hóa đơn:</Grid>
-                            <Grid item>{item?.ngayTaoBill}</Grid>
+                            <Grid item>{formatDateMonthYear2(item?.billDateCreate)}</Grid>
                         </Grid>
                         <Grid container item direction='row' spacing={2}>
                             <Grid item sx={{ fontWeight: '500' }}>Trạng thái:</Grid>
@@ -35,7 +38,6 @@ const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
                                 {item?.status == 'Unpaid' ? 'Chưa thanh toán'
                                     : 'Đã trả tiền cọc'
                                 }
-                                {/* {item?.status} */}
                             </Grid>
                         </Grid>
                         <Grid container item direction='row' spacing={2}>
@@ -43,17 +45,17 @@ const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
                             <Grid item>
                                 {new Intl.NumberFormat('vi-VN'
                                     , { style: 'currency', currency: 'VND' }
-                                ).format(item?.tongTien)}
+                                ).format(item?.totalPrice)}
                             </Grid>
                         </Grid>
                         {
-                            item?.soTienTraTruoc ?
+                            item?.prepaid != item?.totalPrice ?
                                 <Grid container item direction='row' spacing={2}>
                                     <Grid item sx={{ fontWeight: '500' }}>Số tiền cọc:</Grid>
                                     <Grid item>
                                         {new Intl.NumberFormat('vi-VN'
                                             , { style: 'currency', currency: 'VND' }
-                                        ).format(item?.soTienTraTruoc)}
+                                        ).format(item?.prepaid)}
                                     </Grid>
                                 </Grid> : null
                         }
@@ -75,7 +77,7 @@ const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
                                         }
                                     >
                                         {
-                                            item?.trangThaiCoTheCapNhat?.map((statusChange, iStatus) => (
+                                            item?.statusUpdates?.map((statusChange, iStatus) => (
                                                 <MenuItem key={iStatus} value={statusChange}>
                                                     {statusChange == 'Paid' ? 'Đã thanh toán' : 'Đã trả tiền cọc'}
                                                 </MenuItem>
@@ -109,31 +111,31 @@ const BillDetail = ({ item, handleHuyBo, dataFirebasePatient }) => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {item?.billDetails?.map((service, iSer) => (
+                                    {item?.billDetailList?.map((service, iSer) => (
                                         <TableRow key={iSer}>
                                             <TableCell align='center'>
-                                                {service.tenDichVu}
+                                                {service.serviceName}
                                             </TableCell>
                                             <TableCell align='center'>
-                                                {service.soLanDuKien}
+                                                {service.expectedTime}
                                             </TableCell>
                                             <TableCell align='center'>
-                                                {service.soLuong}
-                                            </TableCell>
-                                            <TableCell align='center'>
-
-                                                {new Intl.NumberFormat('vi-VN'
-                                                    , { style: 'currency', currency: 'VND' }
-                                                ).format(service.donGia)}
+                                                {service.quantity}
                                             </TableCell>
                                             <TableCell align='center'>
 
                                                 {new Intl.NumberFormat('vi-VN'
                                                     , { style: 'currency', currency: 'VND' }
-                                                ).format(service.thanhTien)}
+                                                ).format(service.price)}
                                             </TableCell>
                                             <TableCell align='center'>
-                                                {service?.trangThaiDichVu != 'done' ?
+
+                                                {new Intl.NumberFormat('vi-VN'
+                                                    , { style: 'currency', currency: 'VND' }
+                                                ).format(service.totalPrice)}
+                                            </TableCell>
+                                            <TableCell align='center'>
+                                                {service?.serviceStatus != 'Done' ?
                                                     <Button
                                                         size='small'
                                                         sx={{ color: 'red' }}

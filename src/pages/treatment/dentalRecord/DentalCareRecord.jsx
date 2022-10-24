@@ -70,6 +70,7 @@ const DentalCareRecord = () => {
     const param = useParams()
     const [openBackdrop, setOpenBackdrop] = useState(false)
     const [patientInfo, setPatientInfo] = useState()
+    // console.log(patientInfo?.billDetailList);
     useEffect(() => {
         let isMounted = true;
         const getPatientInfo = async () => {

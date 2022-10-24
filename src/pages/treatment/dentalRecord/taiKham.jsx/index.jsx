@@ -12,6 +12,7 @@ import Service from './Service';
 const db = StartFirebase()
 
 const Record = ({ bill }) => {
+    console.log(bill);
     const location = useLocation()
     const [motaList, setMotaList] = useState([])
     const [openBackdrop, setOpenBackdrop] = useState(false)
@@ -133,18 +134,18 @@ const Record = ({ bill }) => {
 
                                         <Grid item>
 
-                                            {item?.services.map((service, indexS) => (
+                                            {/* {item?.services.map((service, indexS) => ( */}
 
-                                                <Box key={indexS} sx={{ borderBottom: '1px #000 solid', padding: '8px 0px' }}>
-                                                    <Typography>
-                                                        {service?.serviceName}
-                                                    </Typography>
-                                                    {`Trạng thái: ${service?.status}`}
-                                                    <Typography>{`Đặc tả: ${service?.dacTa}`}</Typography>
-                                                    <Typography>{`Số lượng: ${service?.soLuong}`}</Typography>
-                                                </Box>
+                                            <Box sx={{ borderBottom: '1px #000 solid', padding: '8px 0px' }}>
+                                                <Typography>
+                                                    {item?.serviceName}
+                                                </Typography>
+                                                {/* {`Trạng thái: Chưa hoàn tất`} */}
+                                                <Typography>{`Đặc tả: ${item?.serviceSpecification}`}</Typography>
+                                                <Typography>{`Số lượng: ${item?.quantity}`}</Typography>
+                                            </Box>
 
-                                            ))}
+                                            {/* ))} */}
 
                                         </Grid>
 
@@ -169,7 +170,6 @@ const Record = ({ bill }) => {
                                                     handleContinueService(item)
                                                 }}
                                             >
-
                                                 Thêm vào danh sách chỉ định
                                             </Button>
                                         </Grid>

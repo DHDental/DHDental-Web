@@ -51,6 +51,13 @@ export default function Router() {
             ]
         },
         {
+            path: '/admin',
+            element: <RequireAuth allowedRoles={['1']} />,
+            children: [
+
+            ]
+        },
+        {
             path: '/',
             children: [
                 { path: 'login', element: <Login /> },
