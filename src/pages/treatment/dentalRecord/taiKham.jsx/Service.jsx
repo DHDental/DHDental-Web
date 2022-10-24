@@ -62,7 +62,8 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
         var count = 0
         serviceList.forEach(element => {
-            if (newItem?.id === element?.id) count = 1;
+            if (element?.idContinue != 1)
+                if (newItem?.id === element?.id) count = 1;
         });
 
         if (count === 0) {
@@ -138,47 +139,104 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         setOpenPopUpHoaDon(false);
     }
     const handleYesPopUpHoaDon = async () => {
-        // console.log(serviceList);
+        console.log(serviceList);
         // console.log(param?.id);
         setOpenPopUpHoaDon(false);
         try {
+            var serviceDaCoHoaDon = []
+            serviceList.forEach((item) => {
+                if (item?.idContinue == 1) {
+                    serviceDaCoHoaDon = [...serviceDaCoHoaDon, { ...item }]
+                }
+            })
+            // console.log(serviceDaCoHoaDon);
             var serviceRequest = []
             serviceList.forEach((item) => {
-                serviceRequest = [...serviceRequest, {
-                    'serviceID': item?.id,
-                    'quantity': `${item?.soLuong}`,
-                    'price': '100',
-                    'expectedNumberTimes': `${item?.soLanDuKienThucHien}`
-                }]
+                if (item?.idContinue != 1) {
+                    serviceRequest = [...serviceRequest, {
+                        'serviceID': `${item?.id}`,
+                        'quantity': `${item?.soLuong}`,
+                        'price': `${item?.expectedPrice}`,
+                        'serviceSpecification': `${item?.dacTa}`,
+                        'expectedTimes': `${item?.soLanDuKienThucHien}`
+                    }]
+                }
             })
-            // console.log('serviceRequest', serviceRequest);
+
             // open backdrop
             setOpenBackdrop(true)
             setTaoHoaDon('dangTao')
-            // console.log({
-            //     "serviceRequest": serviceRequest,
-            //     "userId": param?.id
-            // });
-            const response = await axiosPublic.post(TAO_HOADON, {
-                "serviceRequest": serviceRequest,
-                "userId": param?.id
+            // gọi api cho service chưa tạo hóa đơn nếu có
+            var serviceReted = []
+            if (serviceRequest.length !== 0) {
+
+                serviceReted = serviceRequest.map((item) => {
+                    return { ...item, statusThanhToan: 'chua' }
+                })
+
+            }
+            console.log(serviceReted);
+            // setServiceHoaDon(serviceList)  
+            const hoadonList = serviceDaCoHoaDon.concat(serviceReted)
+            console.log(hoadonList);
+            let xacNhanThanhToan = 1
+            hoadonList.forEach((item) => {
+                if (item?.statusThanhToan == 'chua') {
+                    xacNhanThanhToan = 0
+                }
             })
 
-            setServiceHoaDon(serviceList)
-
+            setServiceHoaDon(hoadonList)
             update(ref(db, `${location?.state?.patient?.key}/record`), {
-                paymentConfirmation: 0,
-                serviceHoaDon: serviceList
+                paymentConfirmation: xacNhanThanhToan,
+                serviceHoaDon: hoadonList
             })
             setOpenBackdrop(false)
             setTaoHoaDon('daTao')
             setSearchServiceTerm('')
-            // console.log(response.data);
         } catch (error) {
-            setOpenBackdrop(false)
-            setTaoHoaDon('')
-            console.log(error);
+
         }
+        // try {
+        //     var serviceRequest = []
+        //     serviceList.forEach((item) => {
+        //         serviceRequest = [...serviceRequest, {
+        //             'serviceID': item?.id,
+        //             'quantity': `${item?.soLuong}`,
+        //             'price': '100',
+        //             'expectedNumberTimes': `${item?.soLanDuKienThucHien}`
+        //         }]
+        //     })
+        //     // console.log('serviceRequest', serviceRequest);
+        //     // open backdrop
+        //     setOpenBackdrop(true)
+        //     setTaoHoaDon('dangTao')
+        //     // console.log({
+        //     //     "serviceRequest": serviceRequest,
+        //     //     "userId": param?.id
+        //     // });
+
+
+        //     const response = await axiosPublic.post(TAO_HOADON, {
+        //         "serviceRequest": serviceRequest,
+        //         "userId": param?.id
+        //     })
+
+        //     setServiceHoaDon(serviceList)
+
+        //     update(ref(db, `${location?.state?.patient?.key}/record`), {
+        //         paymentConfirmation: 0,
+        //         serviceHoaDon: serviceList
+        //     })
+        //     setOpenBackdrop(false)
+        //     setTaoHoaDon('daTao')
+        //     setSearchServiceTerm('')
+        //     // console.log(response.data);
+        // } catch (error) {
+        //     setOpenBackdrop(false)
+        //     setTaoHoaDon('')
+        //     console.log(error);
+        // }
     }
 
     useEffect(() => {
@@ -281,13 +339,15 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                             </TableCell>
                                             <TableCell align='center'>{item?.soLuong}</TableCell>
                                             <TableCell align='center'>{item?.soLanDuKienThucHien}</TableCell>
-                                            <TableCell align='center'>
-                                                <Button
-                                                    disabled={taoHoaDon === 'daTao' ? true : false}
-                                                    onClick={() => {
-                                                        handleUpdateService(item, i)
-                                                    }}>Cập nhật</Button>
-                                            </TableCell>
+                                            {item?.idContinue == 1 ? <TableCell align='center'>Điều trị tiếp tục</TableCell> :
+                                                <TableCell align='center'>
+                                                    <Button
+                                                        disabled={taoHoaDon === 'daTao' ? true : false}
+                                                        onClick={() => {
+                                                            handleUpdateService(item, i)
+                                                        }}>Cập nhật</Button>
+                                                </TableCell>
+                                            }
                                             <TableCell align='center'>
                                                 <IconButton
                                                     disabled={taoHoaDon === 'daTao' ? true : false}

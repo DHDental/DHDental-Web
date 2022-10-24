@@ -3,10 +3,10 @@ import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined';
 import Mota from './Mota';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { onValue, ref } from 'firebase/database';
+import { onValue, ref, update } from 'firebase/database';
 
 import StartFirebase from '../../../../components/firebaseConfig';
-import { CustomBackdrop } from '../../../../components';
+import { CustomBackdrop, CustomSnackbar } from '../../../../components';
 import Service from './Service';
 
 const db = StartFirebase()
@@ -21,8 +21,20 @@ const Record = ({ bill }) => {
     const [serviceHoaDon, setServiceHoaDon] = useState([])
     const [taoHoaDon, setTaoHoaDon] = useState('')
 
-    const handleContinueService = (item) => {
+    const [openSnackbar, setOpenSnackbar] = useState();
+    const [textSnackbar, setTextSnackbar] = useState('');
+    const [severity, setSeverity] = useState('success');
 
+
+    const handleContinueService = (item) => {
+        let statusThanhToan
+        if (item?.services[0]?.billStatus == 'In Process') {
+            statusThanhToan = 'chua'
+            console.log(1);
+        }
+        else {
+            statusThanhToan = 'roi'
+        }
         const newItem = {
             dacTa: item?.services[0].dacTa,
             expectedPrice: 100000,
@@ -30,10 +42,32 @@ const Record = ({ bill }) => {
             serviceDesc: item?.services[0].serviceName,
             soLanDuKienThucHien: 2,
             soLuong: item?.services[0].soLuong,
-            idContinue: 1
+            idContinue: 1,
+            billDetailId: item?.services[0].billDetailId,
+            statusThanhToan: statusThanhToan
         }
         console.log(newItem);
-        setServiceList([...serviceList, newItem])
+        var count = 0
+        serviceList.forEach(element => {
+            if (newItem?.billDetailId === element?.billDetailId) count = 1;
+        });
+        if (count === 0) {
+            update(ref(db, `${location?.state?.patient?.key}/record`), {
+                serviceList: [...serviceList, newItem]
+            })
+            setServiceList([...serviceList, newItem])
+            setTextSnackbar('Thêm vào danh sách chỉ định thành công')
+            setSeverity('success')
+            setOpenSnackbar(true)
+            // setServiceList([...serviceList, newItem])
+        }
+        else {
+            setTextSnackbar('Đã thêm vào danh sách chỉ định')
+            setSeverity('info')
+            setOpenSnackbar(true)
+            return
+        }
+
     }
     useEffect(() => {
         let isMounted = true;
@@ -59,17 +93,16 @@ const Record = ({ bill }) => {
         if (dataFirebasePatient[0]?.data?.record?.motaList) {
             setMotaList(dataFirebasePatient[0]?.data?.record?.motaList)
         }
-        // if (dataFirebasePatient[0]?.data?.record?.serviceList) {
-        //     setServiceList(dataFirebasePatient[0]?.data?.record?.serviceList)
-        // }
+        if (dataFirebasePatient[0]?.data?.record?.serviceList) {
+            setServiceList(dataFirebasePatient[0]?.data?.record?.serviceList)
+        }
         // if (dataFirebasePatient[0]?.data?.record?.thuocList) {
         //     setThuocList(dataFirebasePatient[0]?.data?.record?.thuocList)
         // }
-        // if (dataFirebasePatient[0]?.data?.record?.serviceHoaDon) {
-        //     setServiceHoaDon(dataFirebasePatient[0]?.data?.record?.serviceHoaDon)
-        //     setTaoHoaDon('daTao')
-        // }
-
+        if (dataFirebasePatient[0]?.data?.record?.serviceHoaDon) {
+            setServiceHoaDon(dataFirebasePatient[0]?.data?.record?.serviceHoaDon)
+            setTaoHoaDon('daTao')
+        }
     }, [dataFirebasePatient])
     return (
         <>
@@ -131,15 +164,13 @@ const Record = ({ bill }) => {
                                         <Grid item>
                                             <Button variant='contained'
                                                 disableElevation
-                                                // disabled={item.billId_serviceId === recordbillId_serviceId}
+                                                disabled={taoHoaDon === 'daTao' ? true : false}
                                                 onClick={() => {
                                                     handleContinueService(item)
                                                 }}
                                             >
-                                                {/* {item.billId_serviceId === recordbillId_serviceId ? 'Đã chọn, xuống mục II hoàn tất record'
-                                                : '+ Tạo dental care record'
-                                            } */}
-                                                Tiếp tục công tác điều trị dịch vụ này
+
+                                                Thêm vào danh sách chỉ định
                                             </Button>
                                         </Grid>
 
@@ -161,6 +192,16 @@ const Record = ({ bill }) => {
                 />
             </Grid>
             <CustomBackdrop open={openBackdrop} />
+            <CustomSnackbar handleClose={() => {
+                setOpenSnackbar(false)
+            }}
+                open={openSnackbar}
+                text={textSnackbar}
+                severity={severity}
+                variant='standard'
+                vertical='top'
+                horizontal='right'
+            />
         </>
     )
 }
