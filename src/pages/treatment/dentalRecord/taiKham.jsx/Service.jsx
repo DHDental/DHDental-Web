@@ -395,7 +395,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                             : null}
                                 >
                                     {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 0 && 'Chờ xử lí xác nhận thanh toán'}
-                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 1 && 'Đã xác nhận xong'}
+                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 1 && 'Đã xác nhận thanh toán xong'}
 
                                 </Button>
                             </Grid> : null

@@ -6,7 +6,7 @@ import jwtDecode from 'jwt-decode';
 
 import { axiosPublic } from '../../api/axiosInstance';
 import { LOGIN } from '../../common/constants/apiConstants'
-import { STAFF_DSDATKHAM, DENTIST_DS_KHAM } from '../../common/constants/pathConstants'
+import { STAFF_DSDATKHAM, DENTIST_DS_KHAM, ADMIN_TEST, OWNER_TEST } from '../../common/constants/pathConstants'
 import LoginSnackbar from './LoginSnackbar';
 import { useState } from 'react';
 
@@ -43,10 +43,14 @@ const LoginForm = () => {
                 })
                 const user = jwtDecode(response.data.token)
                 localStorage.setItem("loginInfo", JSON.stringify(response.data))
+                if (user?.roleID[0].authority === '1')
+                    navigate(ADMIN_TEST, { replace: true });
                 if (user?.roleID[0].authority === '2')
                     navigate(STAFF_DSDATKHAM, { replace: true });
                 if (user?.roleID[0].authority === '3')
                     navigate(DENTIST_DS_KHAM, { replace: true });
+                if (user?.roleID[0].authority === '5')
+                    navigate(OWNER_TEST, { replace: true });
 
             } catch (error) {
                 console.log("error:", error.response.data)

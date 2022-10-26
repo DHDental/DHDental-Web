@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { axiosPublic } from '../../../api/axiosInstance'
 import { STAFF_BILL } from '../../../common/constants/pathConstants'
-import { CustomBackdrop } from '../../../components'
+import { CustomBackdrop, CustomSnackbar } from '../../../components'
 
 import StartFirebase from '../../../components/firebaseConfig'
 import BillDetail from './BillDetail'
@@ -112,8 +112,13 @@ const db = StartFirebase()
 const HoaDon = ({ dataFirebasePatient }) => {
     const param = useParams()
 
-    const [bill, setBill] = useState([])
+    const [bill, setBill] = useState()
     const [openBackdrop, setOpenBackdrop] = useState(false)
+    const [reload, setReload] = useState(false)
+
+    const [openSnackbar, setOpenSnackbar] = useState();
+    const [textSnackbar, setTextSnackbar] = useState('');
+    const [severity, setSeverity] = useState('success');
 
     // console.log(dataFirebasePatient);
     const handleThanhToan = () => {
@@ -128,12 +133,9 @@ const HoaDon = ({ dataFirebasePatient }) => {
             console.log('nok');
         }
     }
-    const handleHuyBo = () => {
-        // nhấn hủy bỏ, thì gọi api, cập nhật trạng thái hủy bỏ, xóa khỏi state dịch vụ để load lại table dịch vụ
-        // cập nhật trạng thái dịch vụ hóa đơn trong firebase, có thể bỏ luôn, à phải check
-        // check xem có dataFirebasePatient hay ko, có payment Confirmation hay ko thì mới cập nhật
-    }
+
     useEffect(() => {
+        // console.log('load');
         let isMounted = true;
         const getBill = async () => {
             try {
@@ -152,7 +154,7 @@ const HoaDon = ({ dataFirebasePatient }) => {
         return () => {
             isMounted = false;
         }
-    }, [])
+    }, [reload])
     return (
         <>
             <Grid container spacing={1} direction='column'>
@@ -161,8 +163,13 @@ const HoaDon = ({ dataFirebasePatient }) => {
                         <BillDetail
                             key={i}
                             item={item}
-                            handleHuyBo={handleHuyBo}
                             dataFirebasePatient={dataFirebasePatient}
+                            setReload={setReload}
+                            reload={reload}
+                            setTextSnackbar={setTextSnackbar}
+                            setSeverity={setSeverity}
+                            setOpenSnackbar={setOpenSnackbar}
+                            setOpenBackdrop={setOpenBackdrop}
                         />
                     ))
                 }
@@ -173,6 +180,16 @@ const HoaDon = ({ dataFirebasePatient }) => {
                 }
             </Grid>
             <CustomBackdrop open={openBackdrop} />
+            <CustomSnackbar handleClose={() => {
+                setOpenSnackbar(false)
+            }}
+                open={openSnackbar}
+                text={textSnackbar}
+                severity={severity}
+                variant='standard'
+                vertical='top'
+                horizontal='right'
+            />
         </>
     )
 }

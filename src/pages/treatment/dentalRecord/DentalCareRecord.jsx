@@ -100,10 +100,8 @@ const DentalCareRecord = () => {
             {/* </Grid> */}
             <br />
             {/* <Grid container item> */}
-            {patientInfo?.billDetailList?.length == 0 ?
-                // <CreateNewRecord />
+            {patientInfo?.billDetailList?.length === 0 ?
                 <NewRecord />
-                // : <ServiceBill />
                 : <Record bill={patientInfo?.billDetailList} />
             }
 

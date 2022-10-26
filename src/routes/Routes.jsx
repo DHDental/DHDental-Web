@@ -5,10 +5,11 @@ import {
     Appointment, WaitingList, Treatment, Patients, NotFound,
     MedicalRegistration,
     DentistWaitingList, Login,
-    DentalCareRecord, Bill
+    DentalCareRecord, Bill, TestAdmin, OwnerTest
 } from '../pages';
-import { StaffLayout, DentistLayout } from '../components/layouts';
+import { StaffLayout, DentistLayout, AdminLayout } from '../components/layouts';
 import FindPatient from '../pages/bill/FindPatient';
+
 
 
 
@@ -54,7 +55,24 @@ export default function Router() {
             path: '/admin',
             element: <RequireAuth allowedRoles={['1']} />,
             children: [
-
+                {
+                    element: <AdminLayout />,
+                    children: [
+                        { path: 'test', element: <TestAdmin /> },
+                    ]
+                }
+            ]
+        },
+        {
+            path: '/owner',
+            element: <RequireAuth allowedRoles={['5']} />,
+            children: [
+                {
+                    element: <AdminLayout />,
+                    children: [
+                        { path: 'test', element: <OwnerTest /> },
+                    ]
+                }
             ]
         },
         {

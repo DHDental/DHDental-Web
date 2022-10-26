@@ -9,7 +9,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 
 import {
     DENTIST_DS_KHAM, KHAM_BENH, STAFF_BENHNHAN, STAFF_DANG_KI_KHAM, STAFF_DSDATKHAM,
-    STAFF_MAN_HINH_CHO_KHAM, STAFF_HOADON
+    STAFF_MAN_HINH_CHO_KHAM, STAFF_HOADON, ADMIN_TEST, OWNER_TEST
 } from './pathConstants';
 
 export const sideBarStaffConfig = [
@@ -23,4 +23,12 @@ export const sideBarStaffConfig = [
 export const sideBarDentistConfig = [
     { name: "Danh sách khám", icon: <AppsOutageIcon />, path: DENTIST_DS_KHAM },
     { name: 'Khám bệnh', icon: <AddToQueueIcon />, path: KHAM_BENH },
+]
+
+export const sideBarAdminConfig = [
+    { name: "AdminTest", icon: <AppsOutageIcon />, path: ADMIN_TEST },
+]
+
+export const sideBarOwnerConfig = [
+    { name: "OwnerTest", icon: <AppsOutageIcon />, path: OWNER_TEST },
 ]

@@ -167,11 +167,11 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                 "billDetailIds": serviceRequest
             })
 
-            setServiceHoaDon(serviceList)
+            setServiceHoaDon(response.data.billDetailResponse)
 
             update(ref(db, `${location?.state?.patient?.key}/record`), {
                 paymentConfirmation: 0,
-                serviceHoaDon: serviceList
+                serviceHoaDon: response.data.billDetailResponse
             })
             setOpenBackdrop(false)
             setTaoHoaDon('daTao')
@@ -338,7 +338,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                             : null}
                                 >
                                     {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 0 && 'Chờ xử lí xác nhận thanh toán'}
-                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 1 && 'Đã xác nhận xong'}
+                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 1 && 'Đã xác nhận thanh toán xong'}
 
                                 </Button>
                             </Grid> : null
