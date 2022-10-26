@@ -52,7 +52,7 @@ const Thuoc = ({ thuocList, setThuocList }) => {
             if (newItem?.id === element?.id) count = 1;
             if (newItem?.medicineName === 'Không tìm thấy') count = 1
         });
-        console.log(newItem);
+        // console.log(newItem);
         if (count === 0) {
             setCurrentThuoc(newItem)
             setOpenPopupChooseThuoc(true)

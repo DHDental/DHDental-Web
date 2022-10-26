@@ -35,6 +35,19 @@ const Bill = () => {
     }, [])
     useEffect(() => {
         // console.log('change');
+        let count = 0;
+        dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((service, i) => {
+            // console.log(service?.statusThanhToan);
+            if (service?.statusThanhToan != 'roi') {
+                count = 1
+            }
+        })
+        if (count == 0) {
+            if (dataFirebasePatient[0]?.data?.record?.paymentConfirmation == 0)
+                update(ref(db, `${dataFirebasePatient[0]?.key}/record`), {
+                    paymentConfirmation: 1
+                })
+        }
     }, [dataFirebasePatient])
     // console.log(dataFirebasePatient);
     return (

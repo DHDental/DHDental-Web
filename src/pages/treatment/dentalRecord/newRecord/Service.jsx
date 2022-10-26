@@ -329,16 +329,16 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                     disableElevation
 
                                     // disabled={(taoHoaDon === 'daTao' || taoHoaDon === 'dangTao') ? true : false}
-                                    startIcon={(dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 0) ?
+                                    startIcon={(dataFirebasePatient[0]?.data?.record?.paymentConfirmation == 0) ?
                                         null
                                         // <CircularProgress size='0.9rem' />
-                                        : (dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 1) ? <DoneIcon
+                                        : (dataFirebasePatient[0]?.data?.record?.paymentConfirmation == 1) ? <DoneIcon
 
                                         />
                                             : null}
                                 >
-                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 0 && 'Chờ xử lí xác nhận thanh toán'}
-                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation === 1 && 'Đã xác nhận thanh toán xong'}
+                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation == 0 && 'Chờ xử lí xác nhận thanh toán'}
+                                    {dataFirebasePatient[0]?.data?.record?.paymentConfirmation == 1 && 'Đã xác nhận thanh toán xong'}
 
                                 </Button>
                             </Grid> : null
@@ -352,39 +352,86 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                     Cập nhật trạng thái công tác điều trị
                                 </Typography>
                             </Grid>
-                            {serviceHoaDon?.map((item, i) => {
+                            {/* {serviceHoaDon?.map((item, i) => {
                                 return (
+                                    <> */}
+                            <Grid item>
+                                <Table
+                                    size="small"
 
-                                    <Grid container item spacing={2} direction='row' sx={{ alignItems: 'center' }}
-                                        key={i}
-                                    >
-                                        <Grid item >{item?.serviceDesc}</Grid>
-                                        <Grid item >
-                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                >
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="center">STT</TableCell>
+                                            <TableCell align="center">Tên dịch vụ</TableCell>
+                                            <TableCell align="center">Đặc tả</TableCell>
+                                            <TableCell align="center">Số lượng</TableCell>
+                                            <TableCell align="center">Số lần thực hiện (dự kiến)</TableCell>
+                                            <TableCell align="left">Trạng thái</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {serviceHoaDon.map((serviceHoaDonItem, iServiceHoaDon) => {
 
-                                                <Select
-                                                    value={item?.serviceStatus}
-
-                                                    onChange={(event) => {
-                                                        var newList = [...serviceHoaDon]
-                                                        newList[i].serviceStatus = event.target.value
-                                                        setServiceHoaDon(newList)
-                                                        update(ref(db, `${location?.state?.patient?.key}/record`), {
-
-                                                            serviceHoaDon: serviceHoaDon
-                                                        })
-                                                    }}
-                                                >
-                                                    <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
-                                                    <MenuItem value={'Done'}>Hoàn tất</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-
-
-
-                                    </Grid>)
-                            })}
+                                            return (
+                                                <TableRow key={iServiceHoaDon}>
+                                                    <TableCell align='center' >{iServiceHoaDon + 1}</TableCell>
+                                                    <TableCell align='center'>{serviceHoaDonItem?.serviceName}</TableCell>
+                                                    <TableCell align='center'>
+                                                        {serviceHoaDonItem?.serviceSpecification}
+                                                    </TableCell>
+                                                    <TableCell align='center'>{serviceHoaDonItem?.quantity}</TableCell>
+                                                    <TableCell align='center'>{serviceHoaDonItem?.expectedTimes}</TableCell>
+                                                    <TableCell align="left">
+                                                        <FormControl variant="standard" sx={{ m: 0, minWidth: 120 }}>
+                                                            <Select
+                                                                value={serviceHoaDonItem?.serviceStatus == 'Not Yet' ? 'In Progress' : serviceHoaDonItem?.serviceStatus}
+                                                                onChange={(event) => {
+                                                                    var newList = [...serviceHoaDon]
+                                                                    newList[iServiceHoaDon].serviceStatus = event.target.value
+                                                                    setServiceHoaDon(newList)
+                                                                    update(ref(db, `${location?.state?.patient?.key}/record`), {
+                                                                        serviceHoaDon: serviceHoaDon
+                                                                    })
+                                                                }}
+                                                            >
+                                                                <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
+                                                                <MenuItem value={'Done'}>Hoàn tất</MenuItem>
+                                                            </Select>
+                                                        </FormControl>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </Grid>
+                            {/* <Grid container item spacing={2} direction='row' sx={{ alignItems: 'center' }}
+                                            key={i}
+                                        >
+                                            <Grid item >{item?.serviceDesc}</Grid>
+                                            <Grid item >
+                                                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                                    <Select
+                                                        value={item?.serviceStatus == 'Not Yet' ? '' : item?.serviceStatus}
+                                                        onChange={(event) => {
+                                                            var newList = [...serviceHoaDon]
+                                                            newList[i].serviceStatus = event.target.value
+                                                            setServiceHoaDon(newList)
+                                                            update(ref(db, `${location?.state?.patient?.key}/record`), {
+                                                                serviceHoaDon: serviceHoaDon
+                                                            })
+                                                        }}
+                                                    >
+                                                        <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
+                                                        <MenuItem value={'Done'}>Hoàn tất</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </Grid>
+                                        </Grid> */}
+                            {/* </> */}
+                            {/* )
+                            // })} */}
 
                         </>
                         : null}

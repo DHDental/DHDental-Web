@@ -12,7 +12,7 @@ import Service from './Service';
 const db = StartFirebase()
 
 const Record = ({ bill }) => {
-    console.log(bill);
+    // console.log(bill);
     const location = useLocation()
     const [motaList, setMotaList] = useState([])
     const [openBackdrop, setOpenBackdrop] = useState(false)
@@ -29,7 +29,7 @@ const Record = ({ bill }) => {
 
     const handleContinueService = (item) => {
         let statusThanhToan
-        if (item?.services[0]?.billStatus == 'In Process') {
+        if (item?.services[0]?.billStatus == 'In Progress') {
             statusThanhToan = 'chua'
             console.log(1);
         }

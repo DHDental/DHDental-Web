@@ -68,6 +68,9 @@ const NewRecord = () => {
             setServiceHoaDon(dataFirebasePatient[0]?.data?.record?.serviceHoaDon)
             setTaoHoaDon('daTao')
         }
+        // if (dataFirebasePatient[0]?.data?.record?.ngayTaiKham) {
+        //     setNgayTaiKham(dataFirebasePatient[0]?.data?.record?.ngayTaiKham)
+        // }
 
     }, [dataFirebasePatient])
     // console.log(serviceList);

@@ -1,8 +1,13 @@
 import { Grid, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
+import { ref, update } from 'firebase/database'
+import { useLocation } from 'react-router-dom'
+// import StartFirebase from '../../../../components/firebaseConfig'
 
+// const db = StartFirebase()
 const HenTaiKham = ({ ngayTaiKham, setNgayTaiKham }) => {
+    const location = useLocation()
     return (
         <>
             <Grid item>
@@ -13,7 +18,9 @@ const HenTaiKham = ({ ngayTaiKham, setNgayTaiKham }) => {
                     label='Ngày tái khám'
                     value={ngayTaiKham}
                     onChange={
-                        (newValue) => { setNgayTaiKham(newValue) }
+                        (newValue) => {
+                            setNgayTaiKham(newValue)
+                        }
                     }
                     inputFormat="DD/MM/YYYY"
                     placeholder="DD/MM/YYYY"
