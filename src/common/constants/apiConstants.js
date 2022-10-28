@@ -12,3 +12,4 @@ export const GETINFOEXAMINATE = '/user/getInfoExaminate'
 export const TAO_HOADON = '/bill/createBillWithRecord'
 
 export const UPDATE_STATUS_BILL = '/bill/changeStatusDetail'
+export const CANCEL_SERVICE = '/bill/cancelService'

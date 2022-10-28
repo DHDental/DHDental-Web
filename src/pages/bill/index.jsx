@@ -38,7 +38,7 @@ const Bill = () => {
         let count = 0;
         dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((service, i) => {
             // console.log(service?.statusThanhToan);
-            if (service?.statusThanhToan != 'roi') {
+            if (service?.statusThanhToan != 'roi' && service?.statusThanhToan != 'cancel') {
                 count = 1
             }
         })

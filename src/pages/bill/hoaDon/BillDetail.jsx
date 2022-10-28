@@ -5,28 +5,57 @@ import { axiosPublic } from '../../../api/axiosInstance';
 import { UPDATE_STATUS_BILL } from '../../../common/constants/apiConstants';
 import { formatDateMonthYear, formatDateMonthYear2 } from '../../../common/utils/formatDate';
 import { CustomBackdrop, CustomSnackbar } from '../../../components';
+import CustomDialog from '../../../components/CustomDialog';
 import StartFirebase from '../../../components/firebaseConfig';
 
 const db = StartFirebase()
 const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
     setTextSnackbar, setSeverity, setOpenSnackbar, setOpenBackdrop
 }) => {
-    console.log(dataFirebasePatient);
+    // console.log(dataFirebasePatient);
 
     // console.log(item);
     // console.log(formatDateMonthYear(item?.billDateCreate));
     const [trangThaiCapNhat, setTrangThaiCapNhat] = useState('')
+    const [openPopupCancel, setOpenPopupCancel] = useState(false)
 
+    const [currentService, setCurrentService] = useState()
 
+    const handleClosePopupCancel = (event, reason) => {
+        if (reason && reason === "backdropClick")
+            return;
+        setOpenPopupCancel(false);
+    };
+    const handleYesPopupCancel = () => {
+        setOpenPopupCancel(false);
+        setOpenBackdrop(true)
 
-    // const [openBackdrop, setOpenBackdrop] = useState(false)
+        console.log(currentService);
+        // if (dataFirebasePatient.length !== 0) {
+        //     dataFirebasePatient[0]?.data?.record?.serviceHoaDon.forEach((service, i) => {
+        //         if (service.billID == item?.billId) {
+        //             console.log(i);
+        //             update(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`), {
+        //                 statusThanhToan: 'roi'
+        //             })
+        //         }
+        //     });
+        // }
 
-    const handleHuyBo = () => {
+        setTextSnackbar('Hủy bỏ thành công')
+        setSeverity('success')
+        setOpenSnackbar(true)
+        setOpenBackdrop(false)
+        setReload(!reload)
+    }
+
+    const handleHuyBo = (service) => {
         // nhấn hủy bỏ, thì gọi api, cập nhật trạng thái hủy bỏ, xóa khỏi state dịch vụ để load lại table dịch vụ
         // cập nhật trạng thái dịch vụ hóa đơn trong firebase, có thể bỏ luôn, à phải check
         // check xem có dataFirebasePatient hay ko, có payment Confirmation hay ko thì mới cập nhật
+        setCurrentService(service)
+        setOpenPopupCancel(true)
 
-        setReload(!reload)
     }
     const handleCapNhat = async () => {
         if (trangThaiCapNhat == '') {
@@ -168,40 +197,49 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {item?.billDetailList?.map((service, iSer) => (
-                                            <TableRow key={iSer}>
-                                                <TableCell align='center'>
-                                                    {service.serviceName}
-                                                </TableCell>
-                                                <TableCell align='center'>
-                                                    {service.expectedTime}
-                                                </TableCell>
-                                                <TableCell align='center'>
-                                                    {service.quantity}
-                                                </TableCell>
-                                                <TableCell align='center'>
+                                        {item?.billDetailList?.map((service, iSer) => {
+                                            if (service?.serviceStatus != 'Cancel')
+                                                return (
+                                                    <TableRow key={iSer}>
+                                                        <TableCell align='center'>
+                                                            {service.serviceName}
+                                                        </TableCell>
+                                                        <TableCell align='center'>
+                                                            {service.expectedTime}
+                                                        </TableCell>
+                                                        <TableCell align='center'>
+                                                            {service.quantity}
+                                                        </TableCell>
+                                                        <TableCell align='center'>
 
-                                                    {new Intl.NumberFormat('vi-VN'
-                                                        , { style: 'currency', currency: 'VND' }
-                                                    ).format(service.price)}
-                                                </TableCell>
-                                                <TableCell align='center'>
+                                                            {new Intl.NumberFormat('vi-VN'
+                                                                , { style: 'currency', currency: 'VND' }
+                                                            ).format(service.price)}
+                                                        </TableCell>
+                                                        <TableCell align='center'>
 
-                                                    {new Intl.NumberFormat('vi-VN'
-                                                        , { style: 'currency', currency: 'VND' }
-                                                    ).format(service.totalPrice)}
-                                                </TableCell>
-                                                <TableCell align='center'>
-                                                    {service?.serviceStatus != 'Done' ?
-                                                        <Button
-                                                            size='small'
-                                                            sx={{ color: 'red' }}
-                                                            onClick={handleHuyBo}
-                                                        >Hủy bỏ</Button>
-                                                        : null}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
+                                                            {new Intl.NumberFormat('vi-VN'
+                                                                , { style: 'currency', currency: 'VND' }
+                                                            ).format(service.totalPrice)}
+                                                        </TableCell>
+                                                        <TableCell align='center'>
+                                                            {item?.status == 'Unpaid' && service?.serviceStatus != 'Done' ?
+                                                                <Button
+                                                                    size='small'
+                                                                    sx={{ color: 'red' }}
+                                                                    onClick={
+                                                                        () => {
+                                                                            handleHuyBo(service)
+                                                                        }
+                                                                    }
+                                                                >Hủy bỏ</Button>
+                                                                : null}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
+                                            return null
+                                        }
+                                        )}
                                     </TableBody>
                                 </Table>
                             </Grid>
@@ -212,7 +250,8 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                     </CardContent>
                 </Card>
             </Grid>
-
+            <CustomDialog open={openPopupCancel} handleClose={handleClosePopupCancel} handleYes={handleYesPopupCancel}
+                text={`Bạn chắc chắn muốn hủy bỏ dịch vụ này`} />
 
         </>
     )
