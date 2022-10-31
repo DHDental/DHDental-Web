@@ -80,7 +80,9 @@ const Thuoc = ({ thuocList, setThuocList }) => {
         setOpenPopupChooseThuoc(false);
     }
     const handleYesPopupChooseThuoc = () => {
-        const newItem = { ...currentThuoc, lieuDung: currentThuoc?.lieuDung?.trim() }
+        // const newItem = { ...currentThuoc, lieuDung: currentThuoc?.lieuDung?.trim() }
+        console.log(currentThuoc);
+        const newItem = { ...currentThuoc }
         update(ref(db, `${location?.state?.patient?.key}/record`), {
             thuocList: [...thuocList, newItem]
         })
@@ -99,7 +101,8 @@ const Thuoc = ({ thuocList, setThuocList }) => {
     };
     const handleYesPopupUpdateThuoc = () => {
         // console.log(currentService);
-        const newItem = { ...currentThuoc, lieuDung: currentThuoc?.lieuDung?.trim() }
+        // const newItem = { ...currentThuoc, lieuDung: currentThuoc?.lieuDung?.trim() }
+        const newItem = { ...currentThuoc }
         const newList = [...thuocList]
         newList[currentThuoc.index] = newItem
         // console.log(newList);
@@ -128,7 +131,7 @@ const Thuoc = ({ thuocList, setThuocList }) => {
             isMounted = false;
         }
     }, [])
-    // console.log(thuocList);
+
     return (
         <>
             <Grid item>
@@ -199,7 +202,7 @@ const Thuoc = ({ thuocList, setThuocList }) => {
                                             <TableCell align='center' >{i + 1}</TableCell>
                                             <TableCell align='center'>{item?.medicineName}</TableCell>
                                             <TableCell align='center'>{item?.soLuong}</TableCell>
-                                            <TableCell align='center'>{item?.lieuDung}</TableCell>
+                                            <TableCell align='center'>{item?.dosage}</TableCell>
                                             <TableCell align='center'>
                                                 <Button
                                                     onClick={() => {
@@ -269,13 +272,14 @@ const Thuoc = ({ thuocList, setThuocList }) => {
                                 <Typography>Liều dùng</Typography>
                             </Grid>
                             <Grid item xs={7}>
-                                <TextField
+                                {/* <TextField
                                     variant='standard'
                                     value={currentThuoc?.lieuDung}
                                     onChange={(e) => {
                                         setCurrentThuoc({ ...currentThuoc, lieuDung: e.target.value })
                                     }}
-                                />
+                                /> */}
+                                <Typography>{currentThuoc?.dosage}</Typography>
                             </Grid>
                         </Grid>
 
@@ -335,13 +339,16 @@ const Thuoc = ({ thuocList, setThuocList }) => {
                                 <Typography>Liều dùng</Typography>
                             </Grid>
                             <Grid item xs={7}>
-                                <TextField
+                                {/* <TextField
                                     variant='standard'
                                     value={currentThuoc?.lieuDung}
                                     onChange={(e) => {
                                         setCurrentThuoc({ ...currentThuoc, lieuDung: e.target.value })
                                     }}
-                                />
+                                /> */}
+                                <Grid item xs={7}>
+                                    <Typography>{currentThuoc?.dosage}</Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
 

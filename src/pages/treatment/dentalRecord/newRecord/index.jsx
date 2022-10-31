@@ -1,19 +1,28 @@
 import { Button, Grid, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { onValue, ref, update } from 'firebase/database';
+import { onValue, ref, remove, update } from 'firebase/database';
 
 import Mota from './Mota'
 import StartFirebase from '../../../../components/firebaseConfig'
-import { useLocation } from 'react-router-dom';
-import { CustomBackdrop } from '../../../../components';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { CustomBackdrop, CustomSnackbar } from '../../../../components';
 import Service from './Service';
 import Thuoc from './Thuoc';
 import HenTaiKham from './HenTaiKham';
+import { axiosPublic } from '../../../../api/axiosInstance';
+import { CREATE_RECORD } from '../../../../common/constants/apiConstants';
+import { formatYearMonthDate } from '../../../../common/utils/formatDate';
+import { TaoRecordPopUp } from './TaoRecordPopUp';
+import { async } from '@firebase/util';
+import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
+import SnackbarRecord from './SnackbarRecord';
 
 const db = StartFirebase()
 const NewRecord = () => {
     const location = useLocation()
-
+    const param = useParams()
+    const navigate = useNavigate();
+    // console.log(param);
     const [motaList, setMotaList] = useState([])
     const [dataFirebasePatient, setDataFirebasePatient] = useState([])
     const [openBackdrop, setOpenBackdrop] = useState(false)
@@ -25,7 +34,89 @@ const NewRecord = () => {
     const [thuocList, setThuocList] = useState([])
 
     const [ngayTaiKham, setNgayTaiKham] = useState(null)
+
+    const [recordID, setRecordID] = useState('')
+    const [openPopUpRecord, setOpenPopUpRecord] = useState(false)
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [textSnackbar, setTextSnackbar] = useState('');
+    const [severity, setSeverity] = useState('success');
     // console.log(motaList);
+
+    const handleClosePopUpRecord = (event, reason) => {
+        if (reason && reason === "backdropClick")
+            return;
+        setOpenPopUpRecord(false);
+    }
+    const handleYesPopUpRecord = async () => {
+        try {
+            // const response = await axiosPublic.post(CREATE_RECORD, {
+
+            // })
+            setOpenPopUpRecord(false)
+            setOpenBackdrop(true);
+            let billDetailList = []
+            if (dataFirebasePatient[0]?.data?.record?.paymentConfirmation == '1') {
+                dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((item, i) => {
+                    const newItem = { billDetailID: item?.billDetailID, serviceStatus: item?.serviceStatus }
+                    billDetailList = [...billDetailList, newItem]
+                })
+            }
+            if (recordID != '') {
+                if (billDetailList.length == 0 && dataFirebasePatient[0]?.data?.record?.paymentConfirmation == '0') {
+                    setOpenBackdrop(false);
+                    setTextSnackbar('Không lưu được dental care record. Vui lòng kiểm tra lại')
+                    setSeverity('error')
+                    setOpenSnackbar(true)
+                    return
+                } else {
+                    const request = {
+                        userPhoneNumber: param?.id,
+                        recordID: recordID,
+                        reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
+                        recordDesc: motaList,
+                        prescription: thuocList,
+                        billDetailList: billDetailList
+                    }
+                    console.log(request);
+                    update(ref(db, location?.state?.patient?.key), {
+                        status: 11,
+                    })
+
+                    setOpenBackdrop(false);
+                    setTextSnackbar('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
+                    setSeverity('success')
+                    setOpenSnackbar(true)
+                    const handler = setTimeout(() =>
+                        navigate(DENTIST_DS_KHAM, { replace: true }), 1500)
+                }
+            } else {
+                const request = {
+                    userPhoneNumber: param?.id,
+                    recordID: recordID,
+                    reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
+                    recordDesc: motaList,
+                    prescription: thuocList,
+                    billDetailList: billDetailList
+                }
+                console.log(request);
+                update(ref(db, location?.state?.patient?.key), {
+                    status: 11,
+                })
+
+                setOpenBackdrop(false);
+                setTextSnackbar('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
+                setSeverity('success')
+                setOpenSnackbar(true)
+                const handler = setTimeout(() =>
+                    navigate(DENTIST_DS_KHAM, { replace: true }), 1500)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleCreateRecord = () => {
+        setOpenPopUpRecord(true)
+    }
     useEffect(() => {
         let isMounted = true;
         const dbRef = ref(db)
@@ -58,6 +149,9 @@ const NewRecord = () => {
         if (dataFirebasePatient[0]?.data?.record?.motaList) {
             setMotaList(dataFirebasePatient[0]?.data?.record?.motaList)
         }
+        if (dataFirebasePatient[0]?.data?.record?.recordID) {
+            setRecordID(dataFirebasePatient[0]?.data?.record?.recordID)
+        }
         if (dataFirebasePatient[0]?.data?.record?.serviceList) {
             setServiceList(dataFirebasePatient[0]?.data?.record?.serviceList)
         }
@@ -84,6 +178,7 @@ const NewRecord = () => {
                     serviceHoaDon={serviceHoaDon} setServiceHoaDon={setServiceHoaDon}
                     taoHoaDon={taoHoaDon} setTaoHoaDon={setTaoHoaDon}
                     dataFirebasePatient={dataFirebasePatient}
+                    setRecordID={setRecordID}
                 />
                 <br />
                 <Thuoc thuocList={thuocList} setThuocList={setThuocList} />
@@ -91,10 +186,34 @@ const NewRecord = () => {
                 <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} />
                 <br />
                 <Grid item sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button variant='contained'>Lưu dental care record</Button>
+                    <Button variant='contained'
+                        disableElevation
+                        onClick={handleCreateRecord}
+                    >Lưu dental care record và Kết thúc khám bệnh</Button>
                 </Grid>
             </Grid>
             <CustomBackdrop open={openBackdrop} />
+            {/* <CustomSnackbar handleClose={() => {
+                setOpenSnackbar(false)
+            }}
+                open={openSnackbar}
+                text={textSnackbar}
+                severity={severity}
+                variant='standard'
+                vertical='top'
+                horizontal='right'
+            /> */}
+            <SnackbarRecord handleClose={() => {
+                setOpenSnackbar(false)
+            }}
+                open={openSnackbar}
+                text={textSnackbar}
+                severity={severity}
+                variant='standard'
+                vertical='top'
+                horizontal='center'
+            />
+            <TaoRecordPopUp open={openPopUpRecord} handleClose={handleClosePopUpRecord} handleYes={handleYesPopUpRecord} />
         </>
     )
 }

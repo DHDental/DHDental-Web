@@ -13,3 +13,5 @@ export const TAO_HOADON = '/bill/createBillWithRecord'
 
 export const UPDATE_STATUS_BILL = '/bill/changeStatusDetail'
 export const CANCEL_SERVICE = '/bill/cancelService'
+
+export const CREATE_RECORD = '/dentalCareRecord/createOrUpdateRecord'

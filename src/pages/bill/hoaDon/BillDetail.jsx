@@ -1,8 +1,8 @@
 import { Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { ref, update } from 'firebase/database';
+import { ref, remove, update } from 'firebase/database';
 import React, { useState } from 'react'
 import { axiosPublic } from '../../../api/axiosInstance';
-import { UPDATE_STATUS_BILL } from '../../../common/constants/apiConstants';
+import { CANCEL_SERVICE, UPDATE_STATUS_BILL } from '../../../common/constants/apiConstants';
 import { formatDateMonthYear, formatDateMonthYear2 } from '../../../common/utils/formatDate';
 import { CustomBackdrop, CustomSnackbar } from '../../../components';
 import CustomDialog from '../../../components/CustomDialog';
@@ -26,27 +26,36 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
             return;
         setOpenPopupCancel(false);
     };
-    const handleYesPopupCancel = () => {
-        setOpenPopupCancel(false);
-        setOpenBackdrop(true)
+    const handleYesPopupCancel = async () => {
+        try {
+            setOpenPopupCancel(false);
+            setOpenBackdrop(true)
 
-        console.log(currentService);
-        // if (dataFirebasePatient.length !== 0) {
-        //     dataFirebasePatient[0]?.data?.record?.serviceHoaDon.forEach((service, i) => {
-        //         if (service.billID == item?.billId) {
-        //             console.log(i);
-        //             update(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`), {
-        //                 statusThanhToan: 'roi'
-        //             })
-        //         }
-        //     });
-        // }
 
-        setTextSnackbar('Hủy bỏ thành công')
-        setSeverity('success')
-        setOpenSnackbar(true)
-        setOpenBackdrop(false)
-        setReload(!reload)
+            const response = await axiosPublic.post(CANCEL_SERVICE, {
+                "billDetailId": currentService?.billDetailId
+            })
+            if (dataFirebasePatient.length !== 0) {
+                dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((service, i) => {
+                    if (service?.billDetailID == currentService?.billDetailId) {
+                        console.log(i);
+                        // update(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`), {
+                        //     statusThanhToan: 'cancel'
+                        // })
+                        remove(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`))
+                    }
+                });
+            }
+
+            setTextSnackbar('Hủy bỏ thành công')
+            setSeverity('success')
+            setOpenSnackbar(true)
+            setOpenBackdrop(false)
+            setReload(!reload)
+        } catch (error) {
+            setOpenBackdrop(false)
+            console.log(error);
+        }
     }
 
     const handleHuyBo = (service) => {
@@ -64,32 +73,37 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
             setOpenSnackbar(true)
             return
         }
-        setOpenBackdrop(true)
-        const response = await axiosPublic.post(UPDATE_STATUS_BILL, {
-            "billId": item?.billId,
-            "status": trangThaiCapNhat
-        })
-        if (dataFirebasePatient.length !== 0) {
-            // console.log('1');
-            dataFirebasePatient[0]?.data?.record?.serviceHoaDon.forEach((service, i) => {
-                if (service.billID == item?.billId) {
-                    console.log(i);
-                    update(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`), {
-                        statusThanhToan: 'roi'
-                    })
-                }
-            });
+        try {
+            setOpenBackdrop(true)
+            const response = await axiosPublic.post(UPDATE_STATUS_BILL, {
+                "billId": item?.billId,
+                "status": trangThaiCapNhat
+            })
+            if (dataFirebasePatient.length !== 0) {
+                // console.log('1');
+                dataFirebasePatient[0]?.data?.record?.serviceHoaDon.forEach((service, i) => {
+                    if (service.billID == item?.billId) {
+                        console.log(i);
+                        update(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`), {
+                            statusThanhToan: 'roi'
+                        })
+                    }
+                });
 
+            }
+
+
+            setTextSnackbar('Cập nhật thành công')
+            setSeverity('success')
+            setOpenSnackbar(true)
+
+            setOpenBackdrop(false)
+
+            setReload(!reload)
+        } catch (error) {
+            setOpenBackdrop(false)
+            console.log(error);
         }
-
-
-        setTextSnackbar('Cập nhật thành công')
-        setSeverity('success')
-        setOpenSnackbar(true)
-
-        setOpenBackdrop(false)
-
-        setReload(!reload)
     }
     return (
         <>
