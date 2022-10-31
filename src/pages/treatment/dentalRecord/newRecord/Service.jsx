@@ -171,7 +171,8 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
             update(ref(db, `${location?.state?.patient?.key}/record`), {
                 paymentConfirmation: 0,
-                serviceHoaDon: response.data.billDetailResponse
+                serviceHoaDon: response.data.billDetailResponse,
+                recordID: response.data.recordID
             })
             setOpenBackdrop(false)
             setTaoHoaDon('daTao')

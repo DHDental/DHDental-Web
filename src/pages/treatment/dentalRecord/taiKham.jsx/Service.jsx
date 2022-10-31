@@ -18,7 +18,7 @@ const db = StartFirebase()
 const cx = classNames.bind(styles)
 
 const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon, taoHoaDon, setTaoHoaDon,
-    dataFirebasePatient
+    dataFirebasePatient, setRecordID
 }) => {
     const location = useLocation()
     const param = useParams()
@@ -69,7 +69,6 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         if (count === 0) {
             setCurrentService(newItem)
             setOpenPopupChooseService(true)
-            // setServiceList([...serviceList, newItem])
         }
         else return
     }
@@ -146,7 +145,20 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             var serviceDaCoHoaDon = []
             serviceList.forEach((item) => {
                 if (item?.idContinue == 1) {
-                    serviceDaCoHoaDon = [...serviceDaCoHoaDon, { ...item }]
+                    let newItem = {
+                        serviceSpecification: item?.dacTa,
+                        expectedPrice: item?.expectedPrice,
+                        id: 'SVN',
+                        serviceName: item?.serviceDesc,
+                        expectedTimes: item?.soLanDuKienThucHien,
+                        quantity: item?.soLuong,
+                        idContinue: 1,
+                        billID: item?.billID,
+                        billDetailID: item?.billDetailID,
+                        serviceStatus: item?.serviceStatus,
+                        statusThanhToan: item?.statusThanhToan
+                    }
+                    serviceDaCoHoaDon = [...serviceDaCoHoaDon, { ...newItem }]
                 }
             })
             // console.log(serviceDaCoHoaDon);
@@ -166,14 +178,20 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             // open backdrop
             setOpenBackdrop(true)
             setTaoHoaDon('dangTao')
-            // gọi api cho service chưa tạo hóa đơn nếu có
             var serviceReted = []
-            if (serviceRequest.length !== 0) {
-
-                serviceReted = serviceRequest.map((item) => {
+            // gọi api cho service chưa tạo hóa đơn nếu có
+            if (serviceRequest.length != 0) {
+                const response = await axiosPublic.post(TAO_HOADON, {
+                    "phoneNumber": param?.id,
+                    "billDetailIds": serviceRequest
+                })
+                setRecordID(response.data.recordID)
+                update(ref(db, `${location?.state?.patient?.key}/record`), {
+                    recordID: response.data.recordID
+                })
+                serviceReted = response.data.billDetailResponse.map((item) => {
                     return { ...item, statusThanhToan: 'chua' }
                 })
-
             }
             console.log(serviceReted);
             // setServiceHoaDon(serviceList)  
@@ -195,48 +213,10 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             setTaoHoaDon('daTao')
             setSearchServiceTerm('')
         } catch (error) {
-
+            setOpenBackdrop(false)
+            setTaoHoaDon('')
+            console.log(error);
         }
-        // try {
-        //     var serviceRequest = []
-        //     serviceList.forEach((item) => {
-        //         serviceRequest = [...serviceRequest, {
-        //             'serviceID': item?.id,
-        //             'quantity': `${item?.soLuong}`,
-        //             'price': '100',
-        //             'expectedNumberTimes': `${item?.soLanDuKienThucHien}`
-        //         }]
-        //     })
-        //     // console.log('serviceRequest', serviceRequest);
-        //     // open backdrop
-        //     setOpenBackdrop(true)
-        //     setTaoHoaDon('dangTao')
-        //     // console.log({
-        //     //     "serviceRequest": serviceRequest,
-        //     //     "userId": param?.id
-        //     // });
-
-
-        //     const response = await axiosPublic.post(TAO_HOADON, {
-        //         "serviceRequest": serviceRequest,
-        //         "userId": param?.id
-        //     })
-
-        //     setServiceHoaDon(serviceList)
-
-        //     update(ref(db, `${location?.state?.patient?.key}/record`), {
-        //         paymentConfirmation: 0,
-        //         serviceHoaDon: serviceList
-        //     })
-        //     setOpenBackdrop(false)
-        //     setTaoHoaDon('daTao')
-        //     setSearchServiceTerm('')
-        //     // console.log(response.data);
-        // } catch (error) {
-        //     setOpenBackdrop(false)
-        //     setTaoHoaDon('')
-        //     console.log(error);
-        // }
     }
 
     useEffect(() => {
@@ -402,48 +382,97 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         }
                     </Grid>
                     {dataFirebasePatient[0]?.data?.record?.paymentConfirmation == '1' ?
-                        <>
-                            <br />
-                            <Grid item>
-                                <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>
-                                    Cập nhật trạng thái công tác điều trị
-                                </Typography>
-                            </Grid>
-                            {serviceHoaDon?.map((item, i) => {
+                        dataFirebasePatient[0]?.data?.record?.serviceHoaDon ?
+                            <>
+                                <br />
+                                <Grid item>
+                                    <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>
+                                        Cập nhật trạng thái công tác điều trị
+                                    </Typography>
+                                </Grid>
+                                {/* {serviceHoaDon?.map((item, i) => {
                                 return (
+                                    <> */}
+                                <Grid item>
+                                    <Table
+                                        size="small"
 
-                                    <Grid container item spacing={2} direction='row' sx={{ alignItems: 'center' }}
-                                        key={i}
                                     >
-                                        <Grid item >{item?.serviceDesc}</Grid>
-                                        <Grid item >
-                                            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="center">STT</TableCell>
+                                                <TableCell align="center">Tên dịch vụ</TableCell>
+                                                <TableCell align="center">Đặc tả</TableCell>
+                                                <TableCell align="center">Số lượng</TableCell>
+                                                <TableCell align="center">Số lần thực hiện (dự kiến)</TableCell>
+                                                <TableCell align="left">Trạng thái</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
 
-                                                <Select
-                                                    value={item?.serviceStatus}
+                                            {dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.map((serviceHoaDonItem, iServiceHoaDon) => {
+                                                return (
+                                                    <TableRow key={iServiceHoaDon}>
+                                                        <TableCell align='center' >{iServiceHoaDon + 1}</TableCell>
+                                                        <TableCell align='center'>{serviceHoaDonItem?.serviceName}</TableCell>
+                                                        <TableCell align='center'>
+                                                            {serviceHoaDonItem?.serviceSpecification}
+                                                        </TableCell>
+                                                        <TableCell align='center'>{serviceHoaDonItem?.quantity}</TableCell>
+                                                        <TableCell align='center'>{serviceHoaDonItem?.expectedTimes}</TableCell>
+                                                        <TableCell align="left">
+                                                            <FormControl variant="standard" sx={{ m: 0, minWidth: 120 }}>
+                                                                <Select
+                                                                    value={serviceHoaDonItem?.serviceStatus == 'Not Yet' ? 'In Progress' : serviceHoaDonItem?.serviceStatus}
+                                                                    onChange={(event) => {
+                                                                        var newList = [...serviceHoaDon]
+                                                                        newList[iServiceHoaDon].serviceStatus = event.target.value
+                                                                        setServiceHoaDon(newList)
+                                                                        update(ref(db, `${location?.state?.patient?.key}/record`), {
+                                                                            serviceHoaDon: serviceHoaDon
+                                                                        })
+                                                                    }}
+                                                                >
+                                                                    <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
+                                                                    <MenuItem value={'Done'}>Hoàn tất</MenuItem>
+                                                                </Select>
+                                                            </FormControl>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </Grid>
+                                {/* <Grid container item spacing={2} direction='row' sx={{ alignItems: 'center' }}
+                                            key={i}
+                                        >
+                                            <Grid item >{item?.serviceDesc}</Grid>
+                                            <Grid item >
+                                                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                                    <Select
+                                                        value={item?.serviceStatus == 'Not Yet' ? '' : item?.serviceStatus}
+                                                        onChange={(event) => {
+                                                            var newList = [...serviceHoaDon]
+                                                            newList[i].serviceStatus = event.target.value
+                                                            setServiceHoaDon(newList)
+                                                            update(ref(db, `${location?.state?.patient?.key}/record`), {
+                                                                serviceHoaDon: serviceHoaDon
+                                                            })
+                                                        }}
+                                                    >
+                                                        <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
+                                                        <MenuItem value={'Done'}>Hoàn tất</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </Grid>
+                                        </Grid> */}
+                                {/* </> */}
+                                {/* )
+                            // })} */}
 
-                                                    onChange={(event) => {
-                                                        var newList = [...serviceHoaDon]
-                                                        newList[i].serviceStatus = event.target.value
-                                                        setServiceHoaDon(newList)
-                                                        update(ref(db, `${location?.state?.patient?.key}/record`), {
-
-                                                            serviceHoaDon: serviceHoaDon
-                                                        })
-                                                    }}
-                                                >
-                                                    <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
-                                                    <MenuItem value={'Done'}>Hoàn tất</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-
-
-
-                                    </Grid>)
-                            })}
-
-                        </>
+                            </>
+                            : <p>Không có dịch vụ cần làm</p>
                         : null}
 
                 </>

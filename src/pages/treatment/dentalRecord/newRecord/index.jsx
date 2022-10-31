@@ -115,6 +115,18 @@ const NewRecord = () => {
         }
     }
     const handleCreateRecord = () => {
+        if (motaList.length == 0) {
+            setTextSnackbar('Cần có mô tả bệnh lí, công tác điều trị trước khi tạo record')
+            setSeverity('error')
+            setOpenSnackbar(true)
+            return
+        }
+        if (dataFirebasePatient[0]?.data?.record?.paymentConfirmation == '0') {
+            setTextSnackbar('Chưa xử lí xác nhận thanh toán xong')
+            setSeverity('error')
+            setOpenSnackbar(true)
+            return
+        }
         setOpenPopUpRecord(true)
     }
     useEffect(() => {

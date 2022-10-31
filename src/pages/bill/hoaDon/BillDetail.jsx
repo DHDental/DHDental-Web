@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { ref, remove, update } from 'firebase/database';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { axiosPublic } from '../../../api/axiosInstance';
 import { CANCEL_SERVICE, UPDATE_STATUS_BILL } from '../../../common/constants/apiConstants';
 import { formatDateMonthYear, formatDateMonthYear2 } from '../../../common/utils/formatDate';
@@ -20,6 +20,8 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
     const [openPopupCancel, setOpenPopupCancel] = useState(false)
 
     const [currentService, setCurrentService] = useState()
+
+    const [thanhToan, setThanhToan] = useState('no')
 
     const handleClosePopupCancel = (event, reason) => {
         if (reason && reason === "backdropClick")
@@ -105,6 +107,13 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
             console.log(error);
         }
     }
+    useEffect(() => {
+        dataFirebasePatient[0]?.data?.record?.serviceHoaDon.forEach((service, i) => {
+            if (service?.billID == item?.billId) {
+                setThanhToan('yes')
+            }
+        })
+    }, [])
     return (
         <>
             <Grid container item>
@@ -119,9 +128,11 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                         <Grid container direction='column' spacing={2}>
                             <Grid item
                                 sx={{ color: 'red', fontStyle: 'italic' }}
-                            > {item?.billID == 1 ?
-                                '* Cần thanh toán cho lượt khám này'
-                                : null}
+                            >
+                                {thanhToan == 'yes' ?
+                                    '* Cần thanh toán cho lượt khám này'
+                                    : null}
+
                             </Grid>
                             <Grid container item direction='row' spacing={2}>
                                 <Grid item sx={{ fontWeight: '500' }}>Ngày tạo hóa đơn:</Grid>
