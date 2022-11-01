@@ -119,7 +119,10 @@ const Record = ({ bill }) => {
             let billDetailList = []
             if (dataFirebasePatient[0]?.data?.record?.paymentConfirmation == '1') {
                 dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((item, i) => {
-                    const newItem = { billDetailID: item?.billDetailID, serviceStatus: item?.serviceStatus }
+                    const newItem = {
+                        billDetailID: item?.billDetailID,
+                        serviceStatus: item?.serviceStatus == 'Not Yet' ? 'In Progress' : item?.serviceStatus
+                    }
                     billDetailList = [...billDetailList, newItem]
                 })
             }
