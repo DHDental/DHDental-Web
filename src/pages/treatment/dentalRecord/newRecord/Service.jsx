@@ -37,7 +37,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
     const [openPopUpHoaDon, setOpenPopUpHoaDon] = useState(false)
     const [openBackdrop, setOpenBackdrop] = useState(false)
-
+    const [messageErrorDacTa, setMessageErrorDacTa] = useState('')
 
 
     const handleHideServiceResult = () => {
@@ -77,27 +77,30 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     const handleClosePopupChooseService = (event, reason) => {
         if (reason && reason === "backdropClick")
             return;
+        setMessageErrorDacTa('')
         setOpenPopupChooseService(false);
+
     }
     const handleYesPopupChooseService = () => {
+        if (currentService?.dacTa.trim() == '') {
+            console.log('rong');
+            setMessageErrorDacTa('Cần nhập đặc tả')
+            return
+        }
         const newItem = { ...currentService, dacTa: currentService?.dacTa?.trim() }
         update(ref(db, `${location?.state?.patient?.key}/record`), {
             serviceList: [...serviceList, newItem]
         })
         setServiceList([...serviceList, newItem])
-        // setCurrentService({})
+        setMessageErrorDacTa('')
         setOpenPopupChooseService(false)
-        // console.log(currentService);
-        // const newList = [...serviceList]
-        // newList[currentService.index] = currentService
-        // // console.log(newList);
-        // setServiceList(newList)
-        // setOpenPopupChooseService(false);
+
     }
 
     const handleClosePopupUpdateService = (event, reason) => {
         if (reason && reason === "backdropClick")
             return;
+        setMessageErrorDacTa('')
         setOpenPopupUpdateService(false);
     };
 
@@ -108,6 +111,11 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
     const handleYesPopupUpdateService = () => {
         // console.log(currentService);
+        if (currentService?.dacTa.trim() == '') {
+            console.log('rong');
+            setMessageErrorDacTa('Cần nhập đặc tả')
+            return
+        }
         const newItem = { ...currentService, dacTa: currentService?.dacTa?.trim() }
         const newList = [...serviceList]
         newList[currentService.index] = newItem
@@ -116,6 +124,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             serviceList: newList
         })
         setServiceList(newList)
+        setMessageErrorDacTa('')
         setOpenPopupUpdateService(false);
     }
 
@@ -475,7 +484,18 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                     }}
                                 />
                             </Grid>
+
                         </Grid>
+                        {messageErrorDacTa != '' ?
+                            <Grid container item>
+                                <Grid item xs={3}></Grid>
+                                <Grid item xs={7}>
+                                    <Typography sx={{ color: 'red' }}>{messageErrorDacTa}</Typography>
+                                </Grid>
+                            </Grid>
+                            : null
+                        }
+
                         <Grid container item>
                             <Grid item xs={3}>
                                 <Typography>Số lượng</Typography>
@@ -569,6 +589,15 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                 />
                             </Grid>
                         </Grid>
+                        {messageErrorDacTa != '' ?
+                            <Grid container item>
+                                <Grid item xs={3}></Grid>
+                                <Grid item xs={7}>
+                                    <Typography sx={{ color: 'red' }}>{messageErrorDacTa}</Typography>
+                                </Grid>
+                            </Grid>
+                            : null
+                        }
                         <Grid container item>
                             <Grid item xs={3}>
                                 <Typography>Số lượng</Typography>
