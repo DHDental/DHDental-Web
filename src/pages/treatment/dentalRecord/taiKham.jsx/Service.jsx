@@ -148,7 +148,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                     let newItem = {
                         serviceSpecification: item?.dacTa,
                         expectedPrice: item?.expectedPrice,
-                        id: 'SVN',
+                        id: item?.id,
                         serviceName: item?.serviceDesc,
                         expectedTimes: item?.soLanDuKienThucHien,
                         quantity: item?.soLuong,

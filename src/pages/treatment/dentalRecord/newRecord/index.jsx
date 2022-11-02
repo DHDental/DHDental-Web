@@ -72,6 +72,14 @@ const NewRecord = () => {
                     setOpenSnackbar(true)
                     return
                 } else {
+                    let newThuocList = []
+                    thuocList.forEach((thuoc, i) => {
+                        const newItem = {
+                            "drugID": thuoc?.id,
+                            "quantity": thuoc?.soLuong
+                        }
+                        newThuocList = [...newThuocList, newItem]
+                    })
                     const request = {
                         userPhoneNumber: param?.id,
                         recordID: recordID,
@@ -81,9 +89,18 @@ const NewRecord = () => {
                         billDetailList: billDetailList
                     }
                     console.log(request);
-                    update(ref(db, location?.state?.patient?.key), {
-                        status: 11,
+                    const response = await axiosPublic.post(CREATE_RECORD, {
+                        userPhoneNumber: param?.id,
+                        recordID: recordID,
+                        reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
+                        recordDesc: motaList,
+                        prescription: newThuocList,
+                        billDetailList: billDetailList
                     })
+                    // update(ref(db, location?.state?.patient?.key), {
+                    //     status: 11,
+                    // })
+                    remove(ref(db, location?.state?.patient?.key))
 
                     setOpenBackdrop(false);
                     setTextSnackbar('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
@@ -93,6 +110,14 @@ const NewRecord = () => {
                         navigate(DENTIST_DS_KHAM, { replace: true }), 1500)
                 }
             } else {
+                let newThuocList = []
+                thuocList.forEach((thuoc, i) => {
+                    const newItem = {
+                        "drugID": thuoc?.id,
+                        "quantity": thuoc?.soLuong
+                    }
+                    newThuocList = [...newThuocList, newItem]
+                })
                 const request = {
                     userPhoneNumber: param?.id,
                     recordID: recordID,
@@ -102,10 +127,18 @@ const NewRecord = () => {
                     billDetailList: billDetailList
                 }
                 console.log(request);
-                update(ref(db, location?.state?.patient?.key), {
-                    status: 11,
+                const response = await axiosPublic.post(CREATE_RECORD, {
+                    userPhoneNumber: param?.id,
+                    recordID: recordID,
+                    reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
+                    recordDesc: motaList,
+                    prescription: newThuocList,
+                    billDetailList: billDetailList
                 })
-
+                // update(ref(db, location?.state?.patient?.key), {
+                //     status: 11,
+                // })
+                remove(ref(db, location?.state?.patient?.key))
                 setOpenBackdrop(false);
                 setTextSnackbar('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
                 setSeverity('success')
@@ -115,6 +148,10 @@ const NewRecord = () => {
             }
         } catch (error) {
             console.log(error);
+            setOpenBackdrop(false);
+            setTextSnackbar('Lưu dental care record thất bại')
+            setSeverity('error')
+            setOpenSnackbar(true)
         }
     }
     const handleCreateRecord = () => {
