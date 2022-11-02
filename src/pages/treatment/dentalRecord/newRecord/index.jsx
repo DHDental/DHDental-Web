@@ -156,7 +156,7 @@ const NewRecord = () => {
     }
     const handleCreateRecord = () => {
         if (motaList.length == 0) {
-            setTextSnackbar('Cần có mô tả bệnh lí, công tác điều trị trước khi tạo record')
+            setTextSnackbar('Cần có mô tả bệnh lí, công tác điều trị trước khi lưu record')
             setSeverity('error')
             setOpenSnackbar(true)
             return

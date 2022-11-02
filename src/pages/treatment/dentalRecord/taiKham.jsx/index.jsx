@@ -93,7 +93,7 @@ const Record = ({ bill }) => {
 
     const handleCreateRecord = () => {
         if (motaList.length == 0) {
-            setTextSnackbar('Cần có mô tả bệnh lí, công tác điều trị trước khi tạo record')
+            setTextSnackbar('Cần có mô tả bệnh lí, công tác điều trị trước khi lưu record')
             setSeverity('error')
             setOpenSnackbar(true)
             return
@@ -163,9 +163,9 @@ const Record = ({ bill }) => {
                     // })
                     remove(ref(db, location?.state?.patient?.key))
                     setOpenBackdrop(false);
-                    setTextSnackbar('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
-                    setSeverity('success')
-                    setOpenSnackbar(true)
+                    setTextSnackbar2('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
+                    setSeverity2('success')
+                    setOpenSnackbar2(true)
                     const handler = setTimeout(() =>
                         navigate(DENTIST_DS_KHAM, { replace: true }), 1500)
                 }
@@ -200,9 +200,9 @@ const Record = ({ bill }) => {
                 // })
                 remove(ref(db, location?.state?.patient?.key))
                 setOpenBackdrop(false);
-                setTextSnackbar('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
-                setSeverity('success')
-                setOpenSnackbar(true)
+                setTextSnackbar2('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
+                setSeverity2('success')
+                setOpenSnackbar2(true)
                 const handler = setTimeout(() =>
                     navigate(DENTIST_DS_KHAM, { replace: true }), 1500)
             }
