@@ -57,6 +57,7 @@ const SearchPatient = () => {
     const [openPopup, setOpenPopup] = useState(false)
     const [currentPatient, setCurrentPatient] = useState({})
     const [currentPatientReason, setCurrentPatientReason] = useState('')
+    const [messageCurrentPatientReason, setMesageCurrentPatientReason] = useState('')
 
     const handleSubmit = async (e) => {
         if (searchTerm === '') {
@@ -89,9 +90,14 @@ const SearchPatient = () => {
     const handleClosePopup = (event, reason) => {
         if (reason && reason === "backdropClick")
             return;
+        setMesageCurrentPatientReason('')
         setOpenPopup(false);
     };
     const handleYesPopup = () => {
+        if (currentPatientReason.trim() == '') {
+            setMesageCurrentPatientReason('Cần nhập lí do khám bệnh')
+            return
+        }
         const dbRef1 = ref(db)
         const newUser = push(dbRef1)
         set(newUser, {
@@ -105,6 +111,7 @@ const SearchPatient = () => {
             room: '',
             dentalCareExamReason: currentPatientReason,
         })
+        setMesageCurrentPatientReason('')
         setOpenPopup(false)
         setCurrentPatientReason('')
     }
@@ -247,6 +254,15 @@ const SearchPatient = () => {
                                 />
                             </Grid>
                         </Grid>
+                        {messageCurrentPatientReason != '' ?
+                            <Grid container spacing={2} direction='row'>
+                                <Grid item xs={3}>
+                                </Grid>
+                                <Grid item xs={7}>
+                                    <Typography sx={{ color: 'red' }}>{messageCurrentPatientReason}</Typography>
+                                </Grid>
+                            </Grid> : null
+                        }
                     </Box>
                 </DialogContent>
                 <DialogActions>

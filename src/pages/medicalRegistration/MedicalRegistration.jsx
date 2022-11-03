@@ -21,8 +21,9 @@ const validationSchema = yup.object({
     dob: yup.date().required('Bạn cần nhập ngày sinh')
         .typeError("Cần nhập ngày đúng và theo định dạng dd/MM/yyyy")
         .min('1900/01/01', 'Ngày sinh quá xa so với hiện tại')
-        .max(new Date(), "Vui lòng nhập ngày sinh, bạn đang nhập ngày trong tương lai"),
-    address: yup.string().required('Bạn cần nhập địa chỉ')
+        .max(dayjs().subtract(1, 'year').format('YYYY/MM/DD'), "Bệnh nhân phải một tuổi trở lên"),
+    address: yup.string().required('Bạn cần nhập địa chỉ'),
+    dentalCareExamReason: yup.string().required('Bạn cần nhập lí do khám bệnh')
 })
 const MedicalRegistration = () => {
     const [openSnackbar, setOpenSnackbar] = useState();
@@ -87,7 +88,7 @@ const MedicalRegistration = () => {
             }
         }
     })
-    // console.log(formik.values.dentalCareExamReason);
+    console.log(dayjs().subtract(1, 'year').format('DD/MM/YYYY'));
     return (
         <>
             <Grid container spacing={0.5}
@@ -156,7 +157,7 @@ const MedicalRegistration = () => {
                                         onChange={value => formik.setFieldValue("dob", value)}
                                         inputFormat="DD/MM/YYYY"
                                         placeholder="DD/MM/YYYY"
-                                        maxDate={dayjs().format('YYYY-MM-DD')}
+                                        maxDate={dayjs().subtract(1, 'year').format('YYYY-MM-DD')}
                                         renderInput={(params) =>
                                             <TextField {...params}
                                                 variant='standard'
@@ -181,9 +182,14 @@ const MedicalRegistration = () => {
                                     helperText={formik.touched.address && formik.errors.address}
                                 />
                                 <TextField
-                                    multiline variant='standard' label="Lí do khám bệnh" name='dentalCareExamReason'
+                                    multiline
+                                    variant='standard'
+                                    label="Lí do khám bệnh"
+                                    name='dentalCareExamReason'
                                     value={formik.values.dentalCareExamReason}
                                     onChange={formik.handleChange}
+                                    error={formik.touched.dentalCareExamReason && Boolean(formik.errors.dentalCareExamReason)}
+                                    helperText={formik.touched.dentalCareExamReason && formik.errors.dentalCareExamReason}
                                 />
                                 <br />
                                 <Button type='submit' variant="contained"
