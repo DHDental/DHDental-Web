@@ -450,6 +450,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
                 </>
                 : null}
+
             < Dialog open={openPopupChooseService} onClose={handleClosePopupChooseService}
                 PaperProps={{ sx: { position: 'fixed', top: '25px' } }}
                 fullWidth>
@@ -657,6 +658,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             </Dialog>
             <TaoHoaDonPopUp open={openPopUpHoaDon} handleClose={handleClosePopUpHoaDon} handleYes={handleYesPopUpHoaDon} />
             <CustomBackdrop open={openBackdrop} />
+
         </>
     )
 }

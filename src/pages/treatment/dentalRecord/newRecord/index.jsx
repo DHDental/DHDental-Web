@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { onValue, ref, remove, update } from 'firebase/database';
 
@@ -226,6 +226,7 @@ const NewRecord = () => {
                 <Grid item> <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>I. Tạo dental care record</Typography></Grid>
                 <Mota motaList={motaList} setMotaList={setMotaList} />
                 <br />
+
                 <Service serviceList={serviceList} setServiceList={setServiceList}
                     serviceHoaDon={serviceHoaDon} setServiceHoaDon={setServiceHoaDon}
                     taoHoaDon={taoHoaDon} setTaoHoaDon={setTaoHoaDon}
@@ -237,12 +238,14 @@ const NewRecord = () => {
                 <br />
                 <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} />
                 <br />
+
                 <Grid item sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Button variant='contained'
                         disableElevation
                         onClick={handleCreateRecord}
                     >Lưu dental care record và Kết thúc khám bệnh</Button>
                 </Grid>
+
             </Grid>
             <CustomBackdrop open={openBackdrop} />
             {/* <CustomSnackbar handleClose={() => {

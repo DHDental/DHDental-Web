@@ -10,58 +10,6 @@ import { axiosPublic } from '../../../api/axiosInstance'
 import { GETINFOEXAMINATE } from '../../../common/constants/apiConstants'
 import { CustomBackdrop } from '../../../components'
 
-// const bill = [
-//     {
-//         'billId_serviceId': '01',
-//         "startDay": '30/09/2022',
-//         'services': [
-//             {
-//                 "id": "TR1",
-//                 "serviceName": "Dịch vụ trám răng",
-//                 "dacTa": 'r3',
-//                 "soLuong": '1',
-//                 "status": "not done",
-//                 "billDetailId": '1',
-//                 "billStatus": 'In Process',
-//             },
-//             // {
-//             //     "serviceName": "Dịch vụ 2",
-//             //     "status": "not done"
-//             // }
-//         ],
-//         'record': [
-//             {
-//                 "recordName": 'record 1',
-//             }
-
-//         ]
-//     },
-//     {
-//         'billId_serviceId': '02',
-//         "startDay": '22/01/2022',
-//         'services': [
-//             {
-//                 "id": "TR2",
-//                 "serviceName": "Dịch vụ trồng răng",
-//                 "dacTa": 'r3',
-//                 "soLuong": '1',
-//                 "status": "not done",
-//                 "billDetailId": '2',
-//                 "billStatus": 'Paid',
-//             },
-//             // {
-//             //     "serviceName": "Dịch vụ 2",
-//             //     "status": "not done"
-//             // }
-//         ],
-//         'record': [
-//             {
-//                 "recordName": 'record 1'
-//             }
-//         ]
-//     }
-// ]
-
 const DentalCareRecord = () => {
     // const location = useLocation();
     // console.log(location?.state?.dentalCareExamReason);
