@@ -83,8 +83,8 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
             })
             if (dataFirebasePatient.length !== 0) {
                 // console.log('1');
-                dataFirebasePatient[0]?.data?.record?.serviceHoaDon.forEach((service, i) => {
-                    if (service.billID == item?.billId) {
+                dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((service, i) => {
+                    if (service?.billID == item?.billId) {
                         console.log(i);
                         update(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`), {
                             statusThanhToan: 'roi'
@@ -108,7 +108,7 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
         }
     }
     useEffect(() => {
-        dataFirebasePatient[0]?.data?.record?.serviceHoaDon.forEach((service, i) => {
+        dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((service, i) => {
             if (service?.billID == item?.billId) {
                 setThanhToan('yes')
             }
