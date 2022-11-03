@@ -88,7 +88,7 @@ const MedicalRegistration = () => {
             }
         }
     })
-    console.log(dayjs().subtract(1, 'year').format('DD/MM/YYYY'));
+    // console.log(dayjs().subtract(1, 'year').format('DD/MM/YYYY'));
     return (
         <>
             <Grid container spacing={0.5}
