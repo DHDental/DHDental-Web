@@ -38,6 +38,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     const [openPopUpHoaDon, setOpenPopUpHoaDon] = useState(false)
     const [openBackdrop, setOpenBackdrop] = useState(false)
     const [messageErrorDacTa, setMessageErrorDacTa] = useState('')
+    const [messageErrorSoLanDuKien, setMessageErrorSoLanDuKien] = useState('')
 
 
     const handleHideServiceResult = () => {
@@ -60,7 +61,13 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         setShowServiceResult(!showServiceResult)
 
         let newItem = { ...item }
-        newItem = { ...newItem, 'soLuong': 1, 'soLanDuKienThucHien': 1, dacTa: '' }
+        console.log(newItem);
+        if (newItem?.id == 'NRD' || newItem?.id == 'NRK') {
+            newItem = { ...newItem, 'soLuong': 1, 'soLanDuKienThucHien': 20, dacTa: '' }
+        } else {
+            newItem = { ...newItem, 'soLuong': 1, 'soLanDuKienThucHien': 1, dacTa: '' }
+        }
+
 
         var count = 0
         serviceList.forEach(element => {
@@ -69,8 +76,8 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
         if (count === 0) {
             setCurrentService(newItem)
+            setMessageErrorSoLanDuKien('')
             setOpenPopupChooseService(true)
-            // setServiceList([...serviceList, newItem])
         }
         else return
     }
@@ -83,8 +90,10 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     }
     const handleYesPopupChooseService = () => {
         if (currentService?.dacTa.trim() == '') {
-            console.log('rong');
             setMessageErrorDacTa('Cần nhập đặc tả')
+            return
+        }
+        if (messageErrorSoLanDuKien != '') {
             return
         }
         const newItem = { ...currentService, dacTa: currentService?.dacTa?.trim() }
@@ -106,20 +115,21 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
     const handleUpdateService = (item, i) => {
         setCurrentService({ ...item, index: i })
+        setMessageErrorSoLanDuKien('')
         setOpenPopupUpdateService(true)
     }
 
     const handleYesPopupUpdateService = () => {
-        // console.log(currentService);
         if (currentService?.dacTa.trim() == '') {
-            console.log('rong');
             setMessageErrorDacTa('Cần nhập đặc tả')
+            return
+        }
+        if (messageErrorSoLanDuKien != '') {
             return
         }
         const newItem = { ...currentService, dacTa: currentService?.dacTa?.trim() }
         const newList = [...serviceList]
         newList[currentService.index] = newItem
-        // console.log(newList);
         update(ref(db, `${location?.state?.patient?.key}/record`), {
             serviceList: newList
         })
@@ -130,7 +140,6 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
     const removeInServiceList = (i) => {
         const newList = [...serviceList]
-        // console.log(newList);
         if (i !== -1) {
             newList.splice(i, 1);
             update(ref(db, `${location?.state?.patient?.key}/record`), {
@@ -149,8 +158,6 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         setOpenPopUpHoaDon(false);
     }
     const handleYesPopUpHoaDon = async () => {
-        // console.log(serviceList);
-        // console.log(param?.id);
         setOpenPopUpHoaDon(false);
         try {
             var serviceRequest = []
@@ -186,7 +193,6 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             setOpenBackdrop(false)
             setTaoHoaDon('daTao')
             setSearchServiceTerm('')
-            // console.log(response.data);
         } catch (error) {
             setOpenBackdrop(false)
             setTaoHoaDon('')
@@ -200,7 +206,6 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             try {
                 setLoadingService(true)
                 const response = await axiosPublic.post(LIST_SERVICE)
-                // console.log(response.data);
                 isMounted && setAllService(response.data)
                 setLoadingService(false)
             } catch (error) {
@@ -213,6 +218,28 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             isMounted = false;
         }
     }, [])
+    useEffect(() => {
+        console.log(currentService);
+        if (currentService?.id == 'NRD' || currentService?.id == 'NRK') {
+            if (currentService?.soLanDuKienThucHien < 20) {
+                setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của niềng răng không nhỏ hơn 20 lần')
+            } else {
+                setMessageErrorSoLanDuKien('')
+            }
+        }
+        else {
+            if (currentService?.soLanDuKienThucHien > 20) {
+                setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của dịch vụ này không nhiều hơn 20 lần')
+            } else {
+                setMessageErrorSoLanDuKien('')
+            }
+        }
+
+        if (currentService?.dacTa?.trim() != '') {
+            setMessageErrorDacTa('')
+        }
+
+    }, [currentService])
     // console.log(currentService);
     return (
         <>
@@ -547,6 +574,15 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                 />
                             </Grid>
                         </Grid>
+                        {messageErrorSoLanDuKien != '' ?
+                            <Grid container item>
+                                <Grid item xs={3}></Grid>
+                                <Grid item xs={7}>
+                                    <Typography sx={{ color: 'red' }}>{messageErrorSoLanDuKien}</Typography>
+                                </Grid>
+                            </Grid>
+                            : null
+                        }
                     </Grid>
                 </DialogContent>
                 <DialogActions>
@@ -649,6 +685,15 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                 />
                             </Grid>
                         </Grid>
+                        {messageErrorSoLanDuKien != '' ?
+                            <Grid container item>
+                                <Grid item xs={3}></Grid>
+                                <Grid item xs={7}>
+                                    <Typography sx={{ color: 'red' }}>{messageErrorSoLanDuKien}</Typography>
+                                </Grid>
+                            </Grid>
+                            : null
+                        }
                     </Grid>
                 </DialogContent>
                 <DialogActions>
