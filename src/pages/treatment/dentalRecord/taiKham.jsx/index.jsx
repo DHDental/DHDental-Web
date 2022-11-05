@@ -22,7 +22,7 @@ const db = StartFirebase()
 const Record = ({ bill }) => {
     const navigate = useNavigate();
     const param = useParams()
-    console.log(bill);
+    console.log('record', bill);
     const location = useLocation()
     const [motaList, setMotaList] = useState([])
     const [openBackdrop, setOpenBackdrop] = useState(false)
@@ -67,10 +67,11 @@ const Record = ({ bill }) => {
             serviceStatus: item?.serviceStatus,
             statusThanhToan: statusThanhToan
         }
-        console.log(newItem);
+        console.log('a', newItem);
+        console.log(serviceList);
         var count = 0
         serviceList.forEach(element => {
-            if (newItem?.billDetailId === element?.billDetailId) count = 1;
+            if (newItem?.billDetailID === element?.billDetailID) count = 1;
         });
         if (count === 0) {
             update(ref(db, `${location?.state?.patient?.key}/record`), {
