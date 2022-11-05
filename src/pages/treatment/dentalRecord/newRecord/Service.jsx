@@ -61,7 +61,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         setShowServiceResult(!showServiceResult)
 
         let newItem = { ...item }
-        console.log(newItem);
+        // console.log(newItem);
         if (newItem?.id == 'NRD' || newItem?.id == 'NRK') {
             newItem = { ...newItem, 'soLuong': 1, 'soLanDuKienThucHien': 20, dacTa: '' }
         } else {

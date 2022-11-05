@@ -36,6 +36,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     const [openPopUpHoaDon, setOpenPopUpHoaDon] = useState(false)
     const [openBackdrop, setOpenBackdrop] = useState(false)
     const [messageErrorDacTa, setMessageErrorDacTa] = useState('')
+    const [messageErrorSoLanDuKien, setMessageErrorSoLanDuKien] = useState('')
 
 
     const handleHideServiceResult = () => {
@@ -58,7 +59,11 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         setShowServiceResult(!showServiceResult)
 
         let newItem = { ...item }
-        newItem = { ...newItem, 'soLuong': 1, 'soLanDuKienThucHien': 1, dacTa: '' }
+        if (newItem?.id == 'NRD' || newItem?.id == 'NRK') {
+            newItem = { ...newItem, 'soLuong': 1, 'soLanDuKienThucHien': 20, dacTa: '' }
+        } else {
+            newItem = { ...newItem, 'soLuong': 1, 'soLanDuKienThucHien': 1, dacTa: '' }
+        }
 
         var count = 0
         serviceList.forEach(element => {
@@ -68,6 +73,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
         if (count === 0) {
             setCurrentService(newItem)
+            setMessageErrorSoLanDuKien('')
             setOpenPopupChooseService(true)
         }
         else return
@@ -82,6 +88,9 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         if (currentService?.dacTa.trim() == '') {
             console.log('rong');
             setMessageErrorDacTa('Cần nhập đặc tả')
+            return
+        }
+        if (messageErrorSoLanDuKien != '') {
             return
         }
         const newItem = { ...currentService, dacTa: currentService?.dacTa?.trim() }
@@ -102,6 +111,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
     const handleUpdateService = (item, i) => {
         setCurrentService({ ...item, index: i })
+        setMessageErrorSoLanDuKien('')
         setOpenPopupUpdateService(true)
     }
 
@@ -109,6 +119,9 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         if (currentService?.dacTa.trim() == '') {
             console.log('rong');
             setMessageErrorDacTa('Cần nhập đặc tả')
+            return
+        }
+        if (messageErrorSoLanDuKien != '') {
             return
         }
         // console.log(currentService);
@@ -245,6 +258,28 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             isMounted = false;
         }
     }, [])
+    useEffect(() => {
+        console.log(currentService);
+        if (currentService?.id == 'NRD' || currentService?.id == 'NRK') {
+            if (currentService?.soLanDuKienThucHien < 20) {
+                setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của niềng răng không nhỏ hơn 20 lần')
+            } else {
+                setMessageErrorSoLanDuKien('')
+            }
+        }
+        else {
+            if (currentService?.soLanDuKienThucHien > 20) {
+                setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của dịch vụ này không nhiều hơn 20 lần')
+            } else {
+                setMessageErrorSoLanDuKien('')
+            }
+        }
+
+        if (currentService?.dacTa?.trim() != '') {
+            setMessageErrorDacTa('')
+        }
+
+    }, [currentService])
     // console.log(currentService);
     return (
         <>
@@ -578,6 +613,15 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                 />
                             </Grid>
                         </Grid>
+                        {messageErrorSoLanDuKien != '' ?
+                            <Grid container item>
+                                <Grid item xs={3}></Grid>
+                                <Grid item xs={7}>
+                                    <Typography sx={{ color: 'red' }}>{messageErrorSoLanDuKien}</Typography>
+                                </Grid>
+                            </Grid>
+                            : null
+                        }
                     </Grid>
                 </DialogContent>
                 <DialogActions>
@@ -680,6 +724,15 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                 />
                             </Grid>
                         </Grid>
+                        {messageErrorSoLanDuKien != '' ?
+                            <Grid container item>
+                                <Grid item xs={3}></Grid>
+                                <Grid item xs={7}>
+                                    <Typography sx={{ color: 'red' }}>{messageErrorSoLanDuKien}</Typography>
+                                </Grid>
+                            </Grid>
+                            : null
+                        }
                     </Grid>
                 </DialogContent>
                 <DialogActions>
