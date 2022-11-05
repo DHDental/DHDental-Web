@@ -37,6 +37,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     const [openBackdrop, setOpenBackdrop] = useState(false)
     const [messageErrorDacTa, setMessageErrorDacTa] = useState('')
     const [messageErrorSoLanDuKien, setMessageErrorSoLanDuKien] = useState('')
+    const [messageErrorSoLuong, setMessageErrorSoLuong] = useState('')
 
 
     const handleHideServiceResult = () => {
@@ -74,6 +75,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         if (count === 0) {
             setCurrentService(newItem)
             setMessageErrorSoLanDuKien('')
+            setMessageErrorSoLuong('')
             setOpenPopupChooseService(true)
         }
         else return
@@ -91,6 +93,9 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             return
         }
         if (messageErrorSoLanDuKien != '') {
+            return
+        }
+        if (messageErrorSoLuong != '') {
             return
         }
         const newItem = { ...currentService, dacTa: currentService?.dacTa?.trim() }
@@ -112,6 +117,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     const handleUpdateService = (item, i) => {
         setCurrentService({ ...item, index: i })
         setMessageErrorSoLanDuKien('')
+        setMessageErrorSoLuong('')
         setOpenPopupUpdateService(true)
     }
 
@@ -122,6 +128,9 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             return
         }
         if (messageErrorSoLanDuKien != '') {
+            return
+        }
+        if (messageErrorSoLuong != '') {
             return
         }
         // console.log(currentService);
@@ -264,12 +273,16 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             if (currentService?.soLanDuKienThucHien < 20) {
                 setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của niềng răng không nhỏ hơn 20 lần')
             } else {
-                setMessageErrorSoLanDuKien('')
+                if (currentService?.soLanDuKienThucHien > 99) {
+                    setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của niềng răng không lớn hơn 99 lần')
+                } else {
+                    setMessageErrorSoLanDuKien('')
+                }
             }
         }
         else {
-            if (currentService?.soLanDuKienThucHien > 20) {
-                setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của dịch vụ này không nhiều hơn 20 lần')
+            if (currentService?.soLanDuKienThucHien > 30) {
+                setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của dịch vụ này không nhiều hơn 30 lần')
             } else {
                 setMessageErrorSoLanDuKien('')
             }
@@ -277,6 +290,14 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
         if (currentService?.dacTa?.trim() != '') {
             setMessageErrorDacTa('')
+        }
+        if (currentService?.soLanDuKienThucHien == '') {
+            setMessageErrorSoLanDuKien('Cần nhập số lần thực hiện dự kiến')
+        }
+        if (currentService?.soLuong == '') {
+            setMessageErrorSoLuong('Cần nhập số lượng')
+        } else {
+            setMessageErrorSoLuong('')
         }
 
     }, [currentService])
@@ -587,6 +608,15 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                 />
                             </Grid>
                         </Grid>
+                        {messageErrorSoLuong != '' ?
+                            <Grid container item>
+                                <Grid item xs={3}></Grid>
+                                <Grid item xs={7}>
+                                    <Typography sx={{ color: 'red' }}>{messageErrorSoLuong}</Typography>
+                                </Grid>
+                            </Grid>
+                            : null
+                        }
                         <Grid container item>
                             <Grid item xs={3}>
                                 <Typography>Số lần thực hiện (dự kiến)</Typography>
@@ -698,6 +728,15 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                 />
                             </Grid>
                         </Grid>
+                        {messageErrorSoLuong != '' ?
+                            <Grid container item>
+                                <Grid item xs={3}></Grid>
+                                <Grid item xs={7}>
+                                    <Typography sx={{ color: 'red' }}>{messageErrorSoLuong}</Typography>
+                                </Grid>
+                            </Grid>
+                            : null
+                        }
                         <Grid container item>
                             <Grid item xs={3}>
                                 <Typography>Số lần thực hiện (dự kiến)</Typography>
