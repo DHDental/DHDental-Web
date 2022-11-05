@@ -43,7 +43,8 @@ const HoaDon = ({ dataFirebasePatient }) => {
             try {
                 setOpenBackdrop(true)
                 const response = await axiosPublic.post(STAFF_BILL, {
-                    "phoneNumber": param.id
+                    "phoneNumber": param.id,
+                    "type": "W"
                 })
                 isMounted && setBill(response.data)
                 setOpenBackdrop(false)
