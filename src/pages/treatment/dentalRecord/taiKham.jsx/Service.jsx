@@ -88,7 +88,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     }
     const handleYesPopupChooseService = () => {
         if (currentService?.dacTa.trim() == '') {
-            console.log('rong');
+            // console.log('rong');
             setMessageErrorDacTa('Cần nhập đặc tả')
             return
         }
@@ -123,7 +123,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
     const handleYesPopupUpdateService = () => {
         if (currentService?.dacTa.trim() == '') {
-            console.log('rong');
+            // console.log('rong');
             setMessageErrorDacTa('Cần nhập đặc tả')
             return
         }
@@ -167,7 +167,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         setOpenPopUpHoaDon(false);
     }
     const handleYesPopUpHoaDon = async () => {
-        console.log(serviceList);
+        // console.log(serviceList);
         // console.log(param?.id);
         setOpenPopUpHoaDon(false);
         try {
@@ -222,7 +222,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                     return { ...item, statusThanhToan: 'chua' }
                 })
             }
-            console.log(serviceReted);
+            // console.log(serviceReted);
             // setServiceHoaDon(serviceList)  
             const hoadonList = serviceDaCoHoaDon.concat(serviceReted)
             console.log(hoadonList);
@@ -268,7 +268,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         }
     }, [])
     useEffect(() => {
-        console.log(currentService);
+        // console.log(currentService);
         if (currentService?.id == 'NRD' || currentService?.id == 'NRK') {
             if (currentService?.soLanDuKienThucHien < 20) {
                 setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của niềng răng không nhỏ hơn 20 lần')

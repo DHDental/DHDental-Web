@@ -22,7 +22,7 @@ const db = StartFirebase()
 const Record = ({ bill }) => {
     const navigate = useNavigate();
     const param = useParams()
-    console.log('record', bill);
+    // console.log('record', bill);
     const location = useLocation()
     const [motaList, setMotaList] = useState([])
     const [openBackdrop, setOpenBackdrop] = useState(false)

@@ -7,16 +7,16 @@ import { axiosPublic } from '../../../api/axiosInstance';
 import { GET_USER_INFO } from '../../../common/constants/apiConstants';
 import { CustomBackdrop } from '../../../components';
 import { caculateAgeFromBirth } from '../../../common/utils/caculate'
+import HistoryRecord from './HistoryRecord';
 
 const PatientInfoDR = ({ patientInfo }) => {
     const location = useLocation();
     // console.log(location);
     // const param = useParams()
     // console.log(param.id);
-
     // const [patientInfo, setPatientInfo] = useState()
     const [openBackdrop, setOpenBackdrop] = useState(false)
-
+    const [openHistory, setOpenHistory] = useState(false)
     // useEffect(() => {
     //     let isMounted = true;
     //     const getPatientInfo = async () => {
@@ -37,6 +37,15 @@ const PatientInfoDR = ({ patientInfo }) => {
     //         isMounted = false;
     //     }
     // }, [param])
+    // const handleOpenHistoryRecord = () => {
+    //     console.log('ok')
+    //     setOpenHistory(true)
+    // }
+    const handleClose = (event, reason) => {
+        if (reason && reason === "backdropClick")
+            return;
+        setOpenHistory(false);
+    };
     return (
         <>
             <Grid container item spacing={1} direction='row'>
@@ -68,11 +77,21 @@ const PatientInfoDR = ({ patientInfo }) => {
                 <Grid item sm={2}>
                     <Typography>Lịch sử khám bệnh</Typography>
                 </Grid>
-                <Grid item sm={5}>
-                    <Typography></Typography>
+                <Grid item sm={5}
+                    onClick={() => {
+                        setOpenHistory(true)
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            color: 'blue',
+                            cursor: 'pointer'
+                        }}
+                    >Xem chi tiết</Typography>
                 </Grid>
             </Grid>
             {/* <CustomBackdrop open={openBackdrop} /> */}
+            <HistoryRecord open={openHistory} handleClose={handleClose} />
         </>
     )
 }
