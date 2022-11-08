@@ -11,6 +11,7 @@ export const STAFF_BILL = '/bill/getBill'
 // dentist
 export const DENTIST_DS_KHAM = '/dentist/ds-bn-kham'
 export const KHAM_BENH = '/dentist/kham-benh'
+export const RECORD_HISTORY = '/dentist/record'
 
 // admin
 export const ADMIN_TEST = '/admin/test'

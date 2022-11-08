@@ -11,3 +11,4 @@ export { default as DentalCareRecord } from './treatment/dentalRecord/DentalCare
 export { default as Bill } from './bill'
 export { default as TestAdmin } from './admin/TestAdmin'
 export { default as OwnerTest } from './owner/OwnerTest'
+export { default as HistoryRecord } from './treatment/recordHistory'

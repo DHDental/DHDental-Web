@@ -1,6 +1,10 @@
 import { Search } from "@mui/icons-material"
 import { Box, Button, CircularProgress, IconButton, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
 import { useState } from "react"
+import { NavLink } from "react-router-dom"
+import { axiosPublic } from "../../api/axiosInstance"
+import { GET_USER_INFO } from "../../common/constants/apiConstants"
+import { RECORD_HISTORY } from "../../common/constants/pathConstants"
 import { formatStringtoDate } from "../../common/utils/formatDate"
 
 const Treatment = () => {
@@ -9,16 +13,28 @@ const Treatment = () => {
     const [loading, setLoading] = useState(false)
     const [messageNodata, setMessageNodata] = useState('')
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         if (searchTerm.trim() == '') {
             return
         }
-        console.log(searchTerm);
         try {
-
+            setMessageNodata('')
+            setPatient([])
+            setLoading(true)
+            const response = await axiosPublic.post(GET_USER_INFO, {
+                "keySearch": searchTerm
+            })
+            setPatient(response.data)
+            setLoading(false)
         } catch (error) {
-
+            setLoading(false)
+            console.log(error);
+            if (error.response.status === 417) {
+                setMessageNodata('Không tìm thấy kết quả')
+            } else {
+                setMessageNodata(error.message)
+            }
         }
     }
     return (
@@ -77,16 +93,19 @@ const Treatment = () => {
                                     <TableCell align="center">{item?.phoneNumber}</TableCell>
                                     <TableCell align="center">{formatStringtoDate(item?.dob, "YYYY-MM-DD", "DD/MM/YYYY")}</TableCell>
                                     <TableCell align="center">
-                                        <Button
-                                            size="small"
-                                            variant="contained"
-
-                                            onClick={() => {
-
-                                            }}
+                                        <NavLink to={`${RECORD_HISTORY}/${item?.phoneNumber}`}
+                                            state={{ patient: item }}
                                         >
-                                            Xem chi tiết
-                                        </Button>
+                                            <Button
+                                                size="small"
+                                                variant="contained"
+                                                disableElevation
+                                                onClick={() => {
+                                                }}
+                                            >
+                                                Xem chi tiết
+                                            </Button>
+                                        </NavLink>
                                     </TableCell>
                                 </TableRow>
                             ))

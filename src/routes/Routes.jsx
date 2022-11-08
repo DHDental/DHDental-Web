@@ -5,7 +5,7 @@ import {
     Appointment, WaitingList, Treatment, Patients, NotFound,
     MedicalRegistration,
     DentistWaitingList, Login,
-    DentalCareRecord, Bill, TestAdmin, OwnerTest
+    DentalCareRecord, Bill, TestAdmin, OwnerTest, HistoryRecord
 } from '../pages';
 import { StaffLayout, DentistLayout, AdminLayout } from '../components/layouts';
 import FindPatient from '../pages/bill/FindPatient';
@@ -46,6 +46,9 @@ export default function Router() {
                         { path: 'kham-benh', element: <Treatment /> },
                         {
                             path: 'kham-benh/:id', element: <DentalCareRecord />,
+                        },
+                        {
+                            path: 'record/:id', element: <HistoryRecord />,
                         },
                     ]
                 }

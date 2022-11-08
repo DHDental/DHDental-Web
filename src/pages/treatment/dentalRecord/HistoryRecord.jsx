@@ -22,6 +22,7 @@ const HistoryRecord = ({ open, handleClose }) => {
                 isMounted && setRecords(response.data)
             } catch (error) {
                 console.log(error);
+                setRecords([])
             }
         }
         getRecord()
