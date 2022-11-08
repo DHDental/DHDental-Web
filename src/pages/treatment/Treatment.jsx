@@ -1,11 +1,25 @@
 import { Search } from "@mui/icons-material"
-import { Box, IconButton, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
+import { Box, Button, CircularProgress, IconButton, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
 import { useState } from "react"
+import { formatStringtoDate } from "../../common/utils/formatDate"
 
 const Treatment = () => {
     const [searchTerm, setSearchTerm] = useState('')
+    const [patient, setPatient] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [messageNodata, setMessageNodata] = useState('')
+
     const handleSubmit = (e) => {
         e.preventDefault()
+        if (searchTerm.trim() == '') {
+            return
+        }
+        console.log(searchTerm);
+        try {
+
+        } catch (error) {
+
+        }
     }
     return (
         <>
@@ -37,18 +51,46 @@ const Treatment = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Họ</TableCell>
-                            <TableCell>Tên đệm</TableCell>
-                            <TableCell>Tên</TableCell>
-                            <TableCell>Số điện thoại</TableCell>
-                            <TableCell>Ngày sinh</TableCell>
-                            <TableCell>Khám bệnh</TableCell>
+                            <TableCell align="center">Họ và tên</TableCell>
+                            <TableCell align="center">Số điện thoại</TableCell>
+                            <TableCell align="center">Ngày sinh</TableCell>
+                            <TableCell align="center">Lịch sử khám bệnh</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
-                            {/* <TableCell></TableCell> */}
-                        </TableRow>
+                        {(loading) ? (
+                            <TableRow>
+                                <TableCell colSpan={4} align='center'><CircularProgress /></TableCell>
+                            </TableRow>
+                        ) : null}
+                        {
+                            (patient.length == 0 && messageNodata != '') ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} align='center'>{messageNodata}</TableCell>
+                                </TableRow>
+                            ) : null
+                        }
+                        {
+                            patient.map((item, index) => (
+                                <TableRow key={index}>
+                                    <TableCell align="center">{item?.fullName}</TableCell>
+                                    <TableCell align="center">{item?.phoneNumber}</TableCell>
+                                    <TableCell align="center">{formatStringtoDate(item?.dob, "YYYY-MM-DD", "DD/MM/YYYY")}</TableCell>
+                                    <TableCell align="center">
+                                        <Button
+                                            size="small"
+                                            variant="contained"
+
+                                            onClick={() => {
+
+                                            }}
+                                        >
+                                            Xem chi tiết
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>
