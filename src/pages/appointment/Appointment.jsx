@@ -212,7 +212,7 @@ const Appointment = () => {
                                 <TableCell align='center'>Số điện thoại</TableCell>
                                 <TableCell align='center'>Ngày đặt hẹn</TableCell>
                                 <TableCell align='center'>Giờ hẹn</TableCell>
-                                <TableCell align='center'>Bác sĩ đặt hẹn</TableCell>
+                                <TableCell align='center'>Nha sĩ đặt hẹn</TableCell>
                                 <TableCell align='center'>Check in</TableCell>
                             </TableRow>
                         </TableHead>
