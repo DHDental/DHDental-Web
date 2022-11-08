@@ -16,3 +16,4 @@ export const CANCEL_SERVICE = '/bill/cancelService'
 
 export const CREATE_RECORD = '/dentalCareRecord/createOrUpdateRecord'
 export const GET_RECORDS = '/dentalCareRecord/getListDentalCareRecordByPhoneNumber'
+export const GET_RECORDS_BY_BILL_DETAIL = '/dentalCareRecord/getListDentalCareRecordRelatedByBillDetailID'

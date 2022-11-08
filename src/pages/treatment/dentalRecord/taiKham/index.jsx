@@ -16,6 +16,7 @@ import { TaoRecordPopUp } from './TaoRecordPopUp';
 import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
 import { axiosPublic } from '../../../../api/axiosInstance';
 import { CREATE_RECORD } from '../../../../common/constants/apiConstants';
+import RelatedHistory from './RelatedHistory';
 
 const db = StartFirebase()
 
@@ -44,6 +45,9 @@ const Record = ({ bill }) => {
     const [textSnackbar2, setTextSnackbar2] = useState('');
     const [severity2, setSeverity2] = useState('success');
     const [recordID, setRecordID] = useState('')
+
+    const [openRelatedHistory, setOpenRelatedHistory] = useState(false)
+    const [billDetailHistory, setBillDetailHistory] = useState()
 
     const handleContinueService = (item) => {
         let statusThanhToan
@@ -215,6 +219,11 @@ const Record = ({ bill }) => {
             setOpenSnackbar(true)
         }
     }
+    const handleCloseRelatedHistory = (event, reason) => {
+        if (reason && reason === "backdropClick")
+            return;
+        setOpenRelatedHistory(false);
+    };
     useEffect(() => {
         let isMounted = true;
         const dbRef = ref(db)
@@ -301,7 +310,11 @@ const Record = ({ bill }) => {
                                             color: '#03a203', alignItems: 'center',
                                             cursor: 'pointer'
                                         }}
-                                            onClick={() => (console.log('ok'))}
+                                            onClick={() => {
+
+                                                setBillDetailHistory(item?.billDetailId)
+                                                setOpenRelatedHistory(true)
+                                            }}
                                         >
                                             <Grid item><FeedOutlinedIcon /></Grid>
                                             <Grid item>
@@ -375,7 +388,11 @@ const Record = ({ bill }) => {
                 horizontal='center'
             />
             <TaoRecordPopUp open={openPopUpRecord} handleClose={handleClosePopUpRecord} handleYes={handleYesPopUpRecord} />
-
+            <RelatedHistory
+                open={openRelatedHistory}
+                handleClose={handleCloseRelatedHistory}
+                billDetailHistory={billDetailHistory}
+            />
         </>
     )
 }
