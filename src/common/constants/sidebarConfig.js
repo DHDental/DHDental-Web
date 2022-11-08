@@ -17,7 +17,9 @@ export const sideBarStaffConfig = [
     { name: 'Đăng kí khám bệnh', icon: <PostAddIcon />, path: STAFF_DANG_KI_KHAM },
     // { name: 'Bệnh nhân', icon: <PortraitIcon />, path: STAFF_BENHNHAN },
     { name: 'Thanh toán', icon: <ReceiptIcon />, path: STAFF_HOADON },
+    { name: "Bệnh nhân", icon: <PortraitIcon />, path: STAFF_BENHNHAN },
     { name: "Màn hình chờ khám", icon: <AirplayIcon />, path: STAFF_MAN_HINH_CHO_KHAM },
+
 ]
 
 export const sideBarDentistConfig = [

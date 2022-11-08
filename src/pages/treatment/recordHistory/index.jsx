@@ -100,7 +100,7 @@ const HistoryRecord = () => {
                                 square={true}
                                 sx={{
                                     marginBottom: '20px',
-                                    width: '80%'
+                                    width: '65%'
                                 }}
                                 key={i}
                             >
