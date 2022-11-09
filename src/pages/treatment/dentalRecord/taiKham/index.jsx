@@ -168,7 +168,7 @@ const Record = ({ bill }) => {
                     // })
                     remove(ref(db, location?.state?.patient?.key))
                     setOpenBackdrop(false);
-                    setTextSnackbar2('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
+                    setTextSnackbar2('Lưu dental care record thành công. Chuyển qua trang danh sách khám sau vài giây')
                     setSeverity2('success')
                     setOpenSnackbar2(true)
                     const handler = setTimeout(() =>
@@ -205,7 +205,7 @@ const Record = ({ bill }) => {
                 // })
                 remove(ref(db, location?.state?.patient?.key))
                 setOpenBackdrop(false);
-                setTextSnackbar2('Lưu dental care record thành công. Chuyển qua trang ds khám sau vài giây')
+                setTextSnackbar2('Lưu dental care record thành công. Chuyển qua trang danh sách khám sau vài giây')
                 setSeverity2('success')
                 setOpenSnackbar2(true)
                 const handler = setTimeout(() =>
