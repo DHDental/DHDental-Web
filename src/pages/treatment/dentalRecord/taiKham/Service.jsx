@@ -185,7 +185,8 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         billID: item?.billID,
                         billDetailID: item?.billDetailID,
                         serviceStatus: item?.serviceStatus,
-                        statusThanhToan: item?.statusThanhToan
+                        statusThanhToan: item?.statusThanhToan,
+                        statusUpdate: item?.statusUpdate
                     }
                     serviceDaCoHoaDon = [...serviceDaCoHoaDon, { ...newItem }]
                 }
@@ -496,8 +497,15 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                                                         })
                                                                     }}
                                                                 >
-                                                                    <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
-                                                                    <MenuItem value={'Done'}>Hoàn tất</MenuItem>
+                                                                    {/* <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
+                                                                    <MenuItem value={'Done'}>Hoàn tất</MenuItem> */}
+                                                                    {
+                                                                        serviceHoaDonItem?.statusUpdate?.map((statusChange, iStatus) => (
+                                                                            <MenuItem key={iStatus} value={statusChange}>
+                                                                                {statusChange == 'In Progress' ? 'Chưa hoàn tất' : 'Hoàn tất'}
+                                                                            </MenuItem>
+                                                                        ))
+                                                                    }
                                                                 </Select>
                                                             </FormControl>
                                                         </TableCell>

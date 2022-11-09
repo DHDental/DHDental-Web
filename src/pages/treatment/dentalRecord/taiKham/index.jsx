@@ -69,7 +69,8 @@ const Record = ({ bill }) => {
             billID: item?.billId,
             billDetailID: item?.billDetailId,
             serviceStatus: item?.serviceStatus,
-            statusThanhToan: statusThanhToan
+            statusThanhToan: statusThanhToan,
+            statusUpdate: item?.statusUpdate
         }
         console.log('a', newItem);
         console.log(serviceList);

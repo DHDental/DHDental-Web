@@ -16,6 +16,7 @@ const RelatedHistory = ({ open, handleClose, billDetailHistory }) => {
                 })
                 isMounted && setRecords(response.data)
             } catch (error) {
+                setRecords([])
                 console.log(error);
             }
         }
