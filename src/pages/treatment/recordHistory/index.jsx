@@ -144,6 +144,9 @@ const HistoryRecord = () => {
                                                             <TableRow sx={{ backgroundColor: '#f2f2f2' }}>
                                                                 <TableCell align='center'>STT</TableCell>
                                                                 <TableCell align='center'>Dịch vụ</TableCell>
+                                                                <TableCell align='center'>Đặc tả</TableCell>
+                                                                <TableCell align='center'>Số lượng</TableCell>
+                                                                <TableCell align='center'>Số lần thực hiện dự kiến</TableCell>
                                                             </TableRow>
                                                         </TableHead>
                                                         <TableBody>
@@ -154,7 +157,16 @@ const HistoryRecord = () => {
                                                                             {serviceIndex + 1}
                                                                         </TableCell>
                                                                         <TableCell align='center'>
-                                                                            {service}
+                                                                            {service?.serviceName}
+                                                                        </TableCell>
+                                                                        <TableCell align='center'>
+                                                                            {service?.serviceDesc}
+                                                                        </TableCell>
+                                                                        <TableCell align='center'>
+                                                                            {service?.serviceQuantity}
+                                                                        </TableCell>
+                                                                        <TableCell align='center'>
+                                                                            {service?.serviceExpectedTimes}
                                                                         </TableCell>
                                                                     </TableRow>
                                                                 ))

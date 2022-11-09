@@ -453,8 +453,16 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                                                         })
                                                                     }}
                                                                 >
-                                                                    <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
-                                                                    <MenuItem value={'Done'}>Hoàn tất</MenuItem>
+                                                                    {/* <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
+                                                                    <MenuItem value={'Done'}>Hoàn tất</MenuItem> */}
+
+                                                                    {
+                                                                        serviceHoaDonItem?.statusUpdate?.map((statusChange, iStatus) => (
+                                                                            <MenuItem key={iStatus} value={statusChange}>
+                                                                                {statusChange == 'In Progress' ? 'Chưa hoàn tất' : 'Hoàn tất'}
+                                                                            </MenuItem>
+                                                                        ))
+                                                                    }
                                                                 </Select>
                                                             </FormControl>
                                                         </TableCell>
