@@ -7,7 +7,7 @@ import {
     DentistWaitingList, Login,
     DentalCareRecord, Bill, TestAdmin, OwnerTest, HistoryRecord, AllBill
 } from '../pages';
-import { StaffLayout, DentistLayout, AdminLayout } from '../components/layouts';
+import { StaffLayout, DentistLayout, AdminLayout, OwnerLayout } from '../components/layouts';
 import FindPatient from '../pages/bill/FindPatient';
 
 
@@ -72,7 +72,7 @@ export default function Router() {
             element: <RequireAuth allowedRoles={['5']} />,
             children: [
                 {
-                    element: <AdminLayout />,
+                    element: <OwnerLayout />,
                     children: [
                         { path: 'test', element: <OwnerTest /> },
                     ]
