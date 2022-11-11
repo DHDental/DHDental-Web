@@ -515,33 +515,6 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                                         </TableBody>
                                     </Table>
                                 </Grid>
-                                {/* <Grid container item spacing={2} direction='row' sx={{ alignItems: 'center' }}
-                                            key={i}
-                                        >
-                                            <Grid item >{item?.serviceDesc}</Grid>
-                                            <Grid item >
-                                                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                                    <Select
-                                                        value={item?.serviceStatus == 'Not Yet' ? '' : item?.serviceStatus}
-                                                        onChange={(event) => {
-                                                            var newList = [...serviceHoaDon]
-                                                            newList[i].serviceStatus = event.target.value
-                                                            setServiceHoaDon(newList)
-                                                            update(ref(db, `${location?.state?.patient?.key}/record`), {
-                                                                serviceHoaDon: serviceHoaDon
-                                                            })
-                                                        }}
-                                                    >
-                                                        <MenuItem value={'In Progress'}>Chưa hoàn tất</MenuItem>
-                                                        <MenuItem value={'Done'}>Hoàn tất</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                        </Grid> */}
-                                {/* </> */}
-                                {/* )
-                            // })} */}
-
                             </>
                             : <p>Không có dịch vụ cần làm</p>
                         : null}
