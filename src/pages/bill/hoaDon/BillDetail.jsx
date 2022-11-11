@@ -85,7 +85,7 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                 // console.log('1');
                 dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((service, i) => {
                     if (service?.billID == item?.billId) {
-                        console.log(i);
+                        // console.log(i);
                         update(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`), {
                             statusThanhToan: 'roi'
                         })

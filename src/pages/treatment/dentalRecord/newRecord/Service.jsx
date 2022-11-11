@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import classNames from "classnames/bind"
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { onValue, ref, update } from 'firebase/database';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DoneIcon from '@mui/icons-material/Done';
 
 // import styles from '../../../../style/SearchTippy.module.scss'
@@ -14,6 +14,7 @@ import { LIST_SERVICE, TAO_HOADON } from '../../../../common/constants/apiConsta
 import StartFirebase from '../../../../components/firebaseConfig'
 import { TaoHoaDonPopUp } from '../TaoHoaDonPopUp';
 import { CustomBackdrop } from '../../../../components';
+import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
 
 // Danh sách các công tác điều trị đã xác nhận thực hiện
 //đang trong quá trình xác nhận thanh toán để thực hiện theo chỉ định
@@ -24,6 +25,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 }) => {
     const location = useLocation()
     const param = useParams()
+    const navigate = useNavigate();
 
     const [loadingService, setLoadingService] = useState(false)
     const [allService, setAllService] = useState([])
@@ -198,9 +200,17 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                 serviceHoaDon: response.data.billDetailResponse,
                 recordID: response.data.recordID
             })
+            update(ref(db, `${location?.state?.patient?.key}`), {
+                color: 'yd',
+                status: 0
+            })
             setOpenBackdrop(false)
             setTaoHoaDon('daTao')
             setSearchServiceTerm('')
+
+            const handler = setTimeout(() =>
+                navigate(DENTIST_DS_KHAM, { replace: true }), 1000)
+
         } catch (error) {
             setOpenBackdrop(false)
             setTaoHoaDon('')
@@ -227,7 +237,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         }
     }, [])
     useEffect(() => {
-        console.log(currentService);
+        // console.log(currentService);
         if (currentService?.id == 'NRD' || currentService?.id == 'NRK') {
             if (currentService?.soLanDuKienThucHien < 20) {
                 setMessageErrorSoLanDuKien('Số lần thực hiện dự kiến của niềng răng không nhỏ hơn 20 lần')
