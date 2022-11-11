@@ -538,7 +538,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Đặc tả</Typography>
+                                <Typography>Đặc tả *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -564,7 +564,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Số lượng</Typography>
+                                <Typography>Số lượng *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -597,7 +597,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         }
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Số lần thực hiện (dự kiến)</Typography>
+                                <Typography>Số lần thực hiện (dự kiến) *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -660,7 +660,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Đặc tả</Typography>
+                                <Typography>Đặc tả *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -684,7 +684,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         }
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Số lượng</Typography>
+                                <Typography>Số lượng *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -717,7 +717,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         }
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Số lần thực hiện (dự kiến)</Typography>
+                                <Typography>Số lần thực hiện (dự kiến) *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField

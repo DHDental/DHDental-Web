@@ -203,46 +203,46 @@ const SearchPatient = () => {
                     </Box>
                     <Box>
                         <Grid container spacing={2} direction='row'>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <Typography>Bệnh nhân</Typography>
                             </Grid>
-                            <Grid item xs={7}>
+                            <Grid item xs={6}>
                                 <Typography>{currentPatient?.fullName}</Typography>
                             </Grid>
                         </Grid>
                         <br />
                         <Grid container spacing={2} direction='row'>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <Typography>Số điện thoại</Typography>
                             </Grid>
-                            <Grid item xs={7}>
+                            <Grid item xs={6}>
                                 <Typography>{currentPatient?.phoneNumber}</Typography>
                             </Grid>
                         </Grid>
                         <br />
                         <Grid container spacing={2} direction='row'>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <Typography>Ngày sinh</Typography>
                             </Grid>
-                            <Grid item xs={7}>
+                            <Grid item xs={6}>
                                 <Typography>{formatStringtoDate(currentPatient?.dob, "YYYY-MM-DD", "DD/MM/YYYY")}</Typography>
                             </Grid>
                         </Grid>
                         <br />
                         <Grid container spacing={2} direction='row'>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <Typography>Địa chỉ</Typography>
                             </Grid>
-                            <Grid item xs={7}>
+                            <Grid item xs={6}>
                                 <Typography>{currentPatient?.address}</Typography>
                             </Grid>
                         </Grid>
                         <br />
                         <Grid container spacing={2} direction='row' sx={{ alignItems: 'flex-end' }}>
-                            <Grid item xs={3}>
-                                <Typography >Lí do khám bệnh</Typography>
+                            <Grid item xs={4}>
+                                <Typography >Lí do khám bệnh *</Typography>
                             </Grid>
-                            <Grid item xs={7} >
+                            <Grid item xs={6} >
                                 <TextField
                                     id="dentalCareExamReason"
                                     name="dentalCareExamReason"
@@ -256,9 +256,9 @@ const SearchPatient = () => {
                         </Grid>
                         {messageCurrentPatientReason != '' ?
                             <Grid container spacing={2} direction='row'>
-                                <Grid item xs={3}>
+                                <Grid item xs={4}>
                                 </Grid>
-                                <Grid item xs={7}>
+                                <Grid item xs={6}>
                                     <Typography sx={{ color: 'red' }}>{messageCurrentPatientReason}</Typography>
                                 </Grid>
                             </Grid> : null

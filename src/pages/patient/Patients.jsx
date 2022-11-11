@@ -78,13 +78,13 @@ const FindPatient = () => {
                     <TableBody>
                         {(loading) ? (
                             <TableRow>
-                                <TableCell colSpan={4} align='center'><CircularProgress /></TableCell>
+                                <TableCell colSpan={5} align='center'><CircularProgress /></TableCell>
                             </TableRow>
                         ) : null}
                         {
                             (patient.length === 0 && messageNodata !== '') ? (
                                 <TableRow>
-                                    <TableCell colSpan={4} align='center'>{messageNodata}</TableCell>
+                                    <TableCell colSpan={5} align='center'>{messageNodata}</TableCell>
                                 </TableRow>
                             ) : null
                         }

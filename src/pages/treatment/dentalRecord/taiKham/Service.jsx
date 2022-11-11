@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import classNames from "classnames/bind"
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { onValue, ref, update } from 'firebase/database';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DoneIcon from '@mui/icons-material/Done';
 
 import styles from '../../../../style/SearchTippy.module.scss'
@@ -13,6 +13,7 @@ import { LIST_SERVICE, TAO_HOADON } from '../../../../common/constants/apiConsta
 import { TaoHoaDonPopUp } from '../TaoHoaDonPopUp';
 import { CustomBackdrop } from '../../../../components';
 import StartFirebase from "../../../../components/firebaseConfig"
+import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
 
 const db = StartFirebase()
 const cx = classNames.bind(styles)
@@ -22,6 +23,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 }) => {
     const location = useLocation()
     const param = useParams()
+    const navigate = useNavigate();
 
     const [loadingService, setLoadingService] = useState(false)
     const [allService, setAllService] = useState([])
@@ -239,9 +241,20 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                 paymentConfirmation: xacNhanThanhToan,
                 serviceHoaDon: hoadonList
             })
+
+
+
             setOpenBackdrop(false)
             setTaoHoaDon('daTao')
             setSearchServiceTerm('')
+            if (xacNhanThanhToan == 0) {
+                update(ref(db, `${location?.state?.patient?.key}`), {
+                    color: 'yd',
+                    status: 0
+                })
+                const handler = setTimeout(() =>
+                    navigate(DENTIST_DS_KHAM, { replace: true }), 1000)
+            }
         } catch (error) {
             setOpenBackdrop(false)
             setTaoHoaDon('')
@@ -543,7 +556,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Đặc tả</Typography>
+                                <Typography>Đặc tả *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -567,7 +580,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         }
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Số lượng</Typography>
+                                <Typography>Số lượng *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -600,7 +613,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         }
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Số lần thực hiện (dự kiến)</Typography>
+                                <Typography>Số lần thực hiện (dự kiến) *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -663,7 +676,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
 
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Đặc tả</Typography>
+                                <Typography>Đặc tả *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -687,7 +700,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         }
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Số lượng</Typography>
+                                <Typography>Số lượng *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
@@ -720,7 +733,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         }
                         <Grid container item>
                             <Grid item xs={3}>
-                                <Typography>Số lần thực hiện (dự kiến)</Typography>
+                                <Typography>Số lần thực hiện (dự kiến) *</Typography>
                             </Grid>
                             <Grid item xs={7}>
                                 <TextField
