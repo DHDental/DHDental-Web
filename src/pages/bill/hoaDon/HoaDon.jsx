@@ -42,6 +42,7 @@ const HoaDon = ({ dataFirebasePatient }) => {
         const getBill = async () => {
             try {
                 setOpenBackdrop(true)
+                setBill()
                 const response = await axiosPublic.post(STAFF_BILL, {
                     "phoneNumber": param.id,
                     "type": "W"
@@ -49,6 +50,7 @@ const HoaDon = ({ dataFirebasePatient }) => {
                 isMounted && setBill(response.data)
                 setOpenBackdrop(false)
             } catch (error) {
+                setBill()
                 setOpenBackdrop(false)
                 console.log(error);
             }

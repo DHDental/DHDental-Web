@@ -43,10 +43,14 @@ const Bill = () => {
             }
         })
         if (count == 0) {
-            if (dataFirebasePatient[0]?.data?.record?.paymentConfirmation == 0)
+            if (dataFirebasePatient[0]?.data?.record?.paymentConfirmation == 0) {
                 update(ref(db, `${dataFirebasePatient[0]?.key}/record`), {
                     paymentConfirmation: 1
                 })
+                update(ref(db, `${dataFirebasePatient[0]?.key}`), {
+                    color: 'ye'
+                })
+            }
         }
     }, [dataFirebasePatient])
     // console.log(dataFirebasePatient);

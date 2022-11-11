@@ -71,17 +71,31 @@ const PatientAppointment = () => {
                         {dataPatient.map((item, i) => (
                             (item?.data.status === 0 && item?.data.statusSpecial === 1 && item?.data.dentistPhone === dentist.PhoneNumber) ?
                                 (<TableRow key={i}>
-                                    <TableCell>{item?.data.fullName}</TableCell>
-                                    <TableCell>{item?.data.sdt}</TableCell>
-                                    <TableCell>{item?.data.timeBooking}</TableCell>
+                                    <TableCell
+                                        sx={{
+                                            color: item?.data?.color == 'yd' || item?.data?.color == 'ye' ? 'orange' : '#000'
+                                        }}
+                                    >{item?.data.fullName}</TableCell>
+                                    <TableCell
+                                        sx={{
+                                            color: item?.data?.color == 'yd' || item?.data?.color == 'ye' ? 'orange' : '#000'
+                                        }}
+                                    >{item?.data.sdt}</TableCell>
+                                    <TableCell
+                                        sx={{
+                                            color: item?.data?.color == 'yd' || item?.data?.color == 'ye' ? 'orange' : '#000'
+                                        }}
+                                    >{item?.data.timeBooking}</TableCell>
                                     <TableCell>
-                                        <IconButton onClick={() => {
-                                            setName(item?.data.fullName)
-                                            setUser(item)
-                                            setOpen(true)
-                                        }}>
-                                            <ReplyAllIcon sx={{ color: 'orange' }} />
-                                        </IconButton>
+                                        {item?.data?.color == 'yd' ? null :
+                                            <IconButton onClick={() => {
+                                                setName(item?.data.fullName)
+                                                setUser(item)
+                                                setOpen(true)
+                                            }}>
+                                                <ReplyAllIcon sx={{ color: 'orange' }} />
+                                            </IconButton>
+                                        }
                                     </TableCell>
                                 </TableRow>) : null
                         ))}
