@@ -13,7 +13,7 @@ import { axiosPublic } from '../../../../api/axiosInstance'
 import { LIST_SERVICE, TAO_HOADON } from '../../../../common/constants/apiConstants'
 import StartFirebase from '../../../../components/firebaseConfig'
 import { TaoHoaDonPopUp } from '../TaoHoaDonPopUp';
-import { CustomBackdrop } from '../../../../components';
+import { CustomBackdrop, CustomSnackbar } from '../../../../components';
 import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
 
 // Danh sách các công tác điều trị đã xác nhận thực hiện
@@ -42,6 +42,10 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     const [messageErrorDacTa, setMessageErrorDacTa] = useState('')
     const [messageErrorSoLanDuKien, setMessageErrorSoLanDuKien] = useState('')
     const [messageErrorSoLuong, setMessageErrorSoLuong] = useState('')
+
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [textSnackbar, setTextSnackbar] = useState('');
+    const [severity, setSeverity] = useState('success');
 
     const handleHideServiceResult = () => {
         setShowServiceResult(false)
@@ -160,6 +164,12 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     }
 
     const handleTaoHoaDon = () => {
+        if (dataFirebasePatient[0]?.data?.record?.motaList == undefined) {
+            setTextSnackbar('Cần nhập mô tả bệnh lí, công tác điều trị trước khi tạo chỉ định công tác điều trị')
+            setSeverity('error')
+            setOpenSnackbar(true)
+            return
+        }
         setOpenPopUpHoaDon(true);
     }
     const handleClosePopUpHoaDon = (event, reason) => {
@@ -173,6 +183,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             var serviceRequest = []
             serviceList.forEach((item) => {
                 serviceRequest = [...serviceRequest, {
+                    'billDetailID': "",
                     'serviceID': `${item?.id}`,
                     'quantity': `${item?.soLuong}`,
                     'price': `${item?.expectedPrice}`,
@@ -190,6 +201,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             // });
             const response = await axiosPublic.post(TAO_HOADON, {
                 "phoneNumber": param?.id,
+                "recordDesc": dataFirebasePatient[0]?.data?.record?.motaList,
                 "billDetailIds": serviceRequest
             })
             setRecordID(response.data.recordID)
@@ -217,7 +229,9 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             console.log(error);
         }
     }
-
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false)
+    }
     useEffect(() => {
         let isMounted = true;
         const getService = async () => {
@@ -759,7 +773,13 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             </Dialog>
             <TaoHoaDonPopUp open={openPopUpHoaDon} handleClose={handleClosePopUpHoaDon} handleYes={handleYesPopUpHoaDon} />
             <CustomBackdrop open={openBackdrop} />
-
+            <CustomSnackbar handleClose={handleCloseSnackbar}
+                open={openSnackbar}
+                text={textSnackbar}
+                severity={severity}
+                variant='standard'
+                vertical='top'
+                horizontal='right' />
         </>
     )
 }
