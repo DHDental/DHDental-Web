@@ -91,7 +91,11 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                         })
                     }
                 });
-
+                if (dataFirebasePatient[0]?.data?.color == 'yd') {
+                    update(ref(db, `${dataFirebasePatient[0]?.key}`), {
+                        color: 'ye'
+                    })
+                }
             }
 
 

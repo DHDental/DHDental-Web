@@ -42,8 +42,17 @@ const AppointmentIcon = ({ user }) => {
             })
             setClick(1)
             setOpenBackdrop(false)
-            setTextSnackbar('Check in thành công')
-            setOpenSnackbar(true)
+            let color
+            if (response?.data?.color == 'yd') {
+                setTextSnackbar('Check in thành công. Khách hàng có hóa đơn cần thanh toán')
+                setOpenSnackbar(true)
+                color = 'yd'
+            } else {
+                setTextSnackbar('Check in thành công')
+                setOpenSnackbar(true)
+                color = 'b'
+            }
+
             // fetchUserBookingList() 
             const dbRef = ref(db)
             const newUser = push(dbRef)
@@ -57,6 +66,7 @@ const AppointmentIcon = ({ user }) => {
                 dentistPhone: user.dentistPhoneNumber,
                 room: '',
                 dentalCareExamReason: user.reason,
+                color: color
             })
         } catch (error) {
             setOpenBackdrop(false)
