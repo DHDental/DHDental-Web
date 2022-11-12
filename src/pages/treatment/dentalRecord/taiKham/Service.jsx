@@ -11,7 +11,7 @@ import styles from '../../../../style/SearchTippy.module.scss'
 import { axiosPublic } from '../../../../api/axiosInstance'
 import { LIST_SERVICE, TAO_HOADON } from '../../../../common/constants/apiConstants'
 import { TaoHoaDonPopUp } from '../TaoHoaDonPopUp';
-import { CustomBackdrop } from '../../../../components';
+import { CustomBackdrop, CustomSnackbar } from '../../../../components';
 import StartFirebase from "../../../../components/firebaseConfig"
 import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
 
@@ -41,6 +41,9 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     const [messageErrorSoLanDuKien, setMessageErrorSoLanDuKien] = useState('')
     const [messageErrorSoLuong, setMessageErrorSoLuong] = useState('')
 
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [textSnackbar, setTextSnackbar] = useState('');
+    const [severity, setSeverity] = useState('success');
 
     const handleHideServiceResult = () => {
         setShowServiceResult(false)
@@ -159,14 +162,23 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             setServiceList(newList);
         }
     }
-
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false)
+    }
     const handleTaoHoaDon = () => {
+        if (dataFirebasePatient[0]?.data?.record?.motaList == undefined) {
+            setTextSnackbar('Cần nhập mô tả bệnh lí, công tác điều trị trước khi tạo chỉ định công tác điều trị')
+            setSeverity('error')
+            setOpenSnackbar(true)
+            return
+        }
         setOpenPopUpHoaDon(true);
     }
     const handleClosePopUpHoaDon = (event, reason) => {
         if (reason && reason === "backdropClick")
             return;
         setOpenPopUpHoaDon(false);
+        // console.log(dataFirebasePatient[0]?.data?.record?.motaList);
     }
     const handleYesPopUpHoaDon = async () => {
         // console.log(serviceList);
@@ -196,17 +208,18 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             // console.log(serviceDaCoHoaDon);
             var serviceRequest = []
             serviceList.forEach((item) => {
-                if (item?.idContinue != 1) {
-                    serviceRequest = [...serviceRequest, {
-                        'serviceID': `${item?.id}`,
-                        'quantity': `${item?.soLuong}`,
-                        'price': `${item?.expectedPrice}`,
-                        'serviceSpecification': `${item?.dacTa}`,
-                        'expectedTimes': `${item?.soLanDuKienThucHien}`
-                    }]
-                }
+                // console.log(item?.billDetailID);
+                // if (item?.idContinue != 1) {
+                serviceRequest = [...serviceRequest, {
+                    'billDetailID': item?.billDetailID != undefined ? `${item?.billDetailID}` : "",
+                    'serviceID': `${item?.id}`,
+                    'quantity': `${item?.soLuong}`,
+                    'price': `${item?.expectedPrice}`,
+                    'serviceSpecification': `${item?.dacTa}`,
+                    'expectedTimes': `${item?.soLanDuKienThucHien}`
+                }]
+                // }
             })
-
             // open backdrop
             setOpenBackdrop(true)
             setTaoHoaDon('dangTao')
@@ -215,8 +228,10 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             if (serviceRequest.length != 0) {
                 const response = await axiosPublic.post(TAO_HOADON, {
                     "phoneNumber": param?.id,
+                    "recordDesc": dataFirebasePatient[0]?.data?.record?.motaList,
                     "billDetailIds": serviceRequest
                 })
+
                 setRecordID(response.data.recordID)
                 update(ref(db, `${location?.state?.patient?.key}/record`), {
                     recordID: response.data.recordID
@@ -252,8 +267,8 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                     color: 'yd',
                     status: 0
                 })
-                const handler = setTimeout(() =>
-                    navigate(DENTIST_DS_KHAM, { replace: true }), 1000)
+                // const handler = setTimeout(() =>
+                //     navigate(DENTIST_DS_KHAM, { replace: true }), 1000)
             }
         } catch (error) {
             setOpenBackdrop(false)
@@ -775,6 +790,13 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             </Dialog>
             <TaoHoaDonPopUp open={openPopUpHoaDon} handleClose={handleClosePopUpHoaDon} handleYes={handleYesPopUpHoaDon} />
             <CustomBackdrop open={openBackdrop} />
+            <CustomSnackbar handleClose={handleCloseSnackbar}
+                open={openSnackbar}
+                text={textSnackbar}
+                severity={severity}
+                variant='standard'
+                vertical='top'
+                horizontal='right' />
         </>
     )
 }
