@@ -157,9 +157,10 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                             <Grid container item direction='row' spacing={2}>
                                 <Grid item sx={{ fontWeight: '500' }}>Tổng tiền:</Grid>
                                 <Grid item>
-                                    {new Intl.NumberFormat('vi-VN'
+                                    {/* {new Intl.NumberFormat('vi-VN'
                                         , { style: 'currency', currency: 'VND' }
-                                    ).format(item?.totalPrice)}
+                                    ).format(item?.totalPrice)} */}
+                                    {item?.totalPrice}
                                 </Grid>
                             </Grid>
                             {
@@ -167,9 +168,10 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                                     <Grid container item direction='row' spacing={2}>
                                         <Grid item sx={{ fontWeight: '500' }}>Số tiền cọc:</Grid>
                                         <Grid item>
-                                            {new Intl.NumberFormat('vi-VN'
+                                            {/* {new Intl.NumberFormat('vi-VN'
                                                 , { style: 'currency', currency: 'VND' }
-                                            ).format(item?.prepaid)}
+                                            ).format(item?.prepaid)} */}
+                                            {item?.prepaid}
                                         </Grid>
                                     </Grid> : null
                             }
@@ -241,15 +243,17 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                                                         </TableCell>
                                                         <TableCell align='center'>
 
-                                                            {new Intl.NumberFormat('vi-VN'
+                                                            {/* {new Intl.NumberFormat('vi-VN'
                                                                 , { style: 'currency', currency: 'VND' }
-                                                            ).format(service.price)}
+                                                            ).format(service.price)} */}
+                                                            {service.price}
                                                         </TableCell>
                                                         <TableCell align='center'>
 
-                                                            {new Intl.NumberFormat('vi-VN'
+                                                            {/* {new Intl.NumberFormat('vi-VN'
                                                                 , { style: 'currency', currency: 'VND' }
-                                                            ).format(service.totalPrice)}
+                                                            ).format(service.totalPrice)} */}
+                                                            {service.totalPrice}
                                                         </TableCell>
                                                         <TableCell align='center'>
                                                             {item?.status == 'Unpaid' && service?.serviceStatus != 'Done' ?

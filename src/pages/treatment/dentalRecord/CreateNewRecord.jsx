@@ -375,9 +375,10 @@ const CreateNewRecord = () => {
                                                 <TableCell align='left' >{i + 1}</TableCell>
                                                 <TableCell align='left'>{item?.serviceDesc}</TableCell>
                                                 <TableCell align='left'>
-                                                    {new Intl.NumberFormat('vi-VN'
+                                                    {/* {new Intl.NumberFormat('vi-VN'
                                                         , { style: 'currency', currency: 'VND' }
-                                                    ).format(item?.gia)}
+                                                    ).format(item?.gia)} */}
+                                                    {item?.gia}
                                                 </TableCell>
                                                 <TableCell align='center'>{item?.soLuong}</TableCell>
                                                 <TableCell align='center'>{item?.soLanDuKienThucHien}</TableCell>
