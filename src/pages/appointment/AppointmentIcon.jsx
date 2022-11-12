@@ -44,7 +44,7 @@ const AppointmentIcon = ({ user }) => {
             setOpenBackdrop(false)
             let color
             if (response?.data?.color == 'yd') {
-                setTextSnackbar('Check in thành công. Khách hàng có hóa đơn cần thanh toán')
+                setTextSnackbar('Check in thành công. Bệnh nhân có hóa đơn cần thanh toán')
                 setOpenSnackbar(true)
                 color = 'yd'
             } else {

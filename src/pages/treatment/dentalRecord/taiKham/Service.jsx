@@ -185,26 +185,26 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         // console.log(param?.id);
         setOpenPopUpHoaDon(false);
         try {
-            var serviceDaCoHoaDon = []
-            serviceList.forEach((item) => {
-                if (item?.idContinue == 1) {
-                    let newItem = {
-                        serviceSpecification: item?.dacTa,
-                        expectedPrice: item?.expectedPrice,
-                        id: item?.id,
-                        serviceName: item?.serviceDesc,
-                        expectedTimes: item?.soLanDuKienThucHien,
-                        quantity: item?.soLuong,
-                        idContinue: 1,
-                        billID: item?.billID,
-                        billDetailID: item?.billDetailID,
-                        serviceStatus: item?.serviceStatus,
-                        statusThanhToan: item?.statusThanhToan,
-                        statusUpdate: item?.statusUpdate
-                    }
-                    serviceDaCoHoaDon = [...serviceDaCoHoaDon, { ...newItem }]
-                }
-            })
+            // var serviceDaCoHoaDon = []
+            // serviceList.forEach((item) => {
+            //     if (item?.idContinue == 1) {
+            //         let newItem = {
+            //             serviceSpecification: item?.dacTa,
+            //             expectedPrice: item?.expectedPrice,
+            //             id: item?.id,
+            //             serviceName: item?.serviceDesc,
+            //             expectedTimes: item?.soLanDuKienThucHien,
+            //             quantity: item?.soLuong,
+            //             idContinue: 1,
+            //             billID: item?.billID,
+            //             billDetailID: item?.billDetailID,
+            //             serviceStatus: item?.serviceStatus,
+            //             statusThanhToan: item?.statusThanhToan,
+            //             statusUpdate: item?.statusUpdate
+            //         }
+            //         serviceDaCoHoaDon = [...serviceDaCoHoaDon, { ...newItem }]
+            //     }
+            // })
             // console.log(serviceDaCoHoaDon);
             var serviceRequest = []
             serviceList.forEach((item) => {
@@ -237,28 +237,25 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                     recordID: response.data.recordID
                 })
                 serviceReted = response.data.billDetailResponse.map((item) => {
-                    return { ...item, statusThanhToan: 'chua' }
+                    return { ...item, statusThanhToan: item?.billStatus == 'Paid' ? 'roi' : 'chua' }
                 })
             }
             // console.log(serviceReted);
             // setServiceHoaDon(serviceList)  
-            const hoadonList = serviceDaCoHoaDon.concat(serviceReted)
-            console.log(hoadonList);
+            // const hoadonList = serviceDaCoHoaDon.concat(serviceReted)
+            const hoadonList = serviceReted
+            // console.log(hoadonList);
             let xacNhanThanhToan = 1
             hoadonList.forEach((item) => {
                 if (item?.statusThanhToan == 'chua') {
                     xacNhanThanhToan = 0
                 }
             })
-
             setServiceHoaDon(hoadonList)
             update(ref(db, `${location?.state?.patient?.key}/record`), {
                 paymentConfirmation: xacNhanThanhToan,
                 serviceHoaDon: hoadonList
             })
-
-
-
             setOpenBackdrop(false)
             setTaoHoaDon('daTao')
             setSearchServiceTerm('')
@@ -267,8 +264,8 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                     color: 'yd',
                     status: 0
                 })
-                // const handler = setTimeout(() =>
-                //     navigate(DENTIST_DS_KHAM, { replace: true }), 1000)
+                const handler = setTimeout(() =>
+                    navigate(DENTIST_DS_KHAM, { replace: true }), 1000)
             }
         } catch (error) {
             setOpenBackdrop(false)

@@ -119,7 +119,7 @@ const SearchPatient = () => {
             // setOpenBackdrop(false)
             let color
             if (response?.data?.color == 'yd') {
-                setTextSnackbar('Đăng kí khám bệnh thành công. Khách hàng có hóa đơn cần thanh toán')
+                setTextSnackbar('Đăng kí khám bệnh thành công. Bệnh nhân có hóa đơn cần thanh toán')
                 setSeverity('success')
                 setOpenSnackbar(true)
                 color = 'yd'
