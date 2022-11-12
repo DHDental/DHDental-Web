@@ -18,11 +18,23 @@ import { useEffect, useState } from "react"
 import { axiosPublic } from '../../api/axiosInstance';
 import StartFirebase from '../../components/firebaseConfig';
 import { formatStringtoDate } from '../../common/utils/formatDate'
+import { CHECK_PAYMENT_OR_NOT } from "../../common/constants/apiConstants";
+import { CustomBackdrop, CustomSnackbar } from "../../components";
 
 const db = StartFirebase()
 
 const SearchPatient = () => {
+    const [openBackdrop, setOpenBackdrop] = useState(false)
+
+    const [openSnackbar, setOpenSnackbar] = useState(false)
+    const [textSnackbar, setTextSnackbar] = useState('')
+    const [severity, setSeverity] = useState('success')
+
     const [userRegister, setUserRegister] = useState([])
+
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false)
+    }
     useEffect(() => {
         let isMounted = true;
         const dbRef = ref(db)
@@ -93,27 +105,54 @@ const SearchPatient = () => {
         setMesageCurrentPatientReason('')
         setOpenPopup(false);
     };
-    const handleYesPopup = () => {
+    const handleYesPopup = async () => {
         if (currentPatientReason.trim() == '') {
             setMesageCurrentPatientReason('Cần nhập lí do khám bệnh')
             return
         }
-        const dbRef1 = ref(db)
-        const newUser = push(dbRef1)
-        set(newUser, {
-            fullName: currentPatient.fullName,
-            sdt: currentPatient.phoneNumber,
-            status: 0,
-            statusSpecial: 0,
-            timeBooking: '',
-            dentistName: '',
-            dentistPhone: '',
-            room: '',
-            dentalCareExamReason: currentPatientReason,
-        })
-        setMesageCurrentPatientReason('')
-        setOpenPopup(false)
-        setCurrentPatientReason('')
+        try {
+            // setOpenBackdrop(true)
+            const response = await axiosPublic.post(CHECK_PAYMENT_OR_NOT, {
+                "phoneNumber": currentPatient.phoneNumber,
+            })
+
+            // setOpenBackdrop(false)
+            let color
+            if (response?.data?.color == 'yd') {
+                setTextSnackbar('Đăng kí khám bệnh thành công. Khách hàng có hóa đơn cần thanh toán')
+                setSeverity('success')
+                setOpenSnackbar(true)
+                color = 'yd'
+            } else {
+                setTextSnackbar('Đăng kí khám bệnh thành công')
+                setSeverity('success')
+                setOpenSnackbar(true)
+                color = 'b'
+            }
+            const dbRef1 = ref(db)
+            const newUser = push(dbRef1)
+            set(newUser, {
+                fullName: currentPatient.fullName,
+                sdt: currentPatient.phoneNumber,
+                status: 0,
+                statusSpecial: 0,
+                timeBooking: '',
+                dentistName: '',
+                dentistPhone: '',
+                room: '',
+                dentalCareExamReason: currentPatientReason,
+                color: color
+            })
+            setMesageCurrentPatientReason('')
+            setOpenPopup(false)
+            setCurrentPatientReason('')
+        } catch (error) {
+            console.log(error);
+            setTextSnackbar('Đăng kí khám bệnh thất bại')
+            setSeverity('error')
+            setOpenSnackbar(true)
+        }
+
     }
     return (
         <>
@@ -270,6 +309,14 @@ const SearchPatient = () => {
                     <Button onClick={handleYesPopup}>Đăng kí</Button>
                 </DialogActions>
             </Dialog>
+            <CustomBackdrop open={openBackdrop} />
+            <CustomSnackbar handleClose={handleCloseSnackbar}
+                open={openSnackbar}
+                text={textSnackbar}
+                severity={severity}
+                variant='standard'
+                vertical='top'
+                horizontal='right' />
         </>
     )
 }

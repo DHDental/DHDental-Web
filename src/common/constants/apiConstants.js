@@ -18,6 +18,8 @@ export const CREATE_RECORD = '/dentalCareRecord/createOrUpdateRecord'
 export const GET_RECORDS = '/dentalCareRecord/getListDentalCareRecordByPhoneNumber'
 export const GET_RECORDS_BY_BILL_DETAIL = '/dentalCareRecord/getListDentalCareRecordRelatedByBillDetailID'
 
+export const CHECK_PAYMENT_OR_NOT = '/booking/checkPaymentOrNot'
+
 //admin
 export const GET_ALL_USER_ADMIN = '/admin/getAllUser'
 export const CRUD_ACCOUNT_ADMIN = '/admin/crudAccountForStaffOrDentist'
