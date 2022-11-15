@@ -55,7 +55,7 @@ const LoginForm = () => {
             } catch (error) {
                 console.log("error:", error.response.data)
                 if (error.response.status === 401 || error.response.status === 500) {
-                    setText('Login không thành công. Sai mật khẩu hoặc số điện thoại')
+                    setText('Đăng nhập không thành công. Sai mật khẩu hoặc số điện thoại')
                     setOpen(true)
                 }
 
