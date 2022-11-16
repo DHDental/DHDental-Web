@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { BiCheckCircle } from 'react-icons/bi';
 import { MdOutlineCancel } from 'react-icons/md';
 
-import { axiosPublic } from '../../api/axiosInstance';
+import { axiosPrivate } from '../../api/axiosInstance';
 import { BOOKING_CHECKIN } from '../../common/constants/apiConstants';
 import CustomDialog from '../../components/CustomDialog';
 import StartFirebase from '../../components/firebaseConfig';
@@ -36,7 +36,7 @@ const AppointmentIcon = ({ user }) => {
     const handleCheck = async (id) => {
         try {
             setOpenBackdrop(true)
-            const response = await axiosPublic.post(BOOKING_CHECKIN, {
+            const response = await axiosPrivate.post(BOOKING_CHECKIN, {
                 "id": id,
                 "status": 'Done'
             })

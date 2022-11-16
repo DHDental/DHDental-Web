@@ -6,7 +6,7 @@ import { useState } from 'react';
 import * as yup from 'yup';
 
 import { DatePicker } from '@mui/x-date-pickers';
-import { axiosPublic } from '../../api/axiosInstance';
+import { axiosPrivate } from '../../api/axiosInstance';
 import { DANGKIKHAMVANLAI } from '../../common/constants/apiConstants';
 import { formatYearMonthDate } from '../../common/utils/formatDate';
 import CustomSnackbar from '../../components/CustomSnackbar';
@@ -46,7 +46,7 @@ const MedicalRegistration = () => {
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             try {
-                const response = await axiosPublic.post(DANGKIKHAMVANLAI, {
+                const response = await axiosPrivate.post(DANGKIKHAMVANLAI, {
                     "lastName": values.lastName,
                     "middleName": values.middleName,
                     "firstName": values.firstName,

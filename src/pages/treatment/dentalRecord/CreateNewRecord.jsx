@@ -8,7 +8,7 @@ import DoneIcon from '@mui/icons-material/Done';
 
 import styles from '../../../style/SearchTippy.module.scss'
 // import { useDebounce } from "../../../hooks";
-import { axiosPublic } from '../../../api/axiosInstance';
+import { axiosPrivate } from '../../../api/axiosInstance';
 import { LIST_SERVICE, TAO_HOADON } from '../../../common/constants/apiConstants';
 import { TaoHoaDonPopUp } from './TaoHoaDonPopUp';
 import { useLocation, useParams } from 'react-router-dom';
@@ -173,7 +173,7 @@ const CreateNewRecord = () => {
             //     "serviceRequest": serviceRequest,
             //     "userId": param?.id
             // });
-            const response = await axiosPublic.post(TAO_HOADON, {
+            const response = await axiosPrivate.post(TAO_HOADON, {
                 "serviceRequest": serviceRequest,
                 "userId": param?.id
             })
@@ -200,7 +200,7 @@ const CreateNewRecord = () => {
         const getService = async () => {
             try {
                 setLoadingService(true)
-                const response = await axiosPublic.post(LIST_SERVICE)
+                const response = await axiosPrivate.post(LIST_SERVICE)
                 // console.log(response.data);
                 isMounted && setAllService(response.data)
                 setLoadingService(false)

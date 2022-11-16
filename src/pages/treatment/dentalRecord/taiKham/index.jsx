@@ -14,7 +14,7 @@ import HenTaiKham from './HenTaiKham';
 import SnackbarRecord from './SnackbarRecord';
 import { TaoRecordPopUp } from './TaoRecordPopUp';
 import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
-import { axiosPublic } from '../../../../api/axiosInstance';
+import { axiosPrivate } from '../../../../api/axiosInstance';
 import { CREATE_RECORD } from '../../../../common/constants/apiConstants';
 import RelatedHistory from './RelatedHistory';
 
@@ -156,7 +156,7 @@ const Record = ({ bill }) => {
                         billDetailList: billDetailList
                     }
                     console.log(request);
-                    const response = await axiosPublic.post(CREATE_RECORD, {
+                    const response = await axiosPrivate.post(CREATE_RECORD, {
                         userPhoneNumber: param?.id,
                         recordID: recordID,
                         reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
@@ -193,7 +193,7 @@ const Record = ({ bill }) => {
                     billDetailList: billDetailList
                 }
                 console.log(request);
-                const response = await axiosPublic.post(CREATE_RECORD, {
+                const response = await axiosPrivate.post(CREATE_RECORD, {
                     userPhoneNumber: param?.id,
                     recordID: recordID,
                     reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),

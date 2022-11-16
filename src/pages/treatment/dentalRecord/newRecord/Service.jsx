@@ -9,7 +9,7 @@ import DoneIcon from '@mui/icons-material/Done';
 
 // import styles from '../../../../style/SearchTippy.module.scss'
 import styles from '../../../../style/SearchTippy.module.scss'
-import { axiosPublic } from '../../../../api/axiosInstance'
+import { axiosPrivate } from '../../../../api/axiosInstance'
 import { LIST_SERVICE, TAO_HOADON } from '../../../../common/constants/apiConstants'
 import StartFirebase from '../../../../components/firebaseConfig'
 import { TaoHoaDonPopUp } from '../TaoHoaDonPopUp';
@@ -199,7 +199,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             //     "serviceRequest": serviceRequest,
             //     "userId": param?.id
             // });
-            const response = await axiosPublic.post(TAO_HOADON, {
+            const response = await axiosPrivate.post(TAO_HOADON, {
                 "phoneNumber": param?.id,
                 "recordDesc": dataFirebasePatient[0]?.data?.record?.motaList,
                 "billDetailIds": serviceRequest
@@ -237,7 +237,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         const getService = async () => {
             try {
                 setLoadingService(true)
-                const response = await axiosPublic.post(LIST_SERVICE)
+                const response = await axiosPrivate.post(LIST_SERVICE)
                 isMounted && setAllService(response.data)
                 setLoadingService(false)
             } catch (error) {

@@ -6,7 +6,7 @@ import ServiceBill from './ServiceBill'
 import NewRecord from './newRecord'
 import Record from './taiKham'
 import { useParams } from 'react-router-dom'
-import { axiosPublic } from '../../../api/axiosInstance'
+import { axiosPrivate } from '../../../api/axiosInstance'
 import { GETINFOEXAMINATE } from '../../../common/constants/apiConstants'
 import { CustomBackdrop } from '../../../components'
 
@@ -24,7 +24,7 @@ const DentalCareRecord = () => {
         const getPatientInfo = async () => {
             try {
                 setOpenBackdrop(true)
-                const response = await axiosPublic.post(GETINFOEXAMINATE, {
+                const response = await axiosPrivate.post(GETINFOEXAMINATE, {
                     "phoneNumber": param.id
                 })
                 isMounted && setPatientInfo(response.data)

@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardContent, CircularProgress, Dialog, DialogActions, DialogContent, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { axiosPublic } from '../../../api/axiosInstance';
+import { axiosPrivate } from '../../../api/axiosInstance';
 import { GET_RECORDS } from '../../../common/constants/apiConstants';
 import { formatDateMonthYear2 } from '../../../common/utils/formatDate';
 import { CustomBackdrop } from '../../../components';
@@ -16,7 +16,7 @@ const HistoryRecord = ({ open, handleClose }) => {
         let isMounted = true;
         const getRecord = async () => {
             try {
-                const response = await axiosPublic.post(GET_RECORDS, {
+                const response = await axiosPrivate.post(GET_RECORDS, {
                     "phoneNumber": param?.id
                 })
                 isMounted && setRecords(response.data)

@@ -9,7 +9,7 @@ import { CustomBackdrop, CustomSnackbar } from '../../../../components';
 import Service from './Service';
 import Thuoc from './Thuoc';
 import HenTaiKham from './HenTaiKham';
-import { axiosPublic } from '../../../../api/axiosInstance';
+import { axiosPrivate } from '../../../../api/axiosInstance';
 import { CREATE_RECORD } from '../../../../common/constants/apiConstants';
 import { formatYearMonthDate } from '../../../../common/utils/formatDate';
 import { TaoRecordPopUp } from './TaoRecordPopUp';
@@ -49,7 +49,7 @@ const NewRecord = () => {
     }
     const handleYesPopUpRecord = async () => {
         try {
-            // const response = await axiosPublic.post(CREATE_RECORD, {
+            // const response = await axiosPrivate.post(CREATE_RECORD, {
 
             // })
             setOpenPopUpRecord(false)
@@ -89,7 +89,7 @@ const NewRecord = () => {
                         billDetailList: billDetailList
                     }
                     console.log(request);
-                    const response = await axiosPublic.post(CREATE_RECORD, {
+                    const response = await axiosPrivate.post(CREATE_RECORD, {
                         userPhoneNumber: param?.id,
                         recordID: recordID,
                         reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
@@ -127,7 +127,7 @@ const NewRecord = () => {
                     billDetailList: billDetailList
                 }
                 console.log(request);
-                const response = await axiosPublic.post(CREATE_RECORD, {
+                const response = await axiosPrivate.post(CREATE_RECORD, {
                     userPhoneNumber: param?.id,
                     recordID: recordID,
                     reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),

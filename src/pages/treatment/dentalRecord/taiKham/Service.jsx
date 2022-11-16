@@ -8,7 +8,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DoneIcon from '@mui/icons-material/Done';
 
 import styles from '../../../../style/SearchTippy.module.scss'
-import { axiosPublic } from '../../../../api/axiosInstance'
+import { axiosPrivate } from '../../../../api/axiosInstance'
 import { LIST_SERVICE, TAO_HOADON } from '../../../../common/constants/apiConstants'
 import { TaoHoaDonPopUp } from '../TaoHoaDonPopUp';
 import { CustomBackdrop, CustomSnackbar } from '../../../../components';
@@ -226,7 +226,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
             var serviceReted = []
             // gọi api cho service chưa tạo hóa đơn nếu có
             if (serviceRequest.length != 0) {
-                const response = await axiosPublic.post(TAO_HOADON, {
+                const response = await axiosPrivate.post(TAO_HOADON, {
                     "phoneNumber": param?.id,
                     "recordDesc": dataFirebasePatient[0]?.data?.record?.motaList,
                     "billDetailIds": serviceRequest
@@ -279,7 +279,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         const getService = async () => {
             try {
                 setLoadingService(true)
-                const response = await axiosPublic.post(LIST_SERVICE)
+                const response = await axiosPrivate.post(LIST_SERVICE)
                 // console.log(response.data);
                 isMounted && setAllService(response.data)
                 setLoadingService(false)

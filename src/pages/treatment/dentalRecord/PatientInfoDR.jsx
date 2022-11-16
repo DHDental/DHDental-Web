@@ -3,7 +3,7 @@ import { Grid, Typography } from '@mui/material'
 import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 
-import { axiosPublic } from '../../../api/axiosInstance';
+import { axiosPrivate } from '../../../api/axiosInstance';
 import { GET_USER_INFO } from '../../../common/constants/apiConstants';
 import { CustomBackdrop } from '../../../components';
 import { caculateAgeFromBirth } from '../../../common/utils/caculate'
@@ -22,7 +22,7 @@ const PatientInfoDR = ({ patientInfo }) => {
     //     const getPatientInfo = async () => {
     //         try {
     //             setOpenBackdrop(true)
-    //             const response = await axiosPublic.post(GET_USER_INFO, {
+    //             const response = await axiosPrivate.post(GET_USER_INFO, {
     //                 "keySearch": param.id
     //             })
     //             isMounted && setPatientInfo(response.data[0])

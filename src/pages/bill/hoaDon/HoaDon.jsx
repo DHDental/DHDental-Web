@@ -2,7 +2,7 @@ import { Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Sel
 import { ref, update } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { axiosPublic } from '../../../api/axiosInstance'
+import { axiosPrivate } from '../../../api/axiosInstance'
 import { STAFF_BILL } from '../../../common/constants/pathConstants'
 import { CustomBackdrop, CustomSnackbar } from '../../../components'
 
@@ -43,7 +43,7 @@ const HoaDon = ({ dataFirebasePatient }) => {
             try {
                 setOpenBackdrop(true)
                 setBill()
-                const response = await axiosPublic.post(STAFF_BILL, {
+                const response = await axiosPrivate.post(STAFF_BILL, {
                     "phoneNumber": param.id,
                     "type": "W"
                 })

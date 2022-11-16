@@ -1,7 +1,7 @@
 import { Card, CardContent, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom";
-import { axiosPublic } from "../../../api/axiosInstance";
+import { axiosPrivate } from "../../../api/axiosInstance";
 import { GET_RECORDS } from "../../../common/constants/apiConstants";
 import { formatDateMonthYear2 } from "../../../common/utils/formatDate";
 import { CustomBackdrop } from "../../../components";
@@ -20,7 +20,7 @@ const HistoryRecord = () => {
             try {
 
                 setOpenBackdrop(true)
-                const response = await axiosPublic.post(GET_RECORDS, {
+                const response = await axiosPrivate.post(GET_RECORDS, {
                     "phoneNumber": location?.state?.patient?.phoneNumber
                 })
                 setMessage('')

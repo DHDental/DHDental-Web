@@ -4,7 +4,7 @@ import classNames from "classnames/bind"
 import { useEffect, useState } from 'react'
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 
-import { axiosPublic } from '../../../../api/axiosInstance'
+import { axiosPrivate } from '../../../../api/axiosInstance'
 import { LIST_THUOC } from '../../../../common/constants/apiConstants'
 import styles from '../../../../style/SearchTippy.module.scss'
 import { ref, update } from 'firebase/database';
@@ -117,7 +117,7 @@ const Thuoc = ({ thuocList, setThuocList }) => {
         const getThuoc = async () => {
             try {
                 setLoadingThuoc(true)
-                const response = await axiosPublic.post(LIST_THUOC)
+                const response = await axiosPrivate.post(LIST_THUOC)
                 // console.log(response.data);
                 isMounted && setAllThuoc(response.data)
                 setLoadingThuoc(false)

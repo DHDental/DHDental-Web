@@ -1,7 +1,7 @@
 import { Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { ref, remove, update } from 'firebase/database';
 import React, { useEffect, useState } from 'react'
-import { axiosPublic } from '../../../api/axiosInstance';
+import { axiosPrivate } from '../../../api/axiosInstance';
 import { CANCEL_SERVICE, UPDATE_STATUS_BILL } from '../../../common/constants/apiConstants';
 import { formatDateMonthYear, formatDateMonthYear2 } from '../../../common/utils/formatDate';
 import { CustomBackdrop, CustomSnackbar } from '../../../components';
@@ -34,7 +34,7 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
             setOpenBackdrop(true)
 
 
-            const response = await axiosPublic.post(CANCEL_SERVICE, {
+            const response = await axiosPrivate.post(CANCEL_SERVICE, {
                 "billDetailId": currentService?.billDetailId
             })
             if (dataFirebasePatient.length !== 0) {
@@ -77,7 +77,7 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
         }
         try {
             setOpenBackdrop(true)
-            const response = await axiosPublic.post(UPDATE_STATUS_BILL, {
+            const response = await axiosPrivate.post(UPDATE_STATUS_BILL, {
                 "billId": item?.billId,
                 "status": trangThaiCapNhat
             })

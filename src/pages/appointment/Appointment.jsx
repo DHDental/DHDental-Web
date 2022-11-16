@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { BiRefresh, BiSearchAlt2 as Search } from 'react-icons/bi';
 
-import { axiosPublic } from '../../api/axiosInstance';
+import { axiosPrivate } from '../../api/axiosInstance';
 import {
     BOOKING_GETALLBOOKINGSCHEDULE,
     BOOKING_SEARCH_BOOKING_SCHEDULE
@@ -53,7 +53,7 @@ const Appointment = () => {
             setMessageNodata('')
             setUserBookingList([])
             setOpen(true)
-            const response = await axiosPublic.post(BOOKING_SEARCH_BOOKING_SCHEDULE, {
+            const response = await axiosPrivate.post(BOOKING_SEARCH_BOOKING_SCHEDULE, {
                 "keySearch": searchTerm
             })
 
@@ -91,7 +91,7 @@ const Appointment = () => {
             setMessageNodata('')
             setUserBookingList([])
             setOpen(true)
-            const response = await axiosPublic.post(BOOKING_GETALLBOOKINGSCHEDULE, {
+            const response = await axiosPrivate.post(BOOKING_GETALLBOOKINGSCHEDULE, {
                 "time": formattedDate
             }
             )

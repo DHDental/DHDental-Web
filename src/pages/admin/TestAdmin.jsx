@@ -14,7 +14,7 @@ import MaterialTable from "material-table";
 import moment from "moment/moment";
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { axiosPublic } from "../../api/axiosInstance";
+import { axiosPrivate } from "../../api/axiosInstance";
 import {
   BAN_OR_ACTIVE_ACCOUNT_ADMIN,
   CRUD_ACCOUNT_ADMIN,
@@ -124,7 +124,7 @@ const TestAdmin = () => {
   const fetchData = async () => {
     setLoading(true);
     const params = {};
-    const response = await axiosPublic.post(GET_ALL_USER_ADMIN, params);
+    const response = await axiosPrivate.post(GET_ALL_USER_ADMIN, params);
     const data = [...response.data];
     const staff = data.filter((data) => {
       return data.roleName !== "End User";
@@ -148,7 +148,7 @@ const TestAdmin = () => {
       role: newRow.roleName,
       operationType: "C",
     };
-    await axiosPublic.post(CRUD_ACCOUNT_ADMIN, params);
+    await axiosPrivate.post(CRUD_ACCOUNT_ADMIN, params);
   };
 
   const updateStaff = async (newRow) => {
@@ -162,7 +162,7 @@ const TestAdmin = () => {
       role: newRow.roleName,
       operationType: "U",
     };
-    await axiosPublic.post(CRUD_ACCOUNT_ADMIN, params);
+    await axiosPrivate.post(CRUD_ACCOUNT_ADMIN, params);
   };
 
   const handleChange = (event, newValue) => {
@@ -175,13 +175,13 @@ const TestAdmin = () => {
       const params = {
         userName: newRow.userName,
       };
-      await axiosPublic.post(BAN_OR_ACTIVE_ACCOUNT_ADMIN, params);
+      await axiosPrivate.post(BAN_OR_ACTIVE_ACCOUNT_ADMIN, params);
       await fetchData();
     } else {
       const params = {
         userName: newRow.userName,
       };
-      await axiosPublic.post(BAN_OR_ACTIVE_ACCOUNT_ADMIN, params);
+      await axiosPrivate.post(BAN_OR_ACTIVE_ACCOUNT_ADMIN, params);
       await fetchData();
     }
   };

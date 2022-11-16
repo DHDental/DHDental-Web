@@ -2,7 +2,7 @@ import { Search } from "@mui/icons-material"
 import { Box, Button, CircularProgress, IconButton, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
-import { axiosPublic } from "../../api/axiosInstance"
+import { axiosPrivate } from "../../api/axiosInstance"
 import { GET_USER_INFO } from "../../common/constants/apiConstants"
 import { RECORD_HISTORY } from "../../common/constants/pathConstants"
 import { formatStringtoDate } from "../../common/utils/formatDate"
@@ -22,7 +22,7 @@ const Treatment = () => {
             setMessageNodata('')
             setPatient([])
             setLoading(true)
-            const response = await axiosPublic.post(GET_USER_INFO, {
+            const response = await axiosPrivate.post(GET_USER_INFO, {
                 "keySearch": searchTerm
             })
             setPatient(response.data)

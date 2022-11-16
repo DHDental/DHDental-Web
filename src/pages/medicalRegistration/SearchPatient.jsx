@@ -15,7 +15,7 @@ import {
 import { equalTo, get, onValue, orderByChild, push, query, ref, set } from "firebase/database";
 import { useEffect, useState } from "react"
 
-import { axiosPublic } from '../../api/axiosInstance';
+import { axiosPrivate } from '../../api/axiosInstance';
 import StartFirebase from '../../components/firebaseConfig';
 import { formatStringtoDate } from '../../common/utils/formatDate'
 import { CHECK_PAYMENT_OR_NOT } from "../../common/constants/apiConstants";
@@ -83,7 +83,7 @@ const SearchPatient = () => {
             setMessageNodata('')
             setPatient([])
             setLoading(true)
-            const response = await axiosPublic.post('/user/getUserInfo', {
+            const response = await axiosPrivate.post('/user/getUserInfo', {
                 "keySearch": searchTerm
             })
             setPatient(response.data)
@@ -112,7 +112,7 @@ const SearchPatient = () => {
         }
         try {
             // setOpenBackdrop(true)
-            const response = await axiosPublic.post(CHECK_PAYMENT_OR_NOT, {
+            const response = await axiosPrivate.post(CHECK_PAYMENT_OR_NOT, {
                 "phoneNumber": currentPatient.phoneNumber,
             })
 
