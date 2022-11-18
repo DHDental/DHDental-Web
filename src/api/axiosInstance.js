@@ -14,7 +14,6 @@ let loginInfo = localStorage.getItem('loginInfo') ? JSON.parse(localStorage.getI
 const axiosPrivate = axios.create({
     baseURL: BASE_URL,
     headers: {
-
         Authorization: `Bearer ${loginInfo?.token}`,
     }
 });
@@ -22,13 +21,13 @@ const axiosPrivate = axios.create({
 axiosPrivate.interceptors.request.use(async req => {
     if (!loginInfo) {
         loginInfo = localStorage.getItem('loginInfo') ? JSON.parse(localStorage.getItem('loginInfo')) : null
-        console.log(loginInfo?.token);
+        // console.log(loginInfo?.token);
         req.headers.Authorization = `Bearer ${loginInfo?.token}`
     } else { req.headers.Authorization = `Bearer ${loginInfo?.token}` }
     const user = jwtDecode(loginInfo.token)
     const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1
-    console.log('isExpired:', isExpired);
-    console.log('jwtToken:', req.headers.Authorization);
+    // console.log('isExpired:', isExpired);
+    // console.log('jwtToken:', req.headers.Authorization);
     if (!isExpired) return req
 
     const response = await axios.post(`${BASE_URL}/auth/refreshToken`, {
