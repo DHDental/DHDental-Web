@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom'
 // import StartFirebase from '../../../../components/firebaseConfig'
 
 // const db = StartFirebase()
-const HenTaiKham = ({ ngayTaiKham, setNgayTaiKham }) => {
+const HenTaiKham = ({ ngayTaiKham, setNgayTaiKham, errorNgayTaiKham }) => {
     const location = useLocation()
     return (
         <>
@@ -34,6 +34,7 @@ const HenTaiKham = ({ ngayTaiKham, setNgayTaiKham }) => {
 
                     }
                 />
+                <Typography sx={{ color: 'red' }}>{errorNgayTaiKham}</Typography>
             </Grid>
         </>
     )

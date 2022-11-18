@@ -16,6 +16,7 @@ import { TaoRecordPopUp } from './TaoRecordPopUp';
 import { async } from '@firebase/util';
 import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
 import SnackbarRecord from './SnackbarRecord';
+import dayjs from 'dayjs';
 
 const db = StartFirebase()
 const NewRecord = () => {
@@ -34,6 +35,7 @@ const NewRecord = () => {
     const [thuocList, setThuocList] = useState([])
 
     const [ngayTaiKham, setNgayTaiKham] = useState(null)
+    const [errorNgayTaiKham, setErrorNgayTaiKham] = useState('')
 
     const [recordID, setRecordID] = useState('')
     const [openPopUpRecord, setOpenPopUpRecord] = useState(false)
@@ -167,6 +169,12 @@ const NewRecord = () => {
             setOpenSnackbar(true)
             return
         }
+        if (errorNgayTaiKham != '') {
+            setTextSnackbar('Ngày tái khám hiện không hợp lệ. Chọn lại ngày tái khám cho phù hợp')
+            setSeverity('error')
+            setOpenSnackbar(true)
+            return
+        }
         setOpenPopUpRecord(true)
     }
     useEffect(() => {
@@ -219,7 +227,22 @@ const NewRecord = () => {
         // }
 
     }, [dataFirebasePatient])
-    // console.log(serviceList);
+    useEffect(() => {
+        setErrorNgayTaiKham('')
+        if (ngayTaiKham == null) return
+        if (formatYearMonthDate(ngayTaiKham) == 'Invalid Date') {
+            setErrorNgayTaiKham('Ngày tái khám không hợp lệ')
+        }
+        else {
+            if (dayjs(ngayTaiKham).diff(dayjs()) < 1) {
+                setErrorNgayTaiKham('Ngày tái khám không hợp lệ')
+            }
+            else { setErrorNgayTaiKham('') }
+        }
+
+
+    }, [ngayTaiKham])
+    // console.log(errorNgayTaiKham);
     return (
         <>
             <Grid container spacing={1} direction='column'>
@@ -236,7 +259,7 @@ const NewRecord = () => {
                 <br />
                 <Thuoc thuocList={thuocList} setThuocList={setThuocList} />
                 <br />
-                <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} />
+                <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} errorNgayTaiKham={errorNgayTaiKham} />
                 <br />
 
                 <Grid item sx={{ display: 'flex', justifyContent: 'center' }}>

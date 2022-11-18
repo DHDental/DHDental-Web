@@ -17,6 +17,7 @@ import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
 import { axiosPrivate } from '../../../../api/axiosInstance';
 import { CREATE_RECORD } from '../../../../common/constants/apiConstants';
 import RelatedHistory from './RelatedHistory';
+import dayjs from 'dayjs';
 
 const db = StartFirebase()
 
@@ -39,6 +40,7 @@ const Record = ({ bill }) => {
 
     const [thuocList, setThuocList] = useState([])
     const [ngayTaiKham, setNgayTaiKham] = useState(null)
+    const [errorNgayTaiKham, setErrorNgayTaiKham] = useState('')
 
     const [openPopUpRecord, setOpenPopUpRecord] = useState(false)
     const [openSnackbar2, setOpenSnackbar2] = useState(false);
@@ -106,6 +108,12 @@ const Record = ({ bill }) => {
         }
         if (dataFirebasePatient[0]?.data?.record?.paymentConfirmation == '0') {
             setTextSnackbar('Chưa xử lí xác nhận thanh toán xong')
+            setSeverity('error')
+            setOpenSnackbar(true)
+            return
+        }
+        if (errorNgayTaiKham != '') {
+            setTextSnackbar('Ngày tái khám hiện không hợp lệ. Chọn lại ngày tái khám cho phù hợp')
             setSeverity('error')
             setOpenSnackbar(true)
             return
@@ -263,6 +271,21 @@ const Record = ({ bill }) => {
             setRecordID(dataFirebasePatient[0]?.data?.record?.recordID)
         }
     }, [dataFirebasePatient])
+    useEffect(() => {
+        setErrorNgayTaiKham('')
+        if (ngayTaiKham == null) return
+        if (formatYearMonthDate(ngayTaiKham) == 'Invalid Date') {
+            setErrorNgayTaiKham('Ngày tái khám không hợp lệ')
+        }
+        else {
+            if (dayjs(ngayTaiKham).diff(dayjs()) < 1) {
+                setErrorNgayTaiKham('Ngày tái khám không hợp lệ')
+            }
+            else { setErrorNgayTaiKham('') }
+        }
+
+
+    }, [ngayTaiKham])
     return (
         <>
             <Grid container spacing={1} direction='column'>
@@ -357,7 +380,7 @@ const Record = ({ bill }) => {
                 <br />
                 <Thuoc thuocList={thuocList} setThuocList={setThuocList} />
                 <br />
-                <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} />
+                <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} errorNgayTaiKham={errorNgayTaiKham} />
                 <br />
                 <Grid item sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Button variant='contained'
