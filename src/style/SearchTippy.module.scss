@@ -13,6 +13,23 @@
     background: rgb(255,255,255);
     box-shadow: rgb(0 0 0 / 12%) 0px 2px 12px;
 }
+
+.resultLogoutBox{
+    // border-radius: 8px;
+    // width: 490px;
+    background: rgb(255,255,255);
+    box-shadow: rgb(0 0 0 / 12%) 0px 2px 12px;
+}
+.resultLogoutItem{
+    cursor: pointer;
+    padding: 10px 6px;
+    &:hover{
+        // background: rgba(22,24,35,0.03);
+        // background: #e5e5e5;
+        background: #0a79db;
+    }
+    // color:blue
+}
 // @media only screen and (max-width: 480px){
 //     .resultSearchBox{
 //         // border-radius: 8px;

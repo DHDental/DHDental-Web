@@ -20,6 +20,7 @@ export const GET_RECORDS_BY_BILL_DETAIL = '/dentalCareRecord/getListDentalCareRe
 
 export const CHECK_PAYMENT_OR_NOT = '/booking/checkPaymentOrNot'
 
+export const LOGOUT = '/user/logoutAccount'
 //admin
 export const GET_ALL_USER_ADMIN = '/admin/getAllUser'
 export const CRUD_ACCOUNT_ADMIN = '/admin/crudAccountForStaffOrDentist'

@@ -2,8 +2,19 @@ import styled from "styled-components"
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import { useState } from "react";
-import { useEffect } from "react";
+import LogoutIcon from '@mui/icons-material/Logout';
+import Tippy from '@tippyjs/react/headless'
+import classNames from "classnames/bind"
+import jwtDecode from "jwt-decode";
 
+import styles from '../../../style/SearchTippy.module.scss'
+import { Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { axiosPrivate } from "../../../api/axiosInstance";
+import { LOGOUT } from "../../../common/constants/apiConstants";
+import CustomBackdrop from "../../CustomBackdrop";
+
+const cx = classNames.bind(styles)
 const Container = styled.div`
 position: sticky;
 top: 0;
@@ -37,20 +48,69 @@ gap: 5px;
 `
 
 const Navbar = () => {
-    const [role, setRole] = useState()
-    useEffect(() => {
-        setRole(localStorage.getItem('role'))
-    }, [])
+    const navigate = useNavigate();
+    const loginInfo = JSON.parse(localStorage.getItem('loginInfo'))
+    const user = jwtDecode(loginInfo?.token)
+    const roleID = user?.roleID[0].authority
+    const [openBackdrop, setOpenBackdrop] = useState(false)
+    const handleLogout = async () => {
+        try {
+            setOpenBackdrop(true)
+            const response = await axiosPrivate.post(LOGOUT, {
+                "key": user?.PhoneNumber
+            })
+            setOpenBackdrop(false)
+            localStorage.clear();
+            console.clear();
+            navigate('/login');
+        } catch (error) {
+            console.log(error);
+            alert('Có lỗi xảy ra, vui lòng thao tác lại')
+        }
+    }
 
     return (
-        <Container>
-            <Wrapper>
-                <Button>
-                    <AccountCircleOutlinedIcon />
-                    {role === 'staff' ? 'Nhân viên' : null}
-                </Button>
-            </Wrapper>
-        </Container>
+        <>
+            <Container>
+                <Wrapper>
+                    <Tippy
+                        render={attrs => (
+                            <div className={cx('resultLogoutBox')} tabIndex="-1" {...attrs}>
+                                <div className={cx('resultLogoutItem')}>
+                                    <Typography>{roleID == '3' ? `Nha sĩ ${user?.fullName}` :
+                                        roleID == '2' ? `Nhân viên ${user?.fullName}` :
+                                            roleID == '1' ? `Admin ${user?.fullName}` :
+                                                `Chủ nha khoa ${user?.fullName}`
+                                    }</Typography>
+                                </div>
+                                {/* <div className={cx('resultLogoutItem')}>
+                                    <Typography>{`Phòng số ${user?.DentistRoom}`}</Typography>
+                                </div> */}
+                                <div className={cx('resultLogoutItem')}
+                                    onClick={handleLogout}
+                                    style={{ display: 'flex', gap: '5px', alignItems: 'center' }}
+                                >
+                                    <LogoutIcon />
+                                    Đăng xuất
+                                </div>
+                            </div>
+                        )}
+                        placement='bottom-start'
+                        interactive={true}
+                    >
+                        <Button>
+                            <AccountCircleOutlinedIcon />
+                            {roleID == '3' ? 'Nha sĩ' :
+                                roleID == '2' ? 'Nhân viên' :
+                                    roleID == '1' ? 'Admin' :
+                                        'Chủ nha khoa'
+                            }
+                        </Button>
+                    </Tippy>
+                </Wrapper>
+            </Container>
+            <CustomBackdrop open={openBackdrop} />
+        </>
     )
 }
 

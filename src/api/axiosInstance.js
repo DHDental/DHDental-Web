@@ -9,7 +9,6 @@ const axiosPublic = axios.create({
     baseURL: BASE_URL
 });
 
-// lấy token từ localStorage (sau khi login lưu token vào localStorage)
 let loginInfo = localStorage.getItem('loginInfo') ? JSON.parse(localStorage.getItem('loginInfo')) : null
 
 const axiosPrivate = axios.create({
@@ -20,7 +19,6 @@ const axiosPrivate = axios.create({
     }
 });
 
-// xử lí refresh token ở đây
 axiosPrivate.interceptors.request.use(async req => {
     if (!loginInfo) {
         loginInfo = localStorage.getItem('loginInfo') ? JSON.parse(localStorage.getItem('loginInfo')) : null
@@ -32,7 +30,14 @@ axiosPrivate.interceptors.request.use(async req => {
     console.log('isExpired:', isExpired);
     console.log('jwtToken:', req.headers.Authorization);
     if (!isExpired) return req
+
+    const response = await axios.post(`${BASE_URL}/auth/refreshToken`, {
+        "refreshToken": loginInfo.refreshToken
+    })
+    localStorage.setItem('loginInfo', JSON.stringify(response.data))
+    req.headers.Authorization = `Bearer ${response.data.token}`
+
     return req
 })
-//////
+
 export { axiosPrivate, axiosPublic }
