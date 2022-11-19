@@ -1,16 +1,22 @@
 import { Search } from "@mui/icons-material"
 import { Box, CircularProgress, IconButton, InputAdornment, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
+import { useEffect } from "react"
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
 import { axiosPrivate } from "../../api/axiosInstance"
+import { GET_PATIENT_PAYMENT } from "../../common/constants/apiConstants"
 import { STAFF_HOADON } from "../../common/constants/pathConstants"
 import { formatStringtoDate } from "../../common/utils/formatDate"
+import { CustomBackdrop } from "../../components"
 
 const FindPatient = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const [patient, setPatient] = useState([])
     const [loading, setLoading] = useState(false)
     const [messageNodata, setMessageNodata] = useState('')
+
+    const [openBackdrop, setOpenBackdrop] = useState(false)
+
     const handleSubmit = async (e) => {
         if (searchTerm.trim() === '') {
             e.preventDefault()
@@ -37,6 +43,25 @@ const FindPatient = () => {
             }
         }
     }
+    useEffect(() => {
+        let isMounted = true;
+        const getPatientInfo = async () => {
+            try {
+                setOpenBackdrop(true)
+                const response = await axiosPrivate.post(GET_PATIENT_PAYMENT)
+                // console.log(response.data);
+                isMounted && setPatient(response.data)
+                setOpenBackdrop(false)
+            } catch (error) {
+                setOpenBackdrop(false)
+                console.log(error);
+            }
+        }
+        getPatientInfo()
+        return () => {
+            isMounted = false;
+        }
+    }, [])
     return (
         <>
             <Box
@@ -112,6 +137,7 @@ const FindPatient = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <CustomBackdrop open={openBackdrop} />
         </>
     )
 }
