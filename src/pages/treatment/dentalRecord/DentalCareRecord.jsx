@@ -1,14 +1,12 @@
 
 import { useEffect, useState } from 'react'
-import CreateNewRecord from './CreateNewRecord'
-import PatientInfoDR from './PatientInfoDR'
-import ServiceBill from './ServiceBill'
-import NewRecord from './newRecord'
-import Record from './taiKham'
 import { useParams } from 'react-router-dom'
 import { axiosPrivate } from '../../../api/axiosInstance'
 import { GETINFOEXAMINATE } from '../../../common/constants/apiConstants'
 import { CustomBackdrop } from '../../../components'
+import NewRecord from './newRecord'
+import PatientInfoDR from './PatientInfoDR'
+import Record from './taiKham'
 
 const DentalCareRecord = () => {
     // const location = useLocation();
@@ -53,12 +51,6 @@ const DentalCareRecord = () => {
                 : <Record bill={patientInfo?.billDetailList} />
             }
 
-
-            {/* </Grid> */}
-            {/* <Grid container item>
-                    <CreateRecord />
-                </Grid> */}
-            {/* </Grid> */}
             <CustomBackdrop open={openBackdrop} />
         </>
     )
