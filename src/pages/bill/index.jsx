@@ -1,5 +1,5 @@
 import StartFirebase from '../../components/firebaseConfig'
-import { onValue, ref, update } from 'firebase/database';
+import { onValue, ref, remove, update } from 'firebase/database';
 import PatientInformation from './PatientInformation';
 import { HoaDon } from './hoaDon';
 import { useEffect, useState } from 'react';
@@ -52,8 +52,17 @@ const Bill = () => {
                 })
             }
         }
+        if (dataFirebasePatient?.length != 0) {
+            if (dataFirebasePatient[0]?.data?.record) {
+                if (!dataFirebasePatient[0]?.data?.record?.serviceHoaDon) {
+                    remove(ref(db, `${dataFirebasePatient[0]?.key}`))
+                }
+            }
+
+        }
     }, [dataFirebasePatient])
-    // console.log(dataFirebasePatient);
+    console.log(dataFirebasePatient[0]?.data?.record?.serviceHoaDon);
+    console.log(dataFirebasePatient);
     return (
         // <button onClick={handleThanhToan}>thanh toán</button>
         <>

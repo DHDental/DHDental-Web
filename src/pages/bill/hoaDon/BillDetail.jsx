@@ -135,8 +135,8 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                             >
                                 {thanhToan == 'yes' ?
                                     '* Cần thanh toán cho lượt khám này'
-                                    : null}
-
+                                    // : null}
+                                    : '* Cần thanh toán cho lượt khám này'}
                             </Grid>
                             <Grid container item direction='row' spacing={2}>
                                 <Grid item sx={{ fontWeight: '500' }}>Ngày tạo hóa đơn:</Grid>
