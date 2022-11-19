@@ -110,6 +110,7 @@ const HistoryRecord = ({ open, handleClose }) => {
                                                                     <TableCell align='center'>Đặc tả</TableCell>
                                                                     <TableCell align='center'>Số lượng</TableCell>
                                                                     <TableCell align='center'>Số lần thực hiện dự kiến</TableCell>
+                                                                    <TableCell></TableCell>
                                                                 </TableRow>
                                                             </TableHead>
                                                             <TableBody>
@@ -131,6 +132,13 @@ const HistoryRecord = ({ open, handleClose }) => {
                                                                             <TableCell align='center'>
                                                                                 {service?.serviceExpectedTimes}
                                                                             </TableCell>
+                                                                            {service?.serviceStatus == 'Cancel' ?
+                                                                                <TableCell align='center' sx={{ color: 'red', borderTop: '1px solid rgba(224, 224, 224, 1)' }}>
+                                                                                    Đã hủy bỏ
+                                                                                </TableCell> :
+                                                                                null
+                                                                            }
+
                                                                         </TableRow>
                                                                     ))
                                                                     : null
