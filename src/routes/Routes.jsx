@@ -5,9 +5,9 @@ import {
     Appointment, WaitingList, Treatment, Patients, NotFound,
     MedicalRegistration,
     DentistWaitingList, Login,
-    DentalCareRecord, Bill, TestAdmin, OwnerTest, HistoryRecord, AllBill
+    DentalCareRecord, Bill, TestAdmin, OwnerTest, HistoryRecord, AllBill, TestDemo
 } from '../pages';
-import { StaffLayout, DentistLayout, AdminLayout, OwnerLayout } from '../components/layouts';
+import { StaffLayout, DentistLayout, AdminLayout, OwnerLayout, DemoLayout } from '../components/layouts';
 import FindPatient from '../pages/bill/FindPatient';
 
 
@@ -77,6 +77,13 @@ export default function Router() {
                         { path: 'test', element: <OwnerTest /> },
                     ]
                 }
+            ]
+        },
+        {
+            path: '/test',
+            element: <DemoLayout />,
+            children: [
+                { path: 'demo', element: <TestDemo /> }
             ]
         },
         {

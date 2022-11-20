@@ -18,3 +18,5 @@ export const ADMIN_TEST = '/admin/test'
 
 // owner
 export const OWNER_TEST = '/owner/test'
+
+export const DEMO_TEST = '/test/demo'

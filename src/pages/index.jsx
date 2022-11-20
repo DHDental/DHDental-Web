@@ -14,3 +14,4 @@ export { default as OwnerTest } from './owner/OwnerTest'
 export { default as HistoryRecord } from './treatment/recordHistory'
 
 export { default as AllBill } from './patient/hoadon'
+export { default as TestDemo } from './demo/TestDemo'
