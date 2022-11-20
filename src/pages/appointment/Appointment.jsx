@@ -138,7 +138,7 @@ const Appointment = () => {
     useEffect(() => {
         fetchUserBookingList()
     }, [value])
-
+    // console.log(formatYearMonthDate(dayjs()));
     return (
         <>
             <Stack spacing={4}>
@@ -246,12 +246,15 @@ const Appointment = () => {
                                                 {handleSlot(user?.slotBooking)}
                                             </TableCell>
                                             <TableCell align='center'>{user?.dentistName}</TableCell>
-                                            <TableCell align='center'>
-
-                                                <AppointmentIcon user={user} />
-
-
-                                            </TableCell>
+                                            {
+                                                dayjs().diff(dayjs(user?.dateBooking)) < 1 ?
+                                                    <TableCell align='center'>
+                                                        Chưa tới ngày được check in
+                                                    </TableCell> :
+                                                    <TableCell align='center'>
+                                                        <AppointmentIcon user={user} />
+                                                    </TableCell>
+                                            }
                                         </TableRow>)
                                 })}
                         </TableBody>

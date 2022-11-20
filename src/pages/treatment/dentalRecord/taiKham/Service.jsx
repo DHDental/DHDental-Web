@@ -72,6 +72,9 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
         }
 
         var count = 0
+        if (item?.serviceDesc == 'Không tìm thấy dịch vụ') {
+            count = 1
+        }
         serviceList.forEach(element => {
             if (element?.idContinue != 1)
                 if (newItem?.id === element?.id) count = 1;
