@@ -79,7 +79,7 @@ const WaitingList = () => {
                     </Table>
                 </Grid>
 
-                <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#000', height: '90vh' }} />
+                <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#000', height: '94vh' }} />
 
                 <Grid item xs={5.95} >
                     <Table>

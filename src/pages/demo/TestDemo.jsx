@@ -8,6 +8,7 @@ import StartFirebase from '../../components/firebaseConfig'
 const db = StartFirebase()
 const TestDemo = () => {
     const [result, setResult] = useState()
+    const [resultSDT, setResultSDT] = useState()
     const [action, setAction] = useState('')
     const [loading, setLoading] = useState(false)
     const handleBooking = () => {
@@ -16,9 +17,11 @@ const TestDemo = () => {
             try {
                 setLoading(true)
                 setResult()
+                setResultSDT()
                 const response = await axiosPublic.post(TEST_BOOKING)
                 // console.log(response.data);
                 setResult(response.data.message)
+                setResultSDT(response.data.listPhone)
                 setLoading(false)
             } catch (error) {
                 setLoading(false)
@@ -30,32 +33,128 @@ const TestDemo = () => {
         getResult()
     }
     const handleVanLai = () => {
-        setAction('Test nhiều bệnh nhân vãn lai đăng kí khám bệnh')
+        setAction('Test đăng kí khám bệnh cho nhiều bệnh nhân vãn lai')
         setResult()
         const list = [
             {
-                fullName: 'Nguyễn Xuân Khánh Hòa',
-                sdt: '0334942928',
+                fullName: 'Nguyễn Văn Nhị',
+                sdt: '0888289289',
                 status: 0,
                 statusSpecial: 0,
                 timeBooking: '',
                 dentistName: '',
                 dentistPhone: '',
                 room: '',
-                dentalCareExamReason: 'khám bệnh test',
+                dentalCareExamReason: 'khám bệnh',
                 color: 'b'
 
             },
             {
-                fullName: 'Nguyễn Lan',
-                sdt: '1234567898',
+                fullName: 'Nguyễn Thị Hai',
+                sdt: '0888689689',
                 status: 0,
                 statusSpecial: 0,
                 timeBooking: '',
                 dentistName: '',
                 dentistPhone: '',
                 room: '',
-                dentalCareExamReason: 'khám bệnh test 1',
+                dentalCareExamReason: 'khám bệnh',
+                color: 'b'
+            },
+            {
+                fullName: 'Nguyễn Văn Ba',
+                sdt: '0888589589',
+                status: 0,
+                statusSpecial: 0,
+                timeBooking: '',
+                dentistName: '',
+                dentistPhone: '',
+                room: '',
+                dentalCareExamReason: 'khám bệnh',
+                color: 'b'
+            },
+            {
+                fullName: 'Nguyễn Văn Tam',
+                sdt: '0888389389',
+                status: 0,
+                statusSpecial: 0,
+                timeBooking: '',
+                dentistName: '',
+                dentistPhone: '',
+                room: '',
+                dentalCareExamReason: 'khám bệnh',
+                color: 'b'
+            },
+            {
+                fullName: 'Nguyễn Tuấn Kiệt',
+                sdt: '0888189189',
+                status: 0,
+                statusSpecial: 0,
+                timeBooking: '',
+                dentistName: '',
+                dentistPhone: '',
+                room: '',
+                dentalCareExamReason: 'khám bệnh',
+                color: 'b'
+            },
+            {
+                fullName: 'Trần Thị Ngân',
+                sdt: '0942691093',
+                status: 0,
+                statusSpecial: 0,
+                timeBooking: '',
+                dentistName: '',
+                dentistPhone: '',
+                room: '',
+                dentalCareExamReason: 'khám bệnh',
+                color: 'b'
+            },
+            {
+                fullName: 'Nguyễn Võ Kim Ngọc',
+                sdt: '0934699626',
+                status: 0,
+                statusSpecial: 0,
+                timeBooking: '',
+                dentistName: '',
+                dentistPhone: '',
+                room: '',
+                dentalCareExamReason: 'khám bệnh',
+                color: 'b'
+            },
+            {
+                fullName: 'Hà Thị Phượng',
+                sdt: '0814722724',
+                status: 0,
+                statusSpecial: 0,
+                timeBooking: '',
+                dentistName: '',
+                dentistPhone: '',
+                room: '',
+                dentalCareExamReason: 'khám bệnh',
+                color: 'b'
+            },
+            {
+                fullName: 'Nguyễn Văn Tứ',
+                sdt: '0888489489',
+                status: 0,
+                statusSpecial: 0,
+                timeBooking: '',
+                dentistName: '',
+                dentistPhone: '',
+                room: '',
+                dentalCareExamReason: 'khám bệnh',
+                color: 'b'
+            },
+            {
+                fullName: 'Trần Minh Trí',
+                sdt: '0888789789',
+                status: 0,
+                statusSpecial: 0,
+                timeBooking: '',
+                dentistName: '',
+                dentistPhone: '',
+                room: '',
+                dentalCareExamReason: 'khám bệnh',
                 color: 'b'
             },
         ]
@@ -65,7 +164,10 @@ const TestDemo = () => {
             const newUser = push(dbRef1)
             set(newUser, item)
         })
-        setLoading(false)
+
+        const handler = setTimeout(() =>
+            setLoading(false),
+            1000)
         setResult('Đăng kí khám bệnh cho 10 bệnh nhân vãn lai thành công')
     }
     return (
@@ -87,7 +189,7 @@ const TestDemo = () => {
                             variant='contained'
                             disableElevation
                             onClick={handleVanLai}
-                        >Test nhiều bệnh nhân vãn lai đăng kí khám bệnh
+                        >Test đăng kí khám bệnh cho nhiều bệnh nhân vãn lai
                         </Button>
                     </Box>
                 </Grid>
@@ -99,7 +201,23 @@ const TestDemo = () => {
                         <div style={{ justifyContent: 'center' }}>
                             {loading == true ?
                                 <CircularProgress size={20} /> :
-                                result}
+                                <>
+                                    {result}
+                                    <div style={{ height: '12px' }}></div>
+                                    {resultSDT != undefined ?
+                                        <div>
+                                            Các bệnh nhân đặt lịch thành công có số điện thoại:
+                                            <Grid container spacing={2} sx={{ marginTop: '1px' }}>
+                                                {resultSDT.map((item, i) => (
+                                                    <Grid item key={i}>{item}</Grid>
+                                                ))}
+                                            </Grid>
+                                        </div>
+                                        : null}
+
+                                </>
+
+                            }
                         </div>
                     </Box>
                 </Grid>
