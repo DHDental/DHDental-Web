@@ -23,6 +23,7 @@ export const CHECK_PAYMENT_OR_NOT = '/booking/checkPaymentOrNot'
 export const LOGOUT = '/user/logoutAccount'
 
 export const GET_PATIENT_PAYMENT = '/bill/getListPatientNotPayment'
+export const TEST_BOOKING = 'script/bookingListPatient'
 //admin
 export const GET_ALL_USER_ADMIN = '/admin/getAllUser'
 export const CRUD_ACCOUNT_ADMIN = '/admin/crudAccountForStaffOrDentist'
