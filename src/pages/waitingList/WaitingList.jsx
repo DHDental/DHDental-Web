@@ -81,11 +81,11 @@ const WaitingList = () => {
 
                 <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#000', height: '94vh' }} />
 
-                <Grid item xs={5.95} >
+                <Grid item xs={5.95} sx={{ borderLeft: '1px black solid' }}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell colSpan={2} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Chuẩn bị</TableCell>
+                                <TableCell colSpan={3} align='center' sx={{ color: 'blue', fontSize: '18px' }}>Chuẩn bị</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell sx={{ fontSize: '17px' }}>
@@ -93,6 +93,9 @@ const WaitingList = () => {
                                 </TableCell>
                                 <TableCell sx={{ fontSize: '17px' }}>
                                     Số điện thoại
+                                </TableCell>
+                                <TableCell>
+
                                 </TableCell>
                             </TableRow>
                         </TableHead>
@@ -104,6 +107,12 @@ const WaitingList = () => {
                                             {item?.data.statusSpecial === 1 && ` (đặt trước nha sĩ ${item?.data.dentistName})`}
                                         </TableCell>
                                         <TableCell sx={{ fontSize: '16px' }}>******{item?.data.sdt.substr(-4)}</TableCell>
+                                        {item?.data?.color == 'yd' ?
+                                            <TableCell sx={{ fontSize: '16px' }}>
+                                                đang trong quá trình thanh toán
+                                            </TableCell> :
+                                            <TableCell>
+                                            </TableCell>}
                                     </TableRow>) : null
                             ))}
                         </TableBody>

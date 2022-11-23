@@ -115,30 +115,48 @@ const Appointment = () => {
         }
     }
     const handleSlot = (slot) => {
-        if (slot === 'sl1')
-            slot = '8:00'
-        if (slot === 'sl2')
-            slot = '9:00'
-        if (slot === 'sl3')
-            slot = '10:00'
-        if (slot === 'sl4')
-            slot = '11:00'
-        if (slot === 'sl5')
-            slot = '12:00'
-        if (slot === 'sl6')
-            slot = '13:00'
-        if (slot === 'sl7')
-            slot = '14:00'
-        if (slot === 'sl8')
-            slot = '15:00'
-        if (slot === 'sl9')
-            slot = '16:00'
+        if (slot == '8:00 AM')
+            slot = 8
+        if (slot == '9:00 AM')
+            slot = 9
+        if (slot == '10:00 AM')
+            slot = 10
+        if (slot == '11:00 AM')
+            slot = 11
+        if (slot == '1:00 PM')
+            slot = 13
+        if (slot == '2:00 PM')
+            slot = 14
+        if (slot == '3:00 PM')
+            slot = 15
+        if (slot == '4:00 PM')
+            slot = 16
         return slot
+    }
+    const handleDuocCheckIn = (slot) => {
+        if (dayjs().hour() == slot) {
+            if (dayjs().minute() < 15 || dayjs().minute() == 15) {
+                return 'ok'
+            } else { return 'not future' }
+        } else {
+            if (dayjs().hour() - slot == -1) {
+                if (dayjs().minute() > 45 || dayjs().minute() == 45) {
+                    return 'ok'
+                } else { return 'not pass' }
+            } else {
+                if (dayjs().hour() > slot)
+                    return 'not future'
+                else {
+                    return 'not pass'
+                }
+            }
+        }
+
     }
     useEffect(() => {
         fetchUserBookingList()
     }, [value])
-    // console.log(formatYearMonthDate(dayjs()));
+    // console.log(dayjs().minute());
     return (
         <>
             <Stack spacing={4}>
@@ -233,7 +251,8 @@ const Appointment = () => {
                                 ? userBookingList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 :
                                 userBookingList).map((user, i) => {
-
+                                    let gio = handleSlot(user?.slotBooking)
+                                    let flag = handleDuocCheckIn(gio)
                                     return (
                                         <TableRow key={i} hover >
                                             <TableCell align='center'>{user?.lastName}</TableCell>
@@ -242,8 +261,7 @@ const Appointment = () => {
                                             <TableCell align='center'>{user?.phoneNumber}</TableCell>
                                             <TableCell align='center'>{formatDateMonthYear(user?.dateBooking)}</TableCell>
                                             <TableCell align='center'>
-                                                {/* {user?.slotBooking } */}
-                                                {handleSlot(user?.slotBooking)}
+                                                {user?.slotBooking}
                                             </TableCell>
                                             <TableCell align='center'>{user?.dentistName}</TableCell>
                                             {
@@ -251,9 +269,18 @@ const Appointment = () => {
                                                     <TableCell align='center'>
                                                         Chưa tới ngày được check in
                                                     </TableCell> :
-                                                    <TableCell align='center'>
-                                                        <AppointmentIcon user={user} />
-                                                    </TableCell>
+                                                    flag == 'ok' ?
+                                                        <TableCell align='center'>
+                                                            <AppointmentIcon user={user} />
+                                                        </TableCell> :
+                                                        flag == 'not pass' ?
+                                                            < TableCell align='center'>
+                                                                Chưa tới thời gian check in
+                                                            </TableCell> :
+                                                            < TableCell align='center'>
+                                                                Đã qua thời gian được check in
+                                                            </TableCell>
+
                                             }
                                         </TableRow>)
                                 })}

@@ -65,7 +65,7 @@ const PatientNotAppointment = () => {
                     </TableHead>
                     <TableBody>
                         {dataPatient.map((item, i) => (
-                            (item?.data.status === 0 && item?.data.statusSpecial === 0) ?
+                            (item?.data.status === 0 && item?.data.statusSpecial === 0 && (item?.data.room == dentist.DentistRoom || item?.data.room == '')) ?
                                 (<TableRow key={i} >
                                     <TableCell
                                         sx={{
