@@ -20,7 +20,6 @@ import {
   GET_ALL_USER_ADMIN,
 } from "../../../common/constants/apiConstants";
 import { async } from "@firebase/util";
-import CustomDatePicker from "../datePicker/customDatePicker";
 
 const user = [];
 
