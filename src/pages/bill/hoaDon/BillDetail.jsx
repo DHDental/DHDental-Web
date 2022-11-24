@@ -195,7 +195,9 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                                             {
                                                 item?.statusUpdates?.map((statusChange, iStatus) => (
                                                     <MenuItem key={iStatus} value={statusChange}>
-                                                        {statusChange == 'Paid' ? 'Đã thanh toán' : 'Đã trả tiền cọc'}
+                                                        {statusChange == 'Paid' ? 'Đã thanh toán' :
+                                                            statusChange == 'Cancel' ? 'Hủy' :
+                                                                'Đã trả tiền cọc'}
                                                     </MenuItem>
                                                 ))
                                             }

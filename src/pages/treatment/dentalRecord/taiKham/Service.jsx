@@ -455,6 +455,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                         {dataFirebasePatient[0]?.data?.record?.paymentConfirmation !== undefined ?
                             <Grid item>
                                 <Button
+                                    sx={{ marginTop: '15px' }}
                                     variant='outlined'
                                     disableElevation
 

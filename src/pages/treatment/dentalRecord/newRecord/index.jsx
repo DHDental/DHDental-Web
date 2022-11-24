@@ -148,7 +148,7 @@ const NewRecord = () => {
                 setSeverity('success')
                 setOpenSnackbar(true)
                 const handler = setTimeout(() =>
-                    navigate(DENTIST_DS_KHAM, { replace: true }), 1500)
+                    navigate(DENTIST_DS_KHAM, { replace: true }), 1400)
             }
         } catch (error) {
             console.log(error);

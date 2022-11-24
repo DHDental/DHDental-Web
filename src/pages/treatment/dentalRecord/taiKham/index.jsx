@@ -184,7 +184,7 @@ const Record = ({ bill }) => {
                     setSeverity2('success')
                     setOpenSnackbar2(true)
                     const handler = setTimeout(() =>
-                        navigate(DENTIST_DS_KHAM, { replace: true }), 1500)
+                        navigate(DENTIST_DS_KHAM, { replace: true }), 1400)
                 }
             } else {
                 let newThuocList = []
