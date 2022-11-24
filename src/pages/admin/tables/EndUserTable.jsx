@@ -21,9 +21,15 @@ import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 const user = [
 ];
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const EndUserTable = (props) => {
+  const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [endUser, setEndUser] = useState(user);
+  const [userData, setUserData] = useState(null);
 
   const columnsEndUser = [
     { title: "Họ", field: "lastName", editable: "never" },
@@ -85,7 +91,6 @@ const EndUserTable = (props) => {
   };
 
   const updateUser = async (newRow) => {
-    // setLoading(true);
     if (newRow.status === "Inactive") {
       const params = {
         userName: newRow.userName,
@@ -99,6 +104,22 @@ const EndUserTable = (props) => {
       await axiosPrivate.post(BAN_OR_ACTIVE_ACCOUNT_ADMIN, params);
       await fetchData();
     }
+  };
+
+  const handleClickOpen = () => {
+    setLoading(true);
+    setOpen(true);
+  };
+
+  const handleAccept = () => {
+    updateUser(userData);
+    setUserData(null);
+    setOpen(false);
+  };
+
+  const handleClose = () => {
+    setLoading(false);
+    setOpen(false);
   };
 
 
@@ -120,25 +141,12 @@ const EndUserTable = (props) => {
           {
             icon: ChangeCircleIcon,
             tooltip: "Đổi Trạng Thái",
-            onClick: (e, data) => updateUser(data),
+            onClick: (e, data)=>{
+              setUserData(data);
+              handleClickOpen();
+            },
           },
         ]}
-        // editable={{
-        //   onRowUpdate: (updateRow, oldRow) =>
-        //     new Promise((resolve, reject) => {
-        //       const index = oldRow.tableData.id;
-        //       const updateRows = [...endUser];
-        //       updateRows[index] = updateRow;
-        //       setTimeout(() => {
-        //         updateUser(updateRow);
-        //         setEndUser(updateRows);
-        //         resolve();
-        //       }, 2000);
-        //     }),
-        // }}
-        // components={{
-        //     OverlayLoading: props => (<Spinner />)
-        //   }}
         options={{
           sorting: true,
           search: true,
@@ -185,6 +193,24 @@ const EndUserTable = (props) => {
           },
         }}
       />
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Lưu ý!"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Bạn có xác nhận muốn cập nhật
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Hủy</Button>
+          <Button onClick={handleAccept}>Xác Nhận</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
