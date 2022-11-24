@@ -394,6 +394,7 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                     <Grid container item spacing={2}>
                         <Grid item>
                             <Button
+                                sx={{ marginTop: '15px' }}
                                 variant='contained'
                                 disableElevation
                                 onClick={handleTaoHoaDon}
