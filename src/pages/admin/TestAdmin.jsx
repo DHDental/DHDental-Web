@@ -19,18 +19,15 @@ const TestAdmin = () => {
   const [value, setValue] = React.useState("1");
   const [staff, setStaff] = useState(user);
   const [endUser, setEndUser] = useState(user);
-  const [loading, setLoading] = useState(false);
-  // const [open, setOpen] = React.useState(false);
-  // const [updateRow, setUpdateRow] = React.useState(null);
-  // const [oldRow, setOldRow] = React.useState(null);
+  // const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    // setLoading(true);
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    setLoading(true);
+    // setLoading(true);
     const params = {};
     const response = await axiosPrivate.post(GET_ALL_USER_ADMIN, params);
     console.log(response);
@@ -43,7 +40,7 @@ const TestAdmin = () => {
     });
     setStaff(staff);
     setEndUser(endUser);
-    setLoading(false);
+    // setLoading(false);
   };
 
   const handleChange = (event, newValue) => {
@@ -60,10 +57,10 @@ const TestAdmin = () => {
           </TabList>
         </Box>
         <TabPanel value="1">
-          <StaffTable loading={loading} staff={staff}/>
+          <StaffTable staff={staff}/>
         </TabPanel>
         <TabPanel value="2">
-          <EndUserTable loading={loading} endUser={endUser}/>
+          <EndUserTable endUser={endUser}/>
         </TabPanel>
       </TabContext>
     </div>
