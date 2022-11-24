@@ -1,20 +1,14 @@
-import MaterialTable from "material-table";
-import moment from "moment/moment";
-import React, { useState } from "react";
-import tableIcons from "../../components/MaterialTableIcons";
+import React, { useEffect, useState } from "react";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
   Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
 } from "@mui/material";
 import Tab from "@material-ui/core/Tab";
+import RevenueTable from "./tables/RevenueTable";
+import CheckUpTable from "./tables/CheckUpTable";
+import ServiceTable from "./tables/ServiceTable";
+import { axiosPrivate } from "../../api/axiosInstance";
+import { GET_ALL_SERVICES } from "../../common/constants/apiConstants";
 
 const service = [
   {
@@ -24,7 +18,7 @@ const service = [
   },
 ];
 
-const revenue = [
+const checkUp = [
   {
     fullName: "Lại Nguyễn Tấn Tài",
     phoneNumber: "021312334",
@@ -34,47 +28,28 @@ const revenue = [
   },
 ];
 
-export const formatNumber = inputNumber => {
-    let formetedNumber=(Number(inputNumber)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-    let splitArray=formetedNumber.split('.');
-    if(splitArray.length>1){
-      formetedNumber=splitArray[0];
-    }
-    return(formetedNumber);
-  };
+
 
 const OwnerTest = () => {
   const [serviceData, setServiceData] = useState(service);
-  const [checkUpData, setCheckUpeData] = useState(revenue);
-  const [loading, setLoading] = useState(false);
+  const [checkUpData, setCheckUpeData] = useState(checkUp);
+  // const [loading, setLoading] = useState(false);
   const [value, setValue] = React.useState("1");
 
-  const columnsService = [
-    { title: "Mã Dịch Vụ", field: "maDichVu", editable: "never"  },
-    { title: "Tên Dịch Vụ", field: "tenDichVu" },
-    { title: "Giá", field: "chiPhi", render: (rowData) =>
-    formatNumber(rowData.chiPhi) + " VND", },
-  ];
+  useEffect(() => {
+    // setLoading(true);
+    fetchData();
+  }, []);
 
-  const columnsCheckUp = [
-    { title: "Họ và Tên", field: "fullName" },
-    { title: "Số Điện Thoại", field: "phoneNumber" },
-    {
-      title: "Ngày Sinh",
-      field: "dob",
-      type: "date",
-      dateSetting: { locale: "vn-VN" },
-      render: (rowData) => moment(rowData.dateOfBirth).format("DD/MM/YYYY"),
-    },
-    { title: "Địa Chỉ", field: "address" },
-    {
-      title: "Ngày Khám",
-      field: "dateRecord",
-      type: "date",
-      dateSetting: { locale: "vn-VN" },
-      render: (rowData) => moment(rowData.dateOfBirth).format("DD/MM/YYYY"),
-    },
-  ];
+  const fetchData = async () => {
+    // setLoading(true);
+    const params = {};
+    const response = await axiosPrivate.post(GET_ALL_SERVICES, params);
+    // console.log(response);
+    const data = [...response.data];
+    setServiceData(data);
+    // setLoading(false);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -87,184 +62,17 @@ const OwnerTest = () => {
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="Quản Lý Dịch Vụ" value="1" />
             <Tab label="Quản Lý Lượng Người Tới Khám" value="2" />
+            <Tab label="Quản Lý Doanh Thu" value="3" />
           </TabList>
         </Box>
         <TabPanel value="1">
-          <MaterialTable
-            isLoading={loading}
-            title="Bảng Dịch Vụ"
-            icons={tableIcons}
-            columns={columnsService}
-            data={serviceData}
-            // actions={[
-            //   {
-            //     icon: RefreshIcon,
-            //     tooltip: "Refresh Data",
-            //     isFreeAction: true,
-            //     onClick: () => fetchData(),
-            //   },
-            // ]}
-            editable={{
-              onRowAdd: (newRow) =>
-                new Promise((resolve, reject) => {
-                  const updateRows = [
-                    ...serviceData,
-                    newRow,
-                    // {
-                    //   ...newRow,
-                    //   dateOfBirth: moment(newRow.dateOfBirth).format(
-                    //     "YYYY-MM-DD"
-                    //   ),
-                    // },
-                  ];
-                  setTimeout(() => {
-                    // createStaff({
-                    //   ...newRow,
-                    //   dateOfBirth: moment(newRow.dateOfBirth).format(
-                    //     "YYYY-MM-DD"
-                    //   ),
-                    // });
-                    setServiceData(updateRows);
-                    resolve();
-                  }, 2000);
-                  //   console.log(newRow);
-                }),
-
-              onRowUpdate: (updateRow, oldRow) =>
-                new Promise((resolve, reject) => {
-                  const index = oldRow.tableData.id;
-                  const updateRows = [...serviceData];
-                  updateRows[index] = updateRow;
-                  setTimeout(() => {
-                    // updateStaff(updateRow);
-                    setServiceData(updateRows);
-                    resolve();
-                  }, 2000);
-                }),
-
-              onRowDelete: (selectedRow) =>
-                new Promise((resolve, reject) => {
-                  const index = selectedRow.tableData.id;
-                  const updateRows = [...serviceData];
-                  updateRows.splice(index, 1);
-                  setTimeout(() => {
-                    setServiceData(updateRows);
-                    resolve();
-                  }, 2000);
-                }),
-            }}
-            // components={{
-            //     OverlayLoading: props => (<Spinner />)
-            //   }}
-            options={{
-              sorting: true,
-              search: true,
-              searchFieldAlignment: "right",
-              searchAutoFocus: true,
-              searchFieldVariant: "standard",
-
-              paging: true,
-              pageSizeOptions: [2, 5, 10, 20, 25, 50, 100],
-              pageSize: 5,
-              paginationType: "stepped",
-              showFirstLastPageButtons: false,
-              selection: false,
-              showSelectAllCheckbox: false,
-              showTextRowsSelected: false,
-
-              actionsColumnIndex: -1,
-              addRowPosition: "first",
-
-              //   filtering: true,
-
-              rowStyle: (data, index) =>
-                index % 2 === 0 ? { background: "#f5f5f5" } : null,
-              headerStyle: { background: "#f44336", color: "#fff" },
-            }}
-            localization={{
-              pagination: {
-                labelRowsSelect: "Dòng",
-                labelDisplayedRows: "{from}-{to} of {count}",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                nRowsSelected: "{0} Dòng(s) selected",
-              },
-              header: {
-                actions: "",
-              },
-              body: {
-                emptyDataSourceMessage: "Chưa có dữ liệu",
-                filterRow: {
-                  filterTooltip: "Filter",
-                },
-              },
-            }}
-          />
+          <ServiceTable serviceData={serviceData}/>
         </TabPanel>
         <TabPanel value="2">
-          <MaterialTable
-            isLoading={loading}
-            title="Bảng Số Lượng Người Tới Khám"
-            icons={tableIcons}
-            columns={columnsCheckUp}
-            data={checkUpData}
-            // actions={[
-            //   {
-            //     icon: RefreshIcon,
-            //     tooltip: "Refresh Data",
-            //     isFreeAction: true,
-            //     onClick: () => fetchData(),
-            //   },
-            // ]}
-            // components={{
-            //     OverlayLoading: props => (<Spinner />)
-            //   }}
-            options={{
-              sorting: true,
-              search: true,
-              searchFieldAlignment: "right",
-              searchAutoFocus: true,
-              searchFieldVariant: "standard",
-
-              paging: true,
-              pageSizeOptions: [2, 5, 10, 20, 25, 50, 100],
-              pageSize: 5,
-              paginationType: "stepped",
-              showFirstLastPageButtons: false,
-              selection: false,
-              showSelectAllCheckbox: false,
-              showTextRowsSelected: false,
-
-              actionsColumnIndex: -1,
-              addRowPosition: "first",
-
-              filtering: true,
-
-              rowStyle: (data, index) =>
-                index % 2 === 0 ? { background: "#f5f5f5" } : null,
-              headerStyle: { background: "#f44336", color: "#fff" },
-            }}
-            localization={{
-              pagination: {
-                labelRowsSelect: "Dòng",
-                labelDisplayedRows: "{from}-{to} of {count}",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                nRowsSelected: "{0} Dòng(s) selected",
-              },
-              header: {
-                actions: "",
-              },
-              body: {
-                emptyDataSourceMessage: "Chưa có dữ liệu",
-                filterRow: {
-                  filterTooltip: "Filter",
-                },
-              },
-            }}
-          />
+          <CheckUpTable/>
+        </TabPanel>
+        <TabPanel value="3">
+          <RevenueTable/>
         </TabPanel>
       </TabContext>
     </div>
