@@ -246,20 +246,25 @@ const NewRecord = () => {
     return (
         <>
             <Grid container spacing={1} direction='column'>
-                <Grid item> <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>I. Tạo dental care record</Typography></Grid>
-                <Mota motaList={motaList} setMotaList={setMotaList} />
+                <section>
+                    <Grid item> <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>I. Tạo dental care record</Typography></Grid>
+                    <Mota motaList={motaList} setMotaList={setMotaList} />
+                </section>
+                {/* <br /> */}
+                <section>
+                    <Service serviceList={serviceList} setServiceList={setServiceList}
+                        serviceHoaDon={serviceHoaDon} setServiceHoaDon={setServiceHoaDon}
+                        taoHoaDon={taoHoaDon} setTaoHoaDon={setTaoHoaDon}
+                        dataFirebasePatient={dataFirebasePatient}
+                        setRecordID={setRecordID}
+                    />
+                </section>
                 <br />
-
-                <Service serviceList={serviceList} setServiceList={setServiceList}
-                    serviceHoaDon={serviceHoaDon} setServiceHoaDon={setServiceHoaDon}
-                    taoHoaDon={taoHoaDon} setTaoHoaDon={setTaoHoaDon}
-                    dataFirebasePatient={dataFirebasePatient}
-                    setRecordID={setRecordID}
-                />
-                <br />
-                <Thuoc thuocList={thuocList} setThuocList={setThuocList} />
-                <br />
-                <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} errorNgayTaiKham={errorNgayTaiKham} />
+                <section style={{ opacity: '0.25', pointerEvents: 'none' }}>
+                    <Thuoc thuocList={thuocList} setThuocList={setThuocList} />
+                    <br />
+                    <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} errorNgayTaiKham={errorNgayTaiKham} />
+                </section>
                 <br />
 
                 <Grid item sx={{ display: 'flex', justifyContent: 'center' }}>
