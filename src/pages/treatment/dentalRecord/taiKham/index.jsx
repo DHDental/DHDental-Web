@@ -51,6 +51,9 @@ const Record = ({ bill }) => {
     const [openRelatedHistory, setOpenRelatedHistory] = useState(false)
     const [billDetailHistory, setBillDetailHistory] = useState()
 
+    const [hideThuocAndTaiKham, setHideThuocAndTaiKham] = useState(false)
+    const [hideService, setHideService] = useState(false)
+
     const handleContinueService = (item) => {
         let statusThanhToan
         if (item?.billStatus == 'In Progress') {
@@ -270,6 +273,28 @@ const Record = ({ bill }) => {
         if (dataFirebasePatient[0]?.data?.record?.recordID) {
             setRecordID(dataFirebasePatient[0]?.data?.record?.recordID)
         }
+
+        if (dataFirebasePatient[0]?.data?.record?.motaList?.length == 0 || dataFirebasePatient[0]?.data?.record?.motaList == undefined) {
+            setHideThuocAndTaiKham(true)
+            setHideService(true)
+        } else {
+            setHideThuocAndTaiKham(false)
+            setHideService(false)
+        }
+
+        if (dataFirebasePatient[0]?.data?.record?.serviceList?.length != 0 && dataFirebasePatient[0]?.data?.record?.serviceList?.length != undefined) {
+            if (dataFirebasePatient[0]?.data?.record?.paymentConfirmation != '1') {
+                setHideThuocAndTaiKham(true)
+            } else {
+                setHideThuocAndTaiKham(false)
+                if (dataFirebasePatient[0]?.data?.record?.motaList?.length == 0 || dataFirebasePatient[0]?.data?.record?.motaList == undefined)
+                    setHideThuocAndTaiKham(true)
+            }
+        } else {
+            setHideThuocAndTaiKham(false)
+            if (dataFirebasePatient[0]?.data?.record?.motaList?.length == 0 || dataFirebasePatient[0]?.data?.record?.motaList == undefined)
+                setHideThuocAndTaiKham(true)
+        }
     }, [dataFirebasePatient])
     useEffect(() => {
         setErrorNgayTaiKham('')
@@ -289,103 +314,121 @@ const Record = ({ bill }) => {
     return (
         <>
             <Grid container spacing={1} direction='column'>
-                <Grid item>
-                    <Typography variant='subtitle1' sx={{
-                        // color: 'blue',
-                        fontWeight: '500'
-                    }}>I. Công tác điều trị chưa hoàn tất</Typography>
-                </Grid>
-
-                <Grid container item spacing={2} direction='row'>
-                    {/* có bao nhiêu dịch vụ giang giở thì bấy nhiêu card */}
-                    {bill?.map((item, index) => (
-                        <Grid item key={index}>
-                            <Card>
-                                <CardContent>
-                                    <Grid container spacing={2} direction='column'>
-                                        <Grid item>
-                                            <Typography
-                                                sx={{
-                                                    color: '#673ab7',
-                                                    fontWeight: '500'
-                                                }}>
-                                                {`Ngày bắt đầu điều trị ${formatDateMonthYear2(item?.billDateCreate)}`}
-                                            </Typography>
-                                        </Grid>
-
-                                        <Grid item>
-
-                                            {/* {item?.services.map((service, indexS) => ( */}
-
-                                            <Box sx={{ borderBottom: '1px #000 solid', padding: '1px 0px' }}>
-                                                <Typography>
-                                                    Dịch vụ: {item?.serviceName}
-                                                </Typography>
-                                                {/* {`Trạng thái: Chưa hoàn tất`} */}
-                                                <Typography>{`Đặc tả: ${item?.serviceSpecification}`}</Typography>
-                                                <Typography>{`Số lượng: ${item?.quantity}`}</Typography>
-                                            </Box>
-
-                                            {/* ))} */}
-
-                                        </Grid>
-
-                                        <Grid container item spacing={1} sx={{
-                                            color: '#03a203', alignItems: 'center',
-                                            cursor: 'pointer'
-                                        }}
-                                            onClick={() => {
-
-                                                setBillDetailHistory(item?.billDetailId)
-                                                setOpenRelatedHistory(true)
-                                            }}
-                                        >
-                                            <Grid item><FeedOutlinedIcon /></Grid>
+                <section>
+                    <Grid item>
+                        <Typography variant='subtitle1' sx={{
+                            // color: 'blue',
+                            fontWeight: '500'
+                        }}>I. Công tác điều trị chưa hoàn tất</Typography>
+                    </Grid>
+                </section>
+                <br />
+                <section>
+                    <Grid container item spacing={2} direction='row'>
+                        {/* có bao nhiêu dịch vụ giang giở thì bấy nhiêu card */}
+                        {bill?.map((item, index) => (
+                            <Grid item key={index}>
+                                <Card>
+                                    <CardContent>
+                                        <Grid container spacing={2} direction='column'>
                                             <Grid item>
-                                                <Typography>
-                                                    Các dental care record liên quan
+                                                <Typography
+                                                    sx={{
+                                                        color: '#673ab7',
+                                                        fontWeight: '500'
+                                                    }}>
+                                                    {`Ngày bắt đầu điều trị ${formatDateMonthYear2(item?.billDateCreate)}`}
                                                 </Typography>
                                             </Grid>
-                                        </Grid>
-                                        <Grid item>
-                                            <Button variant='contained'
-                                                disableElevation
-                                                disabled={taoHoaDon === 'daTao' ? true : false}
+
+                                            <Grid item>
+
+                                                {/* {item?.services.map((service, indexS) => ( */}
+
+                                                <Box sx={{ borderBottom: '1px #000 solid', padding: '1px 0px' }}>
+                                                    <Typography>
+                                                        Dịch vụ: {item?.serviceName}
+                                                    </Typography>
+                                                    {/* {`Trạng thái: Chưa hoàn tất`} */}
+                                                    <Typography>{`Đặc tả: ${item?.serviceSpecification}`}</Typography>
+                                                    <Typography>{`Số lượng: ${item?.quantity}`}</Typography>
+                                                </Box>
+
+                                                {/* ))} */}
+
+                                            </Grid>
+
+                                            <Grid container item spacing={1} sx={{
+                                                color: '#03a203', alignItems: 'center',
+                                                cursor: 'pointer'
+                                            }}
                                                 onClick={() => {
-                                                    // console.log(item);
-                                                    handleContinueService(item)
+
+                                                    setBillDetailHistory(item?.billDetailId)
+                                                    setOpenRelatedHistory(true)
                                                 }}
                                             >
-                                                Thêm vào danh sách chỉ định
-                                            </Button>
-                                        </Grid>
+                                                <Grid item><FeedOutlinedIcon /></Grid>
+                                                <Grid item>
+                                                    <Typography>
+                                                        Các dental care record liên quan
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid item>
+                                                <Button variant='contained'
+                                                    disableElevation
+                                                    disabled={taoHoaDon === 'daTao' ? true : false}
+                                                    onClick={() => {
+                                                        // console.log(item);
+                                                        handleContinueService(item)
+                                                    }}
+                                                >
+                                                    Thêm vào danh sách chỉ định
+                                                </Button>
+                                            </Grid>
 
-                                    </Grid>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-                <Grid item>
-                    <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>II. Tạo dental care record</Typography>
-                </Grid>
-                <Mota motaList={motaList} setMotaList={setMotaList} />
+                                        </Grid>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </section>
                 <br />
-                <Service serviceList={serviceList} setServiceList={setServiceList}
-                    serviceHoaDon={serviceHoaDon} setServiceHoaDon={setServiceHoaDon}
-                    taoHoaDon={taoHoaDon} setTaoHoaDon={setTaoHoaDon}
-                    dataFirebasePatient={dataFirebasePatient}
-                    setRecordID={setRecordID}
-                />
+                <section>
+                    <Grid item>
+                        <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>II. Tạo dental care record</Typography>
+                    </Grid>
+                    <Mota motaList={motaList} setMotaList={setMotaList} />
+                </section>
+                {/* <br /> */}
+                <section style={{
+                    opacity: hideService ? '0.25' : '1',
+                    pointerEvents: hideService ? 'none' : ''
+                }}>
+                    <Service serviceList={serviceList} setServiceList={setServiceList}
+                        serviceHoaDon={serviceHoaDon} setServiceHoaDon={setServiceHoaDon}
+                        taoHoaDon={taoHoaDon} setTaoHoaDon={setTaoHoaDon}
+                        dataFirebasePatient={dataFirebasePatient}
+                        setRecordID={setRecordID}
+                    />
+                </section>
                 <br />
-                <Thuoc thuocList={thuocList} setThuocList={setThuocList} />
-                <br />
-                <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} errorNgayTaiKham={errorNgayTaiKham} />
+                <section style={{
+                    opacity: hideThuocAndTaiKham ? '0.25' : '1',
+                    pointerEvents: hideThuocAndTaiKham ? 'none' : ''
+                }}>
+                    <Thuoc thuocList={thuocList} setThuocList={setThuocList} />
+                    <br />
+                    <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} errorNgayTaiKham={errorNgayTaiKham} />
+                </section>
                 <br />
                 <Grid item sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Button variant='contained'
                         disableElevation
                         onClick={handleCreateRecord}
+                        disabled={hideThuocAndTaiKham}
                     >Lưu dental care record và Kết thúc khám bệnh</Button>
                 </Grid>
             </Grid>

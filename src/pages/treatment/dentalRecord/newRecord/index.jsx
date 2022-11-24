@@ -43,6 +43,8 @@ const NewRecord = () => {
     const [textSnackbar, setTextSnackbar] = useState('');
     const [severity, setSeverity] = useState('success');
     // console.log(motaList);
+    const [hideThuocAndTaiKham, setHideThuocAndTaiKham] = useState(false)
+    const [hideService, setHideService] = useState(false)
 
     const handleClosePopUpRecord = (event, reason) => {
         if (reason && reason === "backdropClick")
@@ -225,7 +227,27 @@ const NewRecord = () => {
         // if (dataFirebasePatient[0]?.data?.record?.ngayTaiKham) {
         //     setNgayTaiKham(dataFirebasePatient[0]?.data?.record?.ngayTaiKham)
         // }
+        if (dataFirebasePatient[0]?.data?.record?.motaList?.length == 0 || dataFirebasePatient[0]?.data?.record?.motaList == undefined) {
+            setHideThuocAndTaiKham(true)
+            setHideService(true)
+        } else {
+            setHideThuocAndTaiKham(false)
+            setHideService(false)
+        }
 
+        if (dataFirebasePatient[0]?.data?.record?.serviceList?.length != 0 && dataFirebasePatient[0]?.data?.record?.serviceList?.length != undefined) {
+            if (dataFirebasePatient[0]?.data?.record?.paymentConfirmation != '1') {
+                setHideThuocAndTaiKham(true)
+            } else {
+                setHideThuocAndTaiKham(false)
+                if (dataFirebasePatient[0]?.data?.record?.motaList?.length == 0 || dataFirebasePatient[0]?.data?.record?.motaList == undefined)
+                    setHideThuocAndTaiKham(true)
+            }
+        } else {
+            setHideThuocAndTaiKham(false)
+            if (dataFirebasePatient[0]?.data?.record?.motaList?.length == 0 || dataFirebasePatient[0]?.data?.record?.motaList == undefined)
+                setHideThuocAndTaiKham(true)
+        }
     }, [dataFirebasePatient])
     useEffect(() => {
         setErrorNgayTaiKham('')
@@ -242,7 +264,7 @@ const NewRecord = () => {
 
 
     }, [ngayTaiKham])
-    // console.log(errorNgayTaiKham);
+    // console.log(dataFirebasePatient[0]?.data?.record?.motaList?.length);
     return (
         <>
             <Grid container spacing={1} direction='column'>
@@ -251,7 +273,10 @@ const NewRecord = () => {
                     <Mota motaList={motaList} setMotaList={setMotaList} />
                 </section>
                 {/* <br /> */}
-                <section>
+                <section style={{
+                    opacity: hideService ? '0.25' : '1',
+                    pointerEvents: hideService ? 'none' : ''
+                }}>
                     <Service serviceList={serviceList} setServiceList={setServiceList}
                         serviceHoaDon={serviceHoaDon} setServiceHoaDon={setServiceHoaDon}
                         taoHoaDon={taoHoaDon} setTaoHoaDon={setTaoHoaDon}
@@ -260,7 +285,10 @@ const NewRecord = () => {
                     />
                 </section>
                 <br />
-                <section style={{ opacity: '0.25', pointerEvents: 'none' }}>
+                <section style={{
+                    opacity: hideThuocAndTaiKham ? '0.25' : '1',
+                    pointerEvents: hideThuocAndTaiKham ? 'none' : ''
+                }}>
                     <Thuoc thuocList={thuocList} setThuocList={setThuocList} />
                     <br />
                     <HenTaiKham ngayTaiKham={ngayTaiKham} setNgayTaiKham={setNgayTaiKham} errorNgayTaiKham={errorNgayTaiKham} />
@@ -271,6 +299,7 @@ const NewRecord = () => {
                     <Button variant='contained'
                         disableElevation
                         onClick={handleCreateRecord}
+                        disabled={hideThuocAndTaiKham}
                     >Lưu dental care record và Kết thúc khám bệnh</Button>
                 </Grid>
 
