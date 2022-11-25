@@ -105,13 +105,12 @@ const NewRecord = () => {
                     //     status: 11,
                     // })
                     remove(ref(db, location?.state?.patient?.key))
-
                     setOpenBackdrop(false);
                     setTextSnackbar('Lưu dental care record thành công. Chuyển qua trang danh sách khám sau vài giây')
                     setSeverity('success')
                     setOpenSnackbar(true)
                     const handler = setTimeout(() =>
-                        navigate(DENTIST_DS_KHAM, { replace: true }), 1500)
+                        navigate(DENTIST_DS_KHAM, { replace: true }), 1400)
                 }
             } else {
                 let newThuocList = []
@@ -247,6 +246,11 @@ const NewRecord = () => {
             setHideThuocAndTaiKham(false)
             if (dataFirebasePatient[0]?.data?.record?.motaList?.length == 0 || dataFirebasePatient[0]?.data?.record?.motaList == undefined)
                 setHideThuocAndTaiKham(true)
+        }
+
+        if (dataFirebasePatient?.length == 0) {
+            setHideService(false)
+            setHideThuocAndTaiKham(false)
         }
     }, [dataFirebasePatient])
     useEffect(() => {

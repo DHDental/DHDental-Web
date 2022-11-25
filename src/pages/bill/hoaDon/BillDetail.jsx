@@ -97,7 +97,9 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                     })
                 }
             }
-
+            if (trangThaiCapNhat == 'Cancel' || trangThaiCapNhat == 'Cancel 2') {
+                remove(ref(db, `${dataFirebasePatient[0]?.key}`))
+            }
 
             setTextSnackbar('Cập nhật thành công')
             setSeverity('success')
@@ -196,7 +198,7 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                                                 item?.statusUpdates?.map((statusChange, iStatus) => (
                                                     <MenuItem key={iStatus} value={statusChange}>
                                                         {statusChange == 'Paid' ? 'Đã thanh toán' :
-                                                            statusChange == 'Cancel' ? 'Hủy' :
+                                                            (statusChange == 'Cancel' || statusChange == 'Cancel 2') ? 'Hủy' :
                                                                 'Đã trả tiền cọc'}
                                                     </MenuItem>
                                                 ))

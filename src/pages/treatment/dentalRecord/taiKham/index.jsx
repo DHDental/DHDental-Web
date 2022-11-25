@@ -221,7 +221,7 @@ const Record = ({ bill }) => {
                 setSeverity2('success')
                 setOpenSnackbar2(true)
                 const handler = setTimeout(() =>
-                    navigate(DENTIST_DS_KHAM, { replace: true }), 1500)
+                    navigate(DENTIST_DS_KHAM, { replace: true }), 1400)
             }
         } catch (error) {
             console.log(error);
@@ -294,6 +294,11 @@ const Record = ({ bill }) => {
             setHideThuocAndTaiKham(false)
             if (dataFirebasePatient[0]?.data?.record?.motaList?.length == 0 || dataFirebasePatient[0]?.data?.record?.motaList == undefined)
                 setHideThuocAndTaiKham(true)
+        }
+
+        if (dataFirebasePatient?.length == 0) {
+            setHideService(false)
+            setHideThuocAndTaiKham(false)
         }
     }, [dataFirebasePatient])
     useEffect(() => {
