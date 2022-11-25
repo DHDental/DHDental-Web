@@ -7,10 +7,11 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import BlurOnIcon from '@mui/icons-material/BlurOn';
+import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
 
 import {
     DENTIST_DS_KHAM, KHAM_BENH, STAFF_BENHNHAN, STAFF_DANG_KI_KHAM, STAFF_DSDATKHAM,
-    STAFF_MAN_HINH_CHO_KHAM, STAFF_HOADON, ADMIN_TEST, OWNER_TEST, DEMO_TEST
+    STAFF_MAN_HINH_CHO_KHAM, STAFF_HOADON, ADMIN_TEST, OWNER_TEST, DEMO_TEST, STAFF_DANH_SACH_THUOC
 } from './pathConstants';
 
 export const sideBarStaffConfig = [
@@ -20,7 +21,7 @@ export const sideBarStaffConfig = [
     { name: 'Thanh toán', icon: <ReceiptIcon />, path: STAFF_HOADON },
     { name: "Bệnh nhân", icon: <PortraitIcon />, path: STAFF_BENHNHAN },
     { name: "Màn hình chờ khám", icon: <AirplayIcon />, path: STAFF_MAN_HINH_CHO_KHAM },
-
+    { name: "Danh sách thuốc", icon: <MedicationLiquidIcon />, path: STAFF_DANH_SACH_THUOC},
 ]
 
 export const sideBarDentistConfig = [

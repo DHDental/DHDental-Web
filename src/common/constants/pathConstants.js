@@ -6,6 +6,7 @@ export const STAFF_BENHNHAN_ALL_HOADON = '/staff/benh-nhan/hoa-don'
 export const STAFF_HOADON = '/staff/hoa-don'
 export const STAFF_DANG_KI_KHAM = '/staff/dang-ki-kham-benh'
 export const STAFF_MAN_HINH_CHO_KHAM = '/staff/man-hinh-cho-kham'
+export const STAFF_DANH_SACH_THUOC = '/staff/danh-sach-thuoc'
 export const STAFF_BILL = '/bill/getBill'
 
 // dentist
