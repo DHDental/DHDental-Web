@@ -9,6 +9,7 @@ import {
 } from '../pages';
 import { StaffLayout, DentistLayout, AdminLayout, OwnerLayout, DemoLayout } from '../components/layouts';
 import FindPatient from '../pages/bill/FindPatient';
+import Medicine from '../pages/medicine/Medicine';
 
 
 
@@ -31,7 +32,7 @@ export default function Router() {
                         { path: 'hoa-don', element: <FindPatient /> },
                         { path: 'hoa-don/:id', element: <Bill /> },
                         { path: 'dang-ki-kham-benh', element: <MedicalRegistration /> },
-
+                        { path: 'danh-sach-thuoc', element: <Medicine /> },
                     ]
                 }
             ]
