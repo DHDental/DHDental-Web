@@ -1,17 +1,18 @@
-import { Button, Card, CardContent, CardHeader, CircularProgress, Grid, Stack, TextField } from '@mui/material';
+import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Grid, Stack, TextField } from '@mui/material';
 import dayjs from 'dayjs';
 import { push, ref, set } from "firebase/database";
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 
 import { DatePicker } from '@mui/x-date-pickers';
 import { axiosPrivate } from '../../api/axiosInstance';
-import { DANGKIKHAMVANLAI } from '../../common/constants/apiConstants';
+import { CHECK_DANG_KY, DANGKIKHAMVANLAI } from '../../common/constants/apiConstants';
 import { formatYearMonthDate } from '../../common/utils/formatDate';
 import CustomSnackbar from '../../components/CustomSnackbar';
 import StartFirebase from '../../components/firebaseConfig';
 import SearchPatient from './SearchPatient';
+import { CustomBackdrop } from '../../components';
 
 const db = StartFirebase()
 const validationSchema = yup.object({
@@ -30,6 +31,11 @@ const MedicalRegistration = () => {
     const [textSnackbar, setTextSnackbar] = useState('');
     const [severity, setSeverity] = useState('success');
     const [title, setTitle] = useState('');
+
+    const [openBackdrop, setOpenBackdrop] = useState(false)
+    const [dangKi, setDangKi] = useState('Y')
+
+
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false)
     }
@@ -88,19 +94,51 @@ const MedicalRegistration = () => {
             }
         }
     })
-    // console.log(dayjs().subtract(1, 'year').format('DD/MM/YYYY'));
+    useEffect(() => {
+        let isMounted = true;
+        const check = async () => {
+            try {
+                setOpenBackdrop(true)
+                const response = await axiosPrivate.post(CHECK_DANG_KY)
+                isMounted && setDangKi(response.data.message)
+                // isMounted && setDangKi('N')
+                setOpenBackdrop(false)
+            } catch (error) {
+                setOpenBackdrop(false)
+                console.log(error);
+            }
+        }
+        check()
+        return () => {
+            isMounted = false;
+        }
+    }, [])
+    console.log(dangKi);
     return (
         <>
+            {
+                dangKi == 'N' ?
+                    <Box display={'flex'} sx={{ marginBottom: '20px' }}>
+                        <Grid sx={{ color: 'red', margin: 'auto' }}>Số lượng người đăng kí khám nha khoa đã đầy, không thể đăng kí khám thêm</Grid>
+                    </Box> : null
+            }
             <Grid container spacing={0.5}
                 justifyContent='space-between'
             >
-                <Grid item xs={5.75}>
+
+                <Grid item xs={5.75} sx={{
+                    opacity: dangKi == 'N' ? '0.25' : '1',
+                    pointerEvents: dangKi == 'N' ? 'none' : ''
+                }}>
                     <SearchPatient />
                 </Grid>
                 {/* <Divider orientation="vertical" flexItem sx={{
                     backgroundColor: '#000'
                 }} /> */}
-                <Grid item xs={6}>
+                <Grid item xs={6} sx={{
+                    opacity: dangKi == 'N' ? '0.25' : '1',
+                    pointerEvents: dangKi == 'N' ? 'none' : ''
+                }}>
                     <Card square>
                         <CardHeader
                             title='Đăng kí khám bệnh'
@@ -212,6 +250,7 @@ const MedicalRegistration = () => {
                 horizontal='right'
                 title={title}
             />
+            <CustomBackdrop open={openBackdrop} />
         </>
     )
 }

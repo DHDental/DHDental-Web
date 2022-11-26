@@ -176,6 +176,20 @@ const NewRecord = () => {
             setOpenSnackbar(true)
             return
         }
+        if (dataFirebasePatient[0]?.data?.record?.serviceHoaDon != undefined) {
+            let flagTaiKham = 0
+            dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((item) => {
+                if (item?.serviceStatus == 'Not Yet' || item?.serviceStatus == 'In Progress') {
+                    flagTaiKham = 1
+                }
+            })
+            if (flagTaiKham == 1 && ngayTaiKham == null) {
+                setTextSnackbar('Cần chọn ngày tái khám')
+                setSeverity('error')
+                setOpenSnackbar(true)
+                return
+            }
+        }
         setOpenPopUpRecord(true)
     }
     useEffect(() => {
