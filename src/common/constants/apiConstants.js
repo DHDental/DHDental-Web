@@ -27,6 +27,7 @@ export const TEST_BOOKING = 'script/bookingListPatient'
 
 //Staff Medicine
 export const GET_ALL_MEDICINES = '/medicine/getAllMedicines'
+export const SET_MEDICINE_MASTER = '/medicine/setMedicineMaster'
 
 //admin
 export const GET_ALL_USER_ADMIN = '/admin/getAllUser'
