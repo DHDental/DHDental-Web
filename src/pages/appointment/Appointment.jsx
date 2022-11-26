@@ -269,21 +269,25 @@ const Appointment = () => {
                                                     <TableCell align='center'>
                                                         Chưa tới ngày được check in
                                                     </TableCell> :
-                                                    dayjs().format('YYYY-MM-DD') == user?.dateBooking ?
-                                                        flag == 'ok' ?
-                                                            <TableCell align='center'>
-                                                                <AppointmentIcon user={user} />
-                                                            </TableCell> :
-                                                            flag == 'not pass' ?
-                                                                < TableCell align='center'>
-                                                                    Chưa tới thời gian check in
-                                                                </TableCell> :
-                                                                < TableCell align='center'>
-                                                                    Đã qua thời gian được check in
-                                                                </TableCell>
-                                                        : <TableCell align='center'>
+                                                    (user?.status == 'Cancel' || user?.status == 'Done') ?
+                                                        <TableCell align='center'>
                                                             <AppointmentIcon user={user} />
-                                                        </TableCell>
+                                                        </TableCell> :
+                                                        dayjs().format('YYYY-MM-DD') == user?.dateBooking ?
+                                                            flag == 'ok' ?
+                                                                <TableCell align='center'>
+                                                                    <AppointmentIcon user={user} />
+                                                                </TableCell> :
+                                                                flag == 'not pass' ?
+                                                                    < TableCell align='center'>
+                                                                        Chưa tới thời gian check in
+                                                                    </TableCell> :
+                                                                    < TableCell align='center'>
+                                                                        Đã qua thời gian được check in
+                                                                    </TableCell>
+                                                            : <TableCell align='center'>
+                                                                <AppointmentIcon user={user} />
+                                                            </TableCell>
 
                                             }
                                         </TableRow>)

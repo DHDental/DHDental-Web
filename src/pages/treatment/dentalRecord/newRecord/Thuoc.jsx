@@ -189,6 +189,7 @@ const Thuoc = ({ thuocList, setThuocList }) => {
                                     <TableCell align="center">STT</TableCell>
                                     <TableCell align="center">Tên thuốc</TableCell>
                                     <TableCell align="center">Số lượng</TableCell>
+                                    <TableCell align="center">Đơn vị</TableCell>
                                     <TableCell align="center">Liều dùng</TableCell>
                                     <TableCell align="center"></TableCell>
                                     <TableCell align="center"></TableCell>
@@ -202,6 +203,7 @@ const Thuoc = ({ thuocList, setThuocList }) => {
                                             <TableCell align='center' >{i + 1}</TableCell>
                                             <TableCell align='center'>{item?.medicineName}</TableCell>
                                             <TableCell align='center'>{item?.soLuong}</TableCell>
+                                            <TableCell align='center'>Viên</TableCell>
                                             <TableCell align='center'>{item?.dosage}</TableCell>
                                             <TableCell align='center'>
                                                 <Button
@@ -269,6 +271,14 @@ const Thuoc = ({ thuocList, setThuocList }) => {
                         </Grid>
                         <Grid container item>
                             <Grid item xs={3}>
+                                <Typography>Đơn vị</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <Typography>Viên</Typography>
+                            </Grid>
+                        </Grid>
+                        <Grid container item>
+                            <Grid item xs={3}>
                                 <Typography>Liều dùng</Typography>
                             </Grid>
                             <Grid item xs={7}>
@@ -332,6 +342,14 @@ const Thuoc = ({ thuocList, setThuocList }) => {
                                         }
                                     }}
                                 />
+                            </Grid>
+                        </Grid>
+                        <Grid container item>
+                            <Grid item xs={3}>
+                                <Typography>Đơn vị</Typography>
+                            </Grid>
+                            <Grid item xs={7}>
+                                <Typography>Viên</Typography>
                             </Grid>
                         </Grid>
                         <Grid container item>
