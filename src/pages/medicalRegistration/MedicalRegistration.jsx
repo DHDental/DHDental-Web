@@ -90,7 +90,6 @@ const MedicalRegistration = () => {
                     setTitle(error.message)
                     setOpenSnackbar(true)
                 }
-
             }
         }
     })

@@ -1,5 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Chip } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  Snackbar,
+  TableFooter,
+} from "@mui/material";
 import moment from "moment/moment";
 import {
   BAN_OR_ACTIVE_ACCOUNT_ADMIN,
@@ -18,19 +31,15 @@ import {
 } from "@mui/material";
 import SearchBar from "material-ui-search-bar";
 import TablePagination from "@mui/material/TablePagination";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const user = [];
 
-// const Transition = React.forwardRef(function Transition(props, ref) {
-//   return <Slide direction="up" ref={ref} {...props} />;
-// });
-
 const EndUserTable = (props) => {
-  // const [open, setOpen] = React.useState(false);
-  // const [loading, setLoading] = useState(false);
+  const [isloading, setIsLoading] = useState(false);
   const [endUser, setEndUser] = useState(user);
   const [endUserFilter, setEndUserFilter] = useState(user);
-  // const [userData, setUserData] = useState(null);
+  const [rowSelectUser, setRowSelectUser] = useState(null);
   const [searched, setSearched] = useState("");
 
   const pages = [5, 10, 25, 100];
@@ -38,79 +47,47 @@ const EndUserTable = (props) => {
   const [pageSave, setPageSave] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
 
-  // const columnsEndUser = [
-  //   { title: "Họ", field: "lastName", editable: "never" },
-  //   { title: "Tên đệm", field: "middleName", editable: "never" },
-  //   { title: "Tên", field: "firstName", editable: "never" },
-  //   { title: "Số điện thoại", field: "userName", editable: "never" },
-  //   { title: "Địa chỉ", field: "address", editable: "never" },
-  //   {
-  //     title: "Ngày sinh",
-  //     field: "dateOfBirth",
-  //     type: "date",
-  //     dateSetting: { locale: "vn-VN" },
-  //     render: (rowData) => moment(rowData.dateOfBirth).format("DD/MM/YYYY"),
-  //     editable: "never",
-  //   },
-  //   {
-  //     title: "Quyền",
-  //     field: "roleName",
-  //     editable: "never",
-  //     lookup: {
-  //       "End User": "Người dùng",
-  //     },
-  //     filtering: false,
-  //   },
-  //   {
-  //     title: "Trạng thái",
-  //     field: "status",
-  //     filterPlaceholder: "Select",
-  //     render: (rowData) =>
-  //       rowData.status === "Active" ? (
-  //         <Chip label="Active" color="success" />
-  //       ) : (
-  //         <Chip label="Inactive" color="error" />
-  //       ),
-  //     lookup: {
-  //       Active: "Active",
-  //       Inactive: "Inactive",
-  //     },
-  //   },
-  // ];
+  const [textSnackbar, setTextSnackbar] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
-    // setLoading(props.loading);
-    // setStaffFilter(props.staff);
+    setIsLoading(props.loading);
     setEndUserFilter(props.endUser);
     setEndUser(props.endUser);
-  }, [ props.endUser]);
+  }, [props.endUser, props.loading]);
 
   const fetchData = async () => {
-    // setLoading(true);
+    setIsLoading(true);
     const params = {};
-    const response = await axiosPrivate.post(GET_ALL_USER_ADMIN, params);
-    console.log(response);
-    const data = [...response.data];
-    const endUser = data.filter((data) => {
-      return data.roleName === "End User";
-    });
-    setEndUser(endUser);
-    // setLoading(false);
+    try {
+      const response = await axiosPrivate.post(GET_ALL_USER_ADMIN, params);
+      const data = [...response.data];
+      const endUser = data.filter((data) => {
+        return data.roleName === "End User";
+      });
+      setEndUser(endUser);
+      setIsLoading(false);
+    } catch (error) {
+      setTextSnackbar("Đã xãy ra lỗi");
+      setOpenSnackbar(true);
+      setIsLoading(false);
+    }
   };
 
   const updateUser = async (newRow) => {
-    if (newRow.status === "Inactive") {
-      const params = {
-        userName: newRow.userName,
-      };
+    setIsLoading(true);
+    const params = {
+      userName: newRow.userName,
+    };
+    try {
       await axiosPrivate.post(BAN_OR_ACTIVE_ACCOUNT_ADMIN, params);
-      await fetchData();
-    } else {
-      const params = {
-        userName: newRow.userName,
-      };
-      await axiosPrivate.post(BAN_OR_ACTIVE_ACCOUNT_ADMIN, params);
-      await fetchData();
+      fetchData();
+    } catch (error) {
+      setTextSnackbar("Đã xãy ra lỗi");
+      setOpenSnackbar(true);
+      setIsLoading(false);
     }
   };
 
@@ -121,8 +98,9 @@ const EndUserTable = (props) => {
       setPage(pageSave);
     } else {
       const filteredRows = endUserFilter.filter((row) => {
-        return `${row.lastName.toLowerCase()} ${row.middleName.toLowerCase()} ${row.firstName.toLowerCase()}`
-          .includes(searchedVal.toLowerCase());
+        return `${row.lastName.toLowerCase()} ${row.middleName.toLowerCase()} ${row.firstName.toLowerCase()}`.includes(
+          searchedVal.toLowerCase()
+        );
       });
       setEndUser(filteredRows);
     }
@@ -144,21 +122,24 @@ const EndUserTable = (props) => {
     setPageSave(0);
   };
 
-  // const handleClickOpen = () => {
-  //   setLoading(true);
-  //   setOpen(true);
-  // };
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
-  // const handleAccept = () => {
-  //   updateUser(userData);
-  //   setUserData(null);
-  //   setOpen(false);
-  // };
+  const handleClickOpenDialog = () => {
+    setOpenDialog(true);
+  };
 
-  // const handleClose = () => {
-  //   setLoading(false);
-  //   setOpen(false);
-  // };
+  const handleAcceptDialog = () => {
+    updateUser(rowSelectUser);
+    setRowSelectUser(null);
+    setOpenDialog(false);
+  };
+
+  const handleCloseDialog = () => {
+    setRowSelectUser(null);
+    setOpenDialog(false);
+  };
 
   return (
     <>
@@ -172,89 +153,157 @@ const EndUserTable = (props) => {
         >
           <Grid item xs={1}></Grid>
           <Grid item xs={5}>
-            <h2>Bảng Tài Khoản Nhân Sự</h2>
+            <h2>Bảng Tài Khoản Người Dùng</h2>
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={7}>
             <SearchBar
               value={searched}
               onChange={(searchVal) => requestSearch(searchVal)}
               onCancelSearch={() => cancelSearch()}
             />
           </Grid>
+          <Grid item xs={1}>
+            <IconButton color="info" onClick={() => fetchData()}>
+              <RefreshIcon />
+            </IconButton>
+          </Grid>
         </Grid>
 
         <TableContainer>
           <Table aria-label="simple table">
             <TableHead>
-              <TableRow>
-                <TableCell align="center">STT</TableCell>
-                <TableCell align="right">Họ</TableCell>
-                <TableCell align="right">Tên đệm</TableCell>
-                <TableCell align="right">Tên</TableCell>
-                <TableCell align="right">Số điện thoại</TableCell>
-                <TableCell align="right">Địa chỉ</TableCell>
-                <TableCell align="right">Ngày sinh</TableCell>
-                <TableCell align="right">Quyền</TableCell>
-                <TableCell align="center">Trạng thái</TableCell>
-              </TableRow>
+              {isloading === true ? (
+                <TableRow>
+                  <TableCell></TableCell>
+                </TableRow>
+              ) : (
+                <TableRow>
+                  <TableCell align="center">STT</TableCell>
+                  <TableCell align="right">Họ</TableCell>
+                  <TableCell align="right">Tên đệm</TableCell>
+                  <TableCell align="right">Tên</TableCell>
+                  <TableCell align="right">Số điện thoại</TableCell>
+                  <TableCell align="right">Địa chỉ</TableCell>
+                  <TableCell align="right">Ngày sinh</TableCell>
+                  <TableCell align="right">Quyền</TableCell>
+                  <TableCell align="center">Trạng thái</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              )}
             </TableHead>
             <TableBody>
-              {endUser
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <TableRow key={row.userName}>
-                    <TableCell align="center">
-                      {endUser.indexOf(row) + 1}
-                    </TableCell>
-                    <TableCell align="right">{row.lastName}</TableCell>
-                    <TableCell align="right">{row.middleName}</TableCell>
-                    <TableCell align="right">{row.firstName}</TableCell>
-                    <TableCell align="right">{row.userName}</TableCell>
-                    <TableCell align="right">{row.address}</TableCell>
-                    <TableCell align="right">
-                      {moment(row.dateOfBirth).format("DD/MM/YYYY")}
-                    </TableCell>
-                    <TableCell align="right">{row.roleName}</TableCell>
-                    <TableCell align="center">
-                      {row.status === "Active" ? (
-                        <Chip label="Active" color="success" />
-                      ) : (
-                        <Chip label="Inactive" color="error" />
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {isloading === true ? (
+                <TableRow>
+                  <TableCell
+                    sx={{ width: "100%", height: "100%" }}
+                    align="center"
+                  >
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                endUser
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <TableRow key={row.userName}>
+                      <TableCell align="center">
+                        {endUser.indexOf(row) + 1}
+                      </TableCell>
+                      <TableCell align="right">{row.lastName}</TableCell>
+                      <TableCell align="right">{row.middleName}</TableCell>
+                      <TableCell align="right">{row.firstName}</TableCell>
+                      <TableCell align="right">{row.userName}</TableCell>
+                      <TableCell align="right">{row.address}</TableCell>
+                      <TableCell align="right">
+                        {moment(row.dateOfBirth).format("DD/MM/YYYY")}
+                      </TableCell>
+                      <TableCell align="right">{row.roleName}</TableCell>
+                      <TableCell align="center">
+                        {row.status === "Active" ? (
+                          <Chip label="Active" color="success" />
+                        ) : (
+                          <Chip label="Inactive" color="error" />
+                        )}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="contained"
+                          sx={{ width: "200px", height: "35px" }}
+                          onClick={() => {
+                            setRowSelectUser(row);
+                            handleClickOpenDialog();
+                          }}
+                        >
+                          {row.status === "Active"
+                            ? "Ban Tài Khoản"
+                            : "Gỡ Ban Tài Khoản"}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+              )}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                {isloading === true ? (
+                  <></>
+                ) : (
+                  <TablePagination
+                    rowsPerPageOptions={[
+                      5,
+                      10,
+                      25,
+                      100,
+                      { label: "Tất cả", value: -1 },
+                    ]}
+                    // component="div"
+                    count={endUser.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    labelRowsPerPage="Số hàng trên một trang"
+                    showFirstButton
+                    showLastButton
+                    labelDisplayedRows={({ from, to, count }) =>
+                      `${from}–${to} của ${
+                        count !== -1 ? count : `nhiều hơn ${to}`
+                      }`
+                    }
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                )}
+              </TableRow>
+            </TableFooter>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={pages}
-          component="div"
-          page={page}
-          rowsPerPage={rowsPerPage}
-          count={endUser.length}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </Paper>
-      {/* <Dialog
-        open={open}
-        TransitionComponent={Transition}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert variant="outlined" severity="error" sx={{ width: "100%" }}>
+          {textSnackbar}
+        </Alert>
+      </Snackbar>
+      <Dialog
+        open={openDialog}
         keepMounted
-        onClose={handleClose}
+        onClose={handleCloseDialog}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle>{"Lưu ý!"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Bạn có xác nhận muốn cập nhật
+            Bạn có xác nhận muốn tiếp tục
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Hủy</Button>
-          <Button onClick={handleAccept}>Xác Nhận</Button>
+          <Button onClick={handleCloseDialog}>Hủy</Button>
+          <Button onClick={handleAcceptDialog}>Xác Nhận</Button>
         </DialogActions>
-      </Dialog> */}
+      </Dialog>
     </>
   );
 };

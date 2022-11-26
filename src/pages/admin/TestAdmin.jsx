@@ -1,54 +1,62 @@
-import {
-  Box,
-} from "@mui/material";
+import { Alert, Box, Snackbar } from "@mui/material";
 import Tab from "@material-ui/core/Tab";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { axiosPrivate } from "../../api/axiosInstance";
-import {
-  GET_ALL_USER_ADMIN,
-} from "../../common/constants/apiConstants";
+import { GET_ALL_USER_ADMIN } from "../../common/constants/apiConstants";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import StaffTable from "./tables/StaffTable";
 import EndUserTable from "./tables/EndUserTable";
 
-const user = [
-];
+const user = [];
 
 const TestAdmin = () => {
   const [value, setValue] = React.useState("1");
   const [staff, setStaff] = useState(user);
   const [endUser, setEndUser] = useState(user);
-  // const [loading, setLoading] = useState(false);
+
+  const [isloading, setIsLoading] = useState(false);
+
+  const [textSnackbar, setTextSnackbar] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
-    // setLoading(true);
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    // setLoading(true);
+    setIsLoading(true);
     const params = {};
-    const response = await axiosPrivate.post(GET_ALL_USER_ADMIN, params);
-    console.log(response);
-    const data = [...response.data];
-    const staff = data.filter((data) => {
-      return data.roleName !== "End User";
-    });
-    const endUser = data.filter((data) => {
-      return data.roleName === "End User";
-    });
-    setStaff(staff);
-    setEndUser(endUser);
-    // setLoading(false);
+    try {
+      const response = await axiosPrivate.post(GET_ALL_USER_ADMIN, params);
+      console.log(response);
+      const data = [...response.data];
+      const staff = data.filter((data) => {
+        return data.roleName !== "End User";
+      });
+      const endUser = data.filter((data) => {
+        return data.roleName === "End User";
+      });
+      setStaff(staff);
+      setEndUser(endUser);
+      setIsLoading(false);
+    } catch (error) {
+      setTextSnackbar("Đã xãy ra lỗi");
+      setOpenSnackbar(true);
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
-    <div>
+    <>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -57,13 +65,23 @@ const TestAdmin = () => {
           </TabList>
         </Box>
         <TabPanel value="1">
-          <StaffTable staff={staff}/>
+          <StaffTable staff={staff} loading={isloading} />
         </TabPanel>
         <TabPanel value="2">
-          <EndUserTable endUser={endUser}/>
+          <EndUserTable endUser={endUser} loading={isloading} />
         </TabPanel>
       </TabContext>
-    </div>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert variant="outlined" severity="error" sx={{ width: "100%" }}>
+          {textSnackbar}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 
