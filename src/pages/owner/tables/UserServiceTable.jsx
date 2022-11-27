@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
 import {
   Alert,
+  Button,
   CircularProgress,
+  Grid,
   IconButton,
-  Pagination,
   Paper,
   Snackbar,
   Table,
@@ -13,71 +13,82 @@ import {
   TableContainer,
   TableFooter,
   TableHead,
+  TablePagination,
   TableRow,
+  TextField,
 } from "@mui/material";
 import SearchBar from "material-ui-search-bar";
-import TablePagination from "@mui/material/TablePagination";
 import { axiosPrivate } from "../../../api/axiosInstance";
-import { GET_ALL_SERVICES } from "../../../common/constants/apiConstants";
-import RefreshIcon from "@mui/icons-material/Refresh";
+import {
+  GET_USER_WITH_SERVICE,
+} from "../../../common/constants/apiConstants";
+import moment from "moment/moment";
+import { formatYearMonthDate } from "../../../common/utils/formatDate";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers";
 
-// const CustomTablePagination = styled.TablePagination`
-//   display: inline;
-// `
-
-const service = [
+const userWithService = [
   // {
-  //   maDichVu: "123456",
-  //   tenDichVu: "Trám Răng",
-  //   chiPhi: "12200000",
+  //   id: "158",
+  //   date: "2022-11-11",
+  //   money: "30,150,000",
   // },
 ];
 
-export const formatNumber = (inputNumber) => {
-  let formetedNumber = Number(inputNumber)
-    .toFixed(2)
-    .replace(/\d(?=(\d{3})+\.)/g, "$&,");
-  let splitArray = formetedNumber.split(".");
-  if (splitArray.length > 1) {
-    formetedNumber = splitArray[0];
-  }
-  return formetedNumber;
-};
-
-const ServiceTable = (props) => {
-  const [serviceData, setServiceData] = useState(service);
-  const [serviceFilter, setServiceFilter] = useState(service);
-  const [searched, setSearched] = useState("");
+const UserServiceTable = (props) => {
+  const [userServiceData, setUserServiceData] = useState(userWithService);
+  const [userServiceFilter, setUserServiceFilter] = useState(userWithService);
+  const [isloading, setIsLoading] = useState(false);
 
   const pages = [5, 10, 25, 100];
   const [page, setPage] = useState(0);
   const [pageSave, setPageSave] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
-
-  const [isloading, setIsLoading] = useState(false);
   const [textSnackbar, setTextSnackbar] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  // const columnsService = [
-  //     { title: "Mã Dịch Vụ", field: "maDichVu", editable: "never"  },
-  //     { title: "Tên Dịch Vụ", field: "tenDichVu" },
-  //     { title: "Giá", field: "chiPhi", render: (rowData) =>
-  //     formatNumber(rowData.chiPhi) + " VND", },
-  //   ];
+  const [searched, setSearched] = useState("");
+  const current = new Date();
+  const date = `${current.getFullYear()}-${
+    current.getMonth() + 1
+  }-${current.getDate()}`;
+
+  const [selectDate, setSelectDate] = useState(date);
 
   useEffect(() => {
     setIsLoading(props.loading);
-    setServiceFilter(props.serviceData);
-    setServiceData(props.serviceData);
-  }, [props.serviceData, props.loading]);
+    setUserServiceFilter(props.userServiceData);
+    setUserServiceData(props.userServiceData);
+  }, [props.userServiceData, props.loading]);
 
-  const fetchData = async () => {
+  const requestSearch = (searchedVal) => {
+    setPage(0);
+    if (searchedVal === "") {
+      setUserServiceData(userServiceFilter);
+      setPage(pageSave);
+    } else {
+      const filteredRows = userServiceFilter.filter((row) => {
+        return `${row.fullName} ${row.phoneNumber} ${row.address}`
+          .toLowerCase()
+          .includes(searchedVal.toLowerCase());
+      });
+      setUserServiceData(filteredRows);
+    }
+  };
+
+  const fetchData = async (date) => {
     setIsLoading(true);
-    const params = {};
+    const params = {
+      date: formatYearMonthDate(dayjs(date, "DD/MM/YYYY")) ===
+      "Invalid Date"
+        ? date
+        : formatYearMonthDate(dayjs(date, "DD/MM/YYYY")),
+    };
     try {
-      const response = await axiosPrivate.post(GET_ALL_SERVICES, params);
+      const response = await axiosPrivate.post(GET_USER_WITH_SERVICE, params);
       const data = [...response.data];
-      setServiceData(data);
+      setUserServiceFilter(data);
+      setUserServiceData(data);
       setIsLoading(false);
     } catch (error) {
       setTextSnackbar("Đã xãy ra lỗi");
@@ -86,18 +97,12 @@ const ServiceTable = (props) => {
     }
   };
 
-  const requestSearch = (searchedVal) => {
-    setPage(0);
-    if (searchedVal === "") {
-      setServiceData(serviceFilter);
-      setPage(pageSave);
+  const handleDateSearch = () => {
+    if (selectDate === null) {
+      setTextSnackbar("Không thấy ngày tìm kiếm");
+      setOpenSnackbar(true);
     } else {
-      const filteredRows = serviceFilter.filter((row) => {
-        return `${row.id} ${row.serviceDesc}`
-          .toLowerCase()
-          .includes(searchedVal.toLowerCase());
-      });
-      setServiceData(filteredRows);
+      fetchData(selectDate);
     }
   };
 
@@ -130,38 +135,62 @@ const ServiceTable = (props) => {
           direction="row"
           justifyContent="center"
           alignItems="center"
+          spacing={2}
         >
-          {/* <Grid item xs={1}></Grid> */}
-          <Grid item xs={4}>
-            <h2>Bảng Dịch Vụ</h2>
+          <Grid item xs={1}></Grid>
+          <Grid item xs={5}>
+            <h2>Bảng Lượng Người Dùng Dịch Vụ</h2>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={7}>
             <SearchBar
               value={searched}
               onChange={(searchVal) => requestSearch(searchVal)}
               onCancelSearch={() => cancelSearch()}
             />
           </Grid>
-          <Grid item xs={1}>
-            <IconButton color="info" onClick={() => fetchData()}>
-              <RefreshIcon />
-            </IconButton>
+          <Grid item xs={2}>
+            <DatePicker
+            disableFuture
+              label="Tìm Kiếm Ngày"
+              inputFormat="DD/MM/YYYY"
+              placeholder="DD/MM/YYYY"
+              value={selectDate}
+              onChange={(newValue) => {
+                setSelectDate(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField fullWidth variant="standard" {...params} />
+              )}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Button
+              variant="contained"
+              sx={{ width: "100%", height: "35px" }}
+              onClick={() => {
+                handleDateSearch();
+              }}
+            >
+              Tìm Kiếm Theo Ngày
+            </Button>
           </Grid>
         </Grid>
 
         <TableContainer>
           <Table aria-label="simple table">
             <TableHead>
-              {isloading === true ? (
+              {isloading === true || userServiceData.length === 0 ? (
                 <TableRow>
                   <TableCell></TableCell>
                 </TableRow>
               ) : (
                 <TableRow>
-                  <TableCell align="center">Số Thứ Tự</TableCell>
-                  <TableCell align="right">Mã Dịch Vụ</TableCell>
-                  <TableCell align="right">Tên Dịch Vụ</TableCell>
-                  <TableCell align="right">Giá</TableCell>
+                  <TableCell align="center">STT</TableCell>
+                  <TableCell align="right">Họ & Tên</TableCell>
+                  <TableCell align="right">Số Điện Thoại</TableCell>
+                  <TableCell align="right">Địa Chỉ</TableCell>
+                  <TableCell align="right">Ngày Sinh</TableCell>
+                  <TableCell align="right">Tổng Tiền</TableCell>
                 </TableRow>
               )}
             </TableHead>
@@ -175,19 +204,30 @@ const ServiceTable = (props) => {
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
+              ) : userServiceData.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    sx={{ width: "100%", height: "100%" }}
+                    align="center"
+                  >
+                    Không Có Dữ Liệu
+                  </TableCell>
+                </TableRow>
               ) : (
-                serviceData
+                userServiceData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <TableRow key={row.id}>
                       <TableCell align="center">
-                        {serviceData.indexOf(row) + 1}
+                        {userServiceData.indexOf(row) + 1}
                       </TableCell>
-                      <TableCell align="right">{row.id}</TableCell>
-                      <TableCell align="right">{row.serviceDesc}</TableCell>
+                      <TableCell align="right">{row.fullName}</TableCell>
+                      <TableCell align="right">{row.phoneNumber}</TableCell>
+                      <TableCell align="right">{row.address}</TableCell>
                       <TableCell align="right">
-                        {formatNumber(row.expectedPrice)} VND
+                        {moment(row.dob).format("DD/MM/YYYY")}
                       </TableCell>
+                      <TableCell align="right">{row.totalPrice} VND</TableCell>
                     </TableRow>
                   ))
               )}
@@ -205,7 +245,7 @@ const ServiceTable = (props) => {
                       100,
                       { label: "Tất cả", value: -1 },
                     ]}
-                    count={serviceData.length}
+                    count={userServiceData.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     labelRowsPerPage="Số hàng trên một trang"
@@ -239,4 +279,4 @@ const ServiceTable = (props) => {
   );
 };
 
-export default ServiceTable;
+export default UserServiceTable;
