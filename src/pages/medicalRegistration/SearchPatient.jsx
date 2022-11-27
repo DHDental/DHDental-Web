@@ -23,7 +23,7 @@ import { CustomBackdrop, CustomSnackbar } from "../../components";
 
 const db = StartFirebase()
 
-const SearchPatient = () => {
+const SearchPatient = ({ reload, setReload }) => {
     const [openBackdrop, setOpenBackdrop] = useState(false)
 
     const [openSnackbar, setOpenSnackbar] = useState(false)
@@ -71,6 +71,8 @@ const SearchPatient = () => {
     const [currentPatientReason, setCurrentPatientReason] = useState('')
     const [messageCurrentPatientReason, setMesageCurrentPatientReason] = useState('')
 
+    const [loadingDangKi, setLoadingDangKi] = useState(false)
+
     const handleSubmit = async (e) => {
         if (searchTerm === '') {
             e.preventDefault()
@@ -112,6 +114,7 @@ const SearchPatient = () => {
         }
         try {
             // setOpenBackdrop(true)
+            setLoadingDangKi(true)
             const response = await axiosPrivate.post(CHECK_PAYMENT_OR_NOT, {
                 "phoneNumber": currentPatient.phoneNumber,
             })
@@ -144,8 +147,10 @@ const SearchPatient = () => {
                 color: color
             })
             setMesageCurrentPatientReason('')
+            setLoadingDangKi(false)
             setOpenPopup(false)
             setCurrentPatientReason('')
+            setReload(!reload)
         } catch (error) {
             console.log(error);
             setTextSnackbar('Đăng kí khám bệnh thất bại')
@@ -305,8 +310,13 @@ const SearchPatient = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClosePopup}>Hủy</Button>
-                    <Button onClick={handleYesPopup}>Đăng kí</Button>
+                    <Button onClick={handleClosePopup} disabled={loadingDangKi}>Hủy</Button>
+                    <Button onClick={handleYesPopup}
+                        disabled={loadingDangKi}
+                        startIcon={loadingDangKi ? <CircularProgress size='0.9rem' /> : null}
+                    >
+                        {loadingDangKi == true ? 'Đang đăng kí' : 'Đăng kí'}
+                    </Button>
                 </DialogActions>
             </Dialog>
             <CustomBackdrop open={openBackdrop} />

@@ -34,7 +34,7 @@ const MedicalRegistration = () => {
 
     const [openBackdrop, setOpenBackdrop] = useState(false)
     const [dangKi, setDangKi] = useState('Y')
-
+    const [reload, setReload] = useState(false)
 
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false)
@@ -78,6 +78,7 @@ const MedicalRegistration = () => {
                 setOpenSnackbar(true)
                 // console.log('res', response);
                 formik.resetForm();
+                setReload(!reload)
             } catch (error) {
                 console.log("error:", error)
                 if (error.response.status === 417) {
@@ -111,7 +112,7 @@ const MedicalRegistration = () => {
         return () => {
             isMounted = false;
         }
-    }, [])
+    }, [reload])
     console.log(dangKi);
     return (
         <>
@@ -129,7 +130,7 @@ const MedicalRegistration = () => {
                     opacity: dangKi == 'N' ? '0.25' : '1',
                     pointerEvents: dangKi == 'N' ? 'none' : ''
                 }}>
-                    <SearchPatient />
+                    <SearchPatient reload={reload} setReload={setReload} />
                 </Grid>
                 {/* <Divider orientation="vertical" flexItem sx={{
                     backgroundColor: '#000'
