@@ -19,43 +19,32 @@ import dayjs from "dayjs";
 import UserServiceTable from "./tables/UserServiceTable";
 import UserCancelServiceTable from "./tables/UserCancelServiceTable";
 
-const service = [
-  // {
-  //   maDichVu: "123456",
-  //   tenDichVu: "Trám Răng",
-  //   chiPhi: "12200000",
-  // },
-];
+const userWithService = [
+    // {
+    //   id: "158",
+    //   date: "2022-11-11",
+    //   money: "30,150,000",
+    // },
+  ];
+  
+  const userCancelService = [
+    // {
+    //   id: "158",
+    //   date: "2022-11-11",
+    //   money: "30,150,000",
+    // },
+  ];
 
-const checkUp = [
-  // {
-  //   fullName: "Lại Nguyễn Tấn Tài",
-  //   phoneNumber: "021312334",
-  //   dob: "2000-02-02",
-  //   address: "Bình Dương",
-  //   dateRecord: "2000-03-03",
-  // },
-];
-
-const revenue = [
-  // {
-  //   id: "158",
-  //   date: "2022-11-11",
-  //   money: "30,150,000",
-  // },
-];
-
-const OwnerTest = () => {
-  const [serviceData, setServiceData] = useState(service);
-  const [checkUpData, setCheckUpData] = useState(checkUp);
-  const [revenueData, setRevenueData] = useState(revenue);
-
-  const [isloading, setIsLoading] = useState(false);
-
-  const [value, setValue] = React.useState("1");
+const OwnerUserService = () => {
+    const [userServiceData, setUserServiceData] = useState(userWithService);
+    const [userCancelServiceData, setUserCancelServiceData] = useState(userCancelService);
+    const [value, setValue] = React.useState("1");
 
   const [textSnackbar, setTextSnackbar] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const [isloading, setIsLoading] = useState(false);
+
   const current = new Date();
   const date = `${current.getFullYear()}-${
     current.getMonth() + 1
@@ -68,41 +57,22 @@ const OwnerTest = () => {
   }, []);
 
   const loadData = async () => {
-    fetchData();
-    fetchDataCheckUp();
-    fetchDataRevenue();
+    fetchDataUserService();
+    fetchDataUserCancelService();
   };
 
-  const fetchData = async () => {
-    setIsLoading(true);
-    const params = {};
-    try {
-      const response = await axiosPrivate.post(GET_ALL_SERVICES, params);
-      const data = [...response.data];
-      setServiceData(data);
-      setIsLoading(false);
-    } catch (error) {
-      setTextSnackbar("Đã xãy ra lỗi");
-      setOpenSnackbar(true);
-      setIsLoading(false);
-    }
-  };
-
-  const fetchDataCheckUp = async () => {
-    // console.log(date);
+  const fetchDataUserService = async () => {
     setIsLoading(true);
     const params = {
-      from: date,
-      to: datePast,
+      date: date,
     };
-    // console.log(params);
     try {
       const response = await axiosPrivate.post(
-        COUNT_NUMBER_VISITED_BY_RANGE_TIME,
+        GET_USER_WITH_SERVICE,
         params
       );
       const data = [...response.data];
-      setCheckUpData(data);
+      setUserServiceData(data);
       setIsLoading(false);
     } catch (error) {
       setTextSnackbar("Đã xãy ra lỗi");
@@ -111,20 +81,18 @@ const OwnerTest = () => {
     }
   };
 
-  const fetchDataRevenue = async () => {
+  const fetchDataUserCancelService = async () => {
     setIsLoading(true);
     const params = {
-      from: datePast,
-      to: date,
+      date: date,
     };
-    // console.log(params);
     try {
       const response = await axiosPrivate.post(
-        GET_ALL_TURN_OVER_RANGE_TIME,
+        GET_USER_CANCEL_SERVICE,
         params
       );
       const data = [...response.data];
-      setRevenueData(data);
+      setUserCancelServiceData(data);
       setIsLoading(false);
     } catch (error) {
       setTextSnackbar("Đã xãy ra lỗi");
@@ -133,34 +101,27 @@ const OwnerTest = () => {
     }
   };
 
-
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
-
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+      };
+    
+      const handleCloseSnackbar = () => {
+        setOpenSnackbar(false);
+      };
   return (
     <>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Quản Lý Dịch Vụ" value="1" />
-            <Tab label="Quản Lý Lượng Người Tới Khám" value="2" />
-            <Tab label="Quản Lý Doanh Thu" value="3" />
+            <Tab label="Quản Lý Lượng Người Dùng Dịch Vụ" value="1" />
+            <Tab label="Quản Lý Lượng Người Hủy Dịch Vụ" value="2" />
           </TabList>
         </Box>
         <TabPanel value="1">
-          <ServiceTable serviceData={serviceData} loading={isloading} />
+        <UserServiceTable userServiceData={userServiceData} loading={isloading} />
         </TabPanel>
         <TabPanel value="2">
-          <CheckUpTable checkUpData={checkUpData} loading={isloading} />
-        </TabPanel>
-        <TabPanel value="3">
-          <RevenueTable revenueData={revenueData} loading={isloading} />
+        <UserCancelServiceTable userCancelServiceData={userCancelServiceData} loading={isloading} />
         </TabPanel>
       </TabContext>
       <Snackbar
@@ -174,7 +135,7 @@ const OwnerTest = () => {
         </Alert>
       </Snackbar>
     </>
-  );
-};
+  )
+}
 
-export default OwnerTest;
+export default OwnerUserService

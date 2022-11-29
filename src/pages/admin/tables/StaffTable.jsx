@@ -66,7 +66,7 @@ const StaffTable = (props) => {
   const [searched, setSearched] = useState("");
   const [values, setvalues] = useState(initialValues);
 
-  const pages = [5, 10, 25, 100];
+  const pages = [4, 10, 25, 100];
   const [page, setPage] = useState(0);
   const [pageSave, setPageSave] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
@@ -623,11 +623,7 @@ const StaffTable = (props) => {
                 ) : (
                   <TablePagination
                     rowsPerPageOptions={[
-                      5,
-                      10,
-                      25,
-                      100,
-                      { label: "Tất cả", value: -1 },
+                      4
                     ]}
                     count={staff.length}
                     rowsPerPage={rowsPerPage}

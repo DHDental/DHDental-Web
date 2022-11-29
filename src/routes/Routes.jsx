@@ -10,6 +10,7 @@ import {
 import { StaffLayout, DentistLayout, AdminLayout, OwnerLayout, DemoLayout } from '../components/layouts';
 import FindPatient from '../pages/bill/FindPatient';
 import Medicine from '../pages/medicine/Medicine';
+import OwnerUserService from '../pages/owner/OwnerUserService';
 
 
 
@@ -76,6 +77,7 @@ export default function Router() {
                     element: <OwnerLayout />,
                     children: [
                         { path: 'test', element: <OwnerTest /> },
+                        { path: 'user-service', element: <OwnerUserService /> },
                     ]
                 }
             ]

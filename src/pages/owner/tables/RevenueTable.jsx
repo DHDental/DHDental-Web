@@ -40,7 +40,7 @@ const RevenueTable = (props) => {
   // const [revenueFilter, setRevenueFilter] = useState(revenue);
   const [isloading, setIsLoading] = useState(false);
 
-  const pages = [5, 10, 25, 100];
+  const pages = [4, 10, 25, 100];
   const [page, setPage] = useState(0);
   const [pageSave, setPageSave] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
@@ -235,11 +235,7 @@ const RevenueTable = (props) => {
                 ) : (
                   <TablePagination
                     rowsPerPageOptions={[
-                      5,
-                      10,
-                      25,
-                      100,
-                      { label: "Tất cả", value: -1 },
+                      4
                     ]}
                     count={revenueData.length}
                     rowsPerPage={rowsPerPage}

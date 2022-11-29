@@ -40,7 +40,7 @@ const UserServiceTable = (props) => {
   const [userServiceFilter, setUserServiceFilter] = useState(userWithService);
   const [isloading, setIsLoading] = useState(false);
 
-  const pages = [5, 10, 25, 100];
+  const pages = [4, 10, 25, 100];
   const [page, setPage] = useState(0);
   const [pageSave, setPageSave] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
@@ -239,11 +239,7 @@ const UserServiceTable = (props) => {
                 ) : (
                   <TablePagination
                     rowsPerPageOptions={[
-                      5,
-                      10,
-                      25,
-                      100,
-                      { label: "Tất cả", value: -1 },
+                      4
                     ]}
                     count={userServiceData.length}
                     rowsPerPage={rowsPerPage}

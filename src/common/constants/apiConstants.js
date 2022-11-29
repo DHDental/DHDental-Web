@@ -38,9 +38,13 @@ export const BAN_OR_ACTIVE_ACCOUNT_ADMIN = '/admin/banOrActiveAccount'
 
 //Owner
 export const GET_ALL_SERVICES = '/service/getAllServices'
+export const CREATE_SERVICE = '/service/createService'
+export const UPDATE_SERVICE = '/service/updatePriceService'
+export const DELETE_SERVICE = '/service/deleteService'
 export const COUNT_NUMBER_VISITED_BY_RANGE_TIME = '/dentalCareRecord/countNumberVisitedByRangeTime'
 export const GET_ALL_TURN_OVER_RANGE_TIME = '/turnover/getAllTurnoverRangeTime'
 export const GET_USER_WITH_SERVICE = '/bill/getUserWithService'
+export const GET_USER_CANCEL_SERVICE = '/bill/getUserWithCancelService'
 
 
 

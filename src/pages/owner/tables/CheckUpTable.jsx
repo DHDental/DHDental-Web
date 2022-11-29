@@ -1,4 +1,4 @@
-import { Alert, CircularProgress, Grid, IconButton, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow } from '@mui/material';
+import { Alert, Button, CircularProgress, Grid, IconButton, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TextField } from '@mui/material';
 import SearchBar from 'material-ui-search-bar';
 import React, { useEffect, useState } from 'react'
 import { axiosPrivate } from '../../../api/axiosInstance';
@@ -7,6 +7,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import moment from 'moment/moment';
 import { formatYearMonthDate } from '../../../common/utils/formatDate';
 import dayjs from 'dayjs';
+import { DatePicker } from '@mui/x-date-pickers';
 
 
 const checkUp = [
@@ -24,7 +25,7 @@ const CheckUpTable = (props) => {
   const [checkUpFilter, setCheckUpFilter] = useState(checkUp);
   const [isloading, setIsLoading] = useState(false);
 
-  const pages = [5, 10, 25, 100];
+  const pages = [4, 10, 25, 100];
   const [page, setPage] = useState(0);
   const [pageSave, setPageSave] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
@@ -35,6 +36,9 @@ const CheckUpTable = (props) => {
   const current = new Date();
   const date = `${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`;
   const datePast = formatYearMonthDate(dayjs(date, "YYYY-MM-DD").add(-1, 'days'));
+
+  const [selectDateStart, setSelectDateStart] = useState(datePast);
+  const [selectDateEnd, setSelectDateEnd] = useState(date);
   
     useEffect(() => {
       setIsLoading(props.loading);
@@ -49,7 +53,7 @@ const CheckUpTable = (props) => {
         setPage(pageSave);
       } else {
         const filteredRows = checkUpFilter.filter((row) => {
-          return `${row.id} ${row.serviceDesc}`
+          return `${row.fullName} ${row.phoneNumber} ${row.address}`
             .toLowerCase()
             .includes(searchedVal.toLowerCase());
         });
@@ -57,22 +61,40 @@ const CheckUpTable = (props) => {
       }
     };
 
-    const fetchData = async () => {
+    const fetchData = async (selectDateStart, selectDateEnd) => {
       setIsLoading(true);
       const params = {
-        from: "2022-11-22",
-        to: "2022-11-22",
+        from:
+        formatYearMonthDate(dayjs(selectDateStart, "DD/MM/YYYY")) ===
+        "Invalid Date"
+          ? selectDateStart
+          : formatYearMonthDate(dayjs(selectDateStart, "DD/MM/YYYY")),
+      to:
+        formatYearMonthDate(dayjs(selectDateEnd, "DD/MM/YYYY")) ===
+        "Invalid Date"
+          ? selectDateEnd
+          : formatYearMonthDate(dayjs(selectDateEnd, "DD/MM/YYYY")),
       };
       // console.log(params);
       try {
         const response = await axiosPrivate.post(COUNT_NUMBER_VISITED_BY_RANGE_TIME, params);
       const data = [...response.data];
+      setCheckUpFilter(data);
       setCheckUpData(data);
       setIsLoading(false);
       } catch (error) {
         setTextSnackbar("Đã xãy ra lỗi");
         setOpenSnackbar(true);
         setIsLoading(false);
+      }
+    };
+
+    const handleDateSearch = () => {
+      if (selectDateStart === null || selectDateEnd === null) {
+        setTextSnackbar("Không để trống");
+        setOpenSnackbar(true);
+      } else {
+        fetchData(selectDateStart, selectDateEnd);
       }
     };
 
@@ -104,9 +126,10 @@ const CheckUpTable = (props) => {
           direction="row"
           justifyContent="center"
           alignItems="center"
+          spacing={2}
         >
           {/* <Grid item xs={1}></Grid> */}
-          <Grid item xs={4}>
+          <Grid item xs={5}>
             <h2>Bảng số lượng người đã khám theo ngày</h2>
           </Grid>
           <Grid item xs={6}>
@@ -116,17 +139,54 @@ const CheckUpTable = (props) => {
               onCancelSearch={() => cancelSearch()}
             />
           </Grid>
-          <Grid item xs={1}>
-            <IconButton color="info" onClick={() => fetchData()}>
-              <RefreshIcon />
-            </IconButton>
+          <Grid item xs={2}>
+            <DatePicker
+              label="Tìm Kiếm Ngày Bắt Đầu"
+              inputFormat="DD/MM/YYYY"
+              placeholder="DD/MM/YYYY"
+              value={selectDateStart}
+              maxDate={selectDateEnd}
+              onChange={(newValue) => {
+                setSelectDateStart(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField fullWidth variant="standard" {...params} />
+              )}
+            />
           </Grid>
+          <Grid item xs={2}>
+            <DatePicker
+              disableFuture
+              label="Tìm Kiếm Ngày Kết Thúc"
+              inputFormat="DD/MM/YYYY"
+              placeholder="DD/MM/YYYY"
+              value={selectDateEnd}
+              minDate={selectDateStart}
+              onChange={(newValue) => {
+                setSelectDateEnd(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField fullWidth variant="standard" {...params} />
+              )}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <Button
+              variant="contained"
+              sx={{ width: "100%", height: "35px" }}
+              onClick={() => {
+                handleDateSearch();
+              }}
+            >
+              Tìm Kiếm Theo Ngày
+            </Button>
+            </Grid>
         </Grid>
 
         <TableContainer>
           <Table aria-label="simple table">
             <TableHead>
-              {isloading === true ? (
+              {isloading === true || checkUpData.length === 0 ? (
                 <TableRow>
                   <TableCell></TableCell>
                 </TableRow>
@@ -151,7 +211,16 @@ const CheckUpTable = (props) => {
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
-              ) : (
+              ) : checkUpData.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    sx={{ width: "100%", height: "100%" }}
+                    align="center"
+                  >
+                    Không Có Dữ Liệu
+                  </TableCell>
+                </TableRow>
+              ) :(
                 checkUpData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
@@ -175,11 +244,7 @@ const CheckUpTable = (props) => {
                 ) : (
                   <TablePagination
                     rowsPerPageOptions={[
-                      5,
-                      10,
-                      25,
-                      100,
-                      { label: "Tất cả", value: -1 },
+                      4
                     ]}
                     count={checkUpData.length}
                     rowsPerPage={rowsPerPage}

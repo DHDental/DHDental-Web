@@ -2,7 +2,17 @@ import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import {
   Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Pagination,
   Paper,
@@ -14,11 +24,12 @@ import {
   TableFooter,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import SearchBar from "material-ui-search-bar";
 import TablePagination from "@mui/material/TablePagination";
 import { axiosPrivate } from "../../../api/axiosInstance";
-import { GET_ALL_SERVICES } from "../../../common/constants/apiConstants";
+import { CREATE_SERVICE, DELETE_SERVICE, GET_ALL_SERVICES, UPDATE_SERVICE } from "../../../common/constants/apiConstants";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 // const CustomTablePagination = styled.TablePagination`
@@ -32,6 +43,12 @@ const service = [
   //   chiPhi: "12200000",
   // },
 ];
+
+const initialValues = {
+  serviceId: "",
+  serviceDesc: "",
+  expectedPrice: "",
+};
 
 export const formatNumber = (inputNumber) => {
   let formetedNumber = Number(inputNumber)
@@ -49,7 +66,7 @@ const ServiceTable = (props) => {
   const [serviceFilter, setServiceFilter] = useState(service);
   const [searched, setSearched] = useState("");
 
-  const pages = [5, 10, 25, 100];
+  const pages = [4, 10, 25, 100];
   const [page, setPage] = useState(0);
   const [pageSave, setPageSave] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
@@ -57,6 +74,15 @@ const ServiceTable = (props) => {
   const [isloading, setIsLoading] = useState(false);
   const [textSnackbar, setTextSnackbar] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const [isAddNew, setIsAddNew] = useState(false);
+  const [isUpdateRow, setIsUpdateRow] = useState(false);
+  const [values, setvalues] = useState(initialValues);
+
+  const [rowSelectDelete, setRowSelectDelete] = useState(initialValues);
 
   // const columnsService = [
   //     { title: "Mã Dịch Vụ", field: "maDichVu", editable: "never"  },
@@ -77,6 +103,7 @@ const ServiceTable = (props) => {
     try {
       const response = await axiosPrivate.post(GET_ALL_SERVICES, params);
       const data = [...response.data];
+      setServiceFilter(data);
       setServiceData(data);
       setIsLoading(false);
     } catch (error) {
@@ -84,6 +111,96 @@ const ServiceTable = (props) => {
       setOpenSnackbar(true);
       setIsLoading(false);
     }
+  };
+
+  const createData = async (newRow) => {
+    setIsLoading(true);
+    const params = {
+      serviceId: newRow.serviceId,
+      serviceDesc: newRow.serviceDesc,
+      expectedPrice: newRow.expectedPrice,
+    };
+    try {
+      await axiosPrivate.post(CREATE_SERVICE, params);
+      setvalues(initialValues);
+      setIsAddNew(false);
+      setIsDisabled(false);
+
+      fetchData();
+    } catch (error) {
+      setTextSnackbar("Đã xãy ra lỗi");
+      setOpenSnackbar(true);
+      setIsLoading(false);
+    }
+  };
+
+  const updateData = async (newRow) => {
+    setIsLoading(true);
+    const params = {
+      serviceId: newRow.serviceId,
+      serviceDesc: newRow.serviceDesc,
+      expectedPrice: newRow.expectedPrice,
+    };
+    try {
+      await axiosPrivate.post(UPDATE_SERVICE, params);
+      setvalues(initialValues);
+      setIsUpdateRow(false);
+      setIsDisabled(false);
+
+      fetchData();
+    } catch (error) {
+      setTextSnackbar("Đã xãy ra lỗi");
+      setOpenSnackbar(true);
+      setIsLoading(false);
+    }
+  };
+
+  const deleteData = async (newRow) => {
+    setIsLoading(true);
+    const params = {
+      serviceId: newRow.serviceId,
+      serviceDesc: "",
+      expectedPrice: "",
+    };
+    try {
+      await axiosPrivate.post(DELETE_SERVICE, params);
+      setRowSelectDelete(initialValues);
+
+      setvalues(initialValues);
+
+      setIsAddNew(false);
+      setIsUpdateRow(false);
+
+      fetchData();
+    } catch (error) {
+      setTextSnackbar("Đã xãy ra lỗi");
+      setOpenSnackbar(true);
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(2);
+    if (
+      values.serviceId === "" ||
+      values.serviceDesc === "" ||
+      values.expectedPrice === ""
+    ) {
+      setTextSnackbar("Lỗi: Không được để trống");
+      setOpenSnackbar(true);
+    } else {
+      isAddNew === true
+        ? 
+        createData(values)
+        : updateData(values);
+    }
+  };
+
+  const handleUpdate = (row) => {
+    setIsUpdateRow(true);
+    setIsAddNew(false);
+    setvalues({ ...row, serviceId: row.id });
   };
 
   const requestSearch = (searchedVal) => {
@@ -106,6 +223,7 @@ const ServiceTable = (props) => {
   };
 
   const cancelSearch = () => {
+    console.log("cancelSearch");
     setSearched("");
     requestSearch(searched);
   };
@@ -121,8 +239,114 @@ const ServiceTable = (props) => {
     setPageSave(0);
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setvalues({ ...values, [name]: value });
+  };
+
+  const handleClickOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleAcceptDialog = () => {
+    deleteData(rowSelectDelete);
+    setOpenDialog(false);
+  };
+
+  const handleCloseDialog = () => {
+    setRowSelectDelete(initialValues);
+    setOpenDialog(false);
+  };
+
   return (
     <>
+    {isAddNew === true || isUpdateRow === true ? (
+        <Box>
+          <Grid container justifyContent="center">
+            <Card sx={{ width: "100%" }}>
+              <CardHeader
+                title="Thông tin Dịch Vụ"
+                titleTypographyProps={{
+                  align: "center",
+                  fontWeight: "bold",
+                }}
+                subheader={isAddNew === true ? "Tạo mới" : "Cập nhật"}
+                subheaderTypographyProps={{
+                  align: "center",
+                }}
+              />
+              <CardContent sx={{ marginBottom: "2%" }}>
+                <Box
+                  component="form"
+                  sx={{
+                    display: "column",
+                  }}
+                  onSubmit={handleSubmit}
+                >
+                  <Grid container direction="column" spacing={2}>
+                    <Grid item>
+                      <TextField
+                        disabled={isUpdateRow === true ? true : false}
+                        id="serviceId"
+                        name="serviceId"
+                        fullWidth
+                        variant="standard"
+                        label="Mã dịch vụ"
+                        value={values.serviceId}
+                        onChange={handleChange}
+                        // error={formik.touched.phone && Boolean(formik.errors.phone)}
+                        // helperText={formik.touched.phone && formik.errors.phone}
+                      />
+                    </Grid>
+                    <Grid item>
+                    <TextField
+                        id="serviceDesc"
+                        name="serviceDesc"
+                        fullWidth
+                        variant="standard"
+                        label="Mô tả dịch vụ"
+                        value={values.serviceDesc}
+                        onChange={handleChange}
+                        // error={formik.touched.password && Boolean(formik.errors.password)}
+                        // helperText={formik.touched.password && formik.errors.password}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <TextField
+                        id="expectedPrice"
+                        name="expectedPrice"
+                        fullWidth
+                        variant="standard"
+                        label="Giá dịch vụ"
+                        value={values.expectedPrice}
+                        onChange={handleChange}
+                        // error={formik.touched.password && Boolean(formik.errors.password)}
+                        // helperText={formik.touched.password && formik.errors.password}
+                      />
+                    </Grid>
+                    <br />
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        sx={{ height: "35px" }}
+                        // disabled={formik.isSubmitting}
+                        // startIcon={formik.isSubmitting ? <CircularProgress size='0.9rem' /> : null}
+                      >
+                        {isAddNew === true ? "Tạo Thuốc" : "Cập Nhật Thuốc"}
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Box>
+      ) : (
+        <></>
+      )}
+      <br />
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <Grid
           sx={{ flexGrow: 1 }}
@@ -130,12 +354,13 @@ const ServiceTable = (props) => {
           direction="row"
           justifyContent="center"
           alignItems="center"
+          spacing={2}
         >
-          {/* <Grid item xs={1}></Grid> */}
-          <Grid item xs={4}>
+          <Grid item xs={4}></Grid>
+          <Grid item xs={6}>
             <h2>Bảng Dịch Vụ</h2>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={7}>
             <SearchBar
               value={searched}
               onChange={(searchVal) => requestSearch(searchVal)}
@@ -147,12 +372,46 @@ const ServiceTable = (props) => {
               <RefreshIcon />
             </IconButton>
           </Grid>
+          <Grid item xs={2}>
+            <Button
+              variant="contained"
+              sx={{ width: "100%", height: "35px" }}
+              disabled={isDisabled}
+              onClick={() => {
+                setIsDisabled(true);
+
+                setIsAddNew(true);
+                setIsUpdateRow(false);
+
+                setvalues(initialValues);
+              }}
+            >
+              Thêm nhân viên
+            </Button>
+          </Grid>
+          <Grid item xs={1}>
+            <Button
+              variant="contained"
+              sx={{ width: "50%", height: "35px" }}
+              disabled={!isDisabled}
+              onClick={() => {
+                setvalues(initialValues);
+
+                setIsAddNew(false);
+                setIsUpdateRow(false);
+
+                setIsDisabled(false);
+              }}
+            >
+              Hủy
+            </Button>
+          </Grid>
         </Grid>
 
         <TableContainer>
           <Table aria-label="simple table">
             <TableHead>
-              {isloading === true ? (
+              {isloading === true || serviceData.length === 0 ? (
                 <TableRow>
                   <TableCell></TableCell>
                 </TableRow>
@@ -162,6 +421,8 @@ const ServiceTable = (props) => {
                   <TableCell align="right">Mã Dịch Vụ</TableCell>
                   <TableCell align="right">Tên Dịch Vụ</TableCell>
                   <TableCell align="right">Giá</TableCell>
+                  <TableCell ></TableCell>
+                  <TableCell ></TableCell>
                 </TableRow>
               )}
             </TableHead>
@@ -175,7 +436,16 @@ const ServiceTable = (props) => {
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
-              ) : (
+              ) : serviceData.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    sx={{ width: "100%", height: "100%" }}
+                    align="center"
+                  >
+                    Không Có Dữ Liệu
+                  </TableCell>
+                </TableRow>
+              ) :(
                 serviceData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
@@ -188,6 +458,32 @@ const ServiceTable = (props) => {
                       <TableCell align="right">
                         {formatNumber(row.expectedPrice)} VND
                       </TableCell>
+                      <TableCell align="center">
+                      <Button
+                        variant="contained"
+                        sx={{ width: "100px", height: "35px" }}
+                        disabled={isDisabled}
+                        onClick={() => {
+                          setIsDisabled(true);
+                          handleUpdate(row);
+                        }}
+                      >
+                        Cập Nhật
+                      </Button>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        variant="contained"
+                        sx={{ width: "50px", height: "35px" }}
+                        disabled={isDisabled}
+                        onClick={() => {
+                          setRowSelectDelete({ ...row, serviceId: row.id });
+                          handleClickOpenDialog();
+                        }}
+                      >
+                        Xóa
+                      </Button>
+                    </TableCell>
                     </TableRow>
                   ))
               )}
@@ -199,11 +495,7 @@ const ServiceTable = (props) => {
                 ) : (
                   <TablePagination
                     rowsPerPageOptions={[
-                      5,
-                      10,
-                      25,
-                      100,
-                      { label: "Tất cả", value: -1 },
+                      4
                     ]}
                     count={serviceData.length}
                     rowsPerPage={rowsPerPage}
@@ -211,10 +503,10 @@ const ServiceTable = (props) => {
                     labelRowsPerPage="Số hàng trên một trang"
                     showFirstButton
                     showLastButton
-                    labelDisplayedRows={({ from, to, count }) =>
+                    labelDisplayedRows={({ from, to, count, page }) =>
                       `${from}–${to} của ${
                         count !== -1 ? count : `nhiều hơn ${to}`
-                      }`
+                      } | Trang ${page}`
                     }
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
@@ -235,6 +527,23 @@ const ServiceTable = (props) => {
           {textSnackbar}
         </Alert>
       </Snackbar>
+      <Dialog
+        open={openDialog}
+        keepMounted
+        onClose={handleCloseDialog}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Lưu ý!"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Bạn có xác nhận muốn tiếp tục
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Hủy</Button>
+          <Button onClick={handleAcceptDialog}>Xác Nhận</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

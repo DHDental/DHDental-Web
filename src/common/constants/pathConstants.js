@@ -19,5 +19,6 @@ export const ADMIN_TEST = '/admin/test'
 
 // owner
 export const OWNER_TEST = '/owner/test'
+export const OWNER_USER_SERVICE = '/owner/user-service'
 
 export const DEMO_TEST = '/test/demo'

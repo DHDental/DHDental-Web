@@ -11,7 +11,7 @@ import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
 
 import {
     DENTIST_DS_KHAM, KHAM_BENH, STAFF_BENHNHAN, STAFF_DANG_KI_KHAM, STAFF_DSDATKHAM,
-    STAFF_MAN_HINH_CHO_KHAM, STAFF_HOADON, ADMIN_TEST, OWNER_TEST, DEMO_TEST, STAFF_DANH_SACH_THUOC
+    STAFF_MAN_HINH_CHO_KHAM, STAFF_HOADON, ADMIN_TEST, OWNER_TEST, DEMO_TEST, STAFF_DANH_SACH_THUOC, OWNER_USER_SERVICE
 } from './pathConstants';
 
 export const sideBarStaffConfig = [
@@ -35,6 +35,7 @@ export const sideBarAdminConfig = [
 
 export const sideBarOwnerConfig = [
     { name: "OwnerTest", icon: <AppsOutageIcon />, path: OWNER_TEST },
+    { name: "Lượng Người Khám", icon: <AppsOutageIcon />, path: OWNER_USER_SERVICE },
 ]
 
 export const sideBarDemoConfig = [
