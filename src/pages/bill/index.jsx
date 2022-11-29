@@ -54,7 +54,7 @@ const Bill = () => {
         }
         if (dataFirebasePatient?.length != 0) {
             if (dataFirebasePatient[0]?.data?.record) {
-                if (!dataFirebasePatient[0]?.data?.record?.serviceHoaDon) {
+                if (!dataFirebasePatient[0]?.data?.record?.serviceHoaDon && dataFirebasePatient[0]?.data?.record?.paymentConfirmation != undefined) {
                     remove(ref(db, `${dataFirebasePatient[0]?.key}`))
                 }
             }
