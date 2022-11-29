@@ -42,7 +42,7 @@ const EndUserTable = (props) => {
   const [rowSelectUser, setRowSelectUser] = useState(null);
   const [searched, setSearched] = useState("");
 
-  const pages = [5, 10, 25, 100];
+  const pages = [4, 10, 25, 100];
   const [page, setPage] = useState(0);
   const [pageSave, setPageSave] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
@@ -250,11 +250,7 @@ const EndUserTable = (props) => {
                 ) : (
                   <TablePagination
                     rowsPerPageOptions={[
-                      5,
-                      10,
-                      25,
-                      100,
-                      { label: "Tất cả", value: -1 },
+                      4
                     ]}
                     // component="div"
                     count={endUser.length}

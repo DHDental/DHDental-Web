@@ -10,6 +10,7 @@ import {
   COUNT_NUMBER_VISITED_BY_RANGE_TIME,
   GET_ALL_SERVICES,
   GET_ALL_TURN_OVER_RANGE_TIME,
+  GET_USER_CANCEL_SERVICE,
   GET_USER_WITH_SERVICE,
 } from "../../common/constants/apiConstants";
 import moment from "moment/moment";
@@ -52,11 +53,20 @@ const userWithService = [
   // },
 ];
 
+const userCancelService = [
+  // {
+  //   id: "158",
+  //   date: "2022-11-11",
+  //   money: "30,150,000",
+  // },
+];
+
 const OwnerTest = () => {
   const [serviceData, setServiceData] = useState(service);
   const [checkUpData, setCheckUpData] = useState(checkUp);
   const [revenueData, setRevenueData] = useState(revenue);
   const [userServiceData, setUserServiceData] = useState(userWithService);
+  const [userCancelServiceData, setUserCancelServiceData] = useState(userCancelService);
 
   const [isloading, setIsLoading] = useState(false);
 
@@ -80,6 +90,7 @@ const OwnerTest = () => {
     fetchDataCheckUp();
     fetchDataRevenue();
     fetchDataUserService();
+    fetchDataUserCancelService();
   };
 
   const fetchData = async () => {
@@ -101,8 +112,8 @@ const OwnerTest = () => {
     // console.log(date);
     setIsLoading(true);
     const params = {
-      from: "2022-11-22",
-      to: "2022-11-22",
+      from: date,
+      to: datePast,
     };
     // console.log(params);
     try {
@@ -162,6 +173,26 @@ const OwnerTest = () => {
     }
   };
 
+  const fetchDataUserCancelService = async () => {
+    setIsLoading(true);
+    const params = {
+      date: date,
+    };
+    try {
+      const response = await axiosPrivate.post(
+        GET_USER_CANCEL_SERVICE,
+        params
+      );
+      const data = [...response.data];
+      setUserCancelServiceData(data);
+      setIsLoading(false);
+    } catch (error) {
+      setTextSnackbar("Đã xãy ra lỗi");
+      setOpenSnackbar(true);
+      setIsLoading(false);
+    }
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -195,7 +226,7 @@ const OwnerTest = () => {
           <UserServiceTable userServiceData={userServiceData} loading={isloading} />
         </TabPanel>
         <TabPanel value="5">
-          <UserCancelServiceTable loading={isloading} />
+          <UserCancelServiceTable userCancelServiceData={userCancelServiceData} loading={isloading} />
         </TabPanel>
       </TabContext>
       <Snackbar
