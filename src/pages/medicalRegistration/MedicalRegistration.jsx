@@ -99,7 +99,7 @@ const MedicalRegistration = () => {
         const check = async () => {
             try {
                 setOpenBackdrop(true)
-                const response = await axiosPrivate.post(CHECK_DANG_KY)
+                const response = await axiosPrivate.post(CHECK_DANG_KY, {})
                 isMounted && setDangKi(response.data.message)
                 // isMounted && setDangKi('N')
                 setOpenBackdrop(false)

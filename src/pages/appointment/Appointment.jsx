@@ -265,29 +265,47 @@ const Appointment = () => {
                                             </TableCell>
                                             <TableCell align='center'>{user?.dentistName}</TableCell>
                                             {
-                                                dayjs().diff(dayjs(user?.dateBooking)) < 1 ?
+                                                // check front end
+                                                // dayjs().diff(dayjs(user?.dateBooking)) < 1 ?
+                                                //     <TableCell align='center'>
+                                                //         Chưa tới ngày được check in
+                                                //     </TableCell> :
+                                                //     (user?.status == 'Cancel' || user?.status == 'Done') ?
+                                                //         <TableCell align='center'>
+                                                //             <AppointmentIcon user={user} />
+                                                //         </TableCell> :
+                                                //         dayjs().format('YYYY-MM-DD') == user?.dateBooking ?
+                                                //             flag == 'ok' ?
+                                                //                 <TableCell align='center'>
+                                                //                     <AppointmentIcon user={user} />
+                                                //                 </TableCell> :
+                                                //                 flag == 'not pass' ?
+                                                //                     < TableCell align='center'>
+                                                //                         Chưa tới thời gian check in
+                                                //                     </TableCell> :
+                                                //                     < TableCell align='center'>
+                                                //                         Đã qua thời gian được check in
+                                                //                     </TableCell>
+                                                //             : <TableCell align='center'>
+                                                //                 <AppointmentIcon user={user} />
+                                                //             </TableCell>
+                                                // check be
+                                                (user?.status == 'Cancel' || user?.status == 'Done') ?
                                                     <TableCell align='center'>
-                                                        Chưa tới ngày được check in
+                                                        <AppointmentIcon user={user} />
                                                     </TableCell> :
-                                                    (user?.status == 'Cancel' || user?.status == 'Done') ?
-                                                        <TableCell align='center'>
-                                                            <AppointmentIcon user={user} />
-                                                        </TableCell> :
-                                                        dayjs().format('YYYY-MM-DD') == user?.dateBooking ?
-                                                            flag == 'ok' ?
-                                                                <TableCell align='center'>
-                                                                    <AppointmentIcon user={user} />
-                                                                </TableCell> :
-                                                                flag == 'not pass' ?
-                                                                    < TableCell align='center'>
-                                                                        Chưa tới thời gian check in
-                                                                    </TableCell> :
-                                                                    < TableCell align='center'>
-                                                                        Đã qua thời gian được check in
-                                                                    </TableCell>
-                                                            : <TableCell align='center'>
+                                                    user?.canCheckInOrNot == -1 ?
+                                                        < TableCell align='center'>
+                                                            Chưa tới thời gian check in
+                                                        </TableCell>
+                                                        : user?.canCheckInOrNot == 0 ?
+                                                            <TableCell align='center'>
                                                                 <AppointmentIcon user={user} />
                                                             </TableCell>
+                                                            : user?.canCheckInOrNot == 1 ?
+                                                                < TableCell align='center'>
+                                                                    Đã qua thời gian được check in
+                                                                </TableCell> : null
 
                                             }
                                         </TableRow>)
