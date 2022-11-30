@@ -24,8 +24,8 @@ export const LOGOUT = '/user/logoutAccount'
 
 export const GET_PATIENT_PAYMENT = '/bill/getListPatientNotPayment'
 export const TEST_BOOKING = '/script/testBookingOnlineAndOffline'
-export const ENABLE_BOOKING = '/booking/enableCheckInEveryTime'
-export const DISABLE_BOOKING = '/booking/disableCheckInEveryTime'
+export const ENABLE_BOOKING = '/script/enableCheckInEveryTime'
+export const DISABLE_BOOKING = '/script/disableCheckInEveryTime'
 
 export const CHECK_DANG_KY = '/booking/checkCreateBookingByStaffForPatient'
 
