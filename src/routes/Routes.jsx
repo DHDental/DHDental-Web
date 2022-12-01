@@ -5,12 +5,14 @@ import {
     Appointment, WaitingList, Treatment, Patients, NotFound,
     MedicalRegistration,
     DentistWaitingList, Login,
-    DentalCareRecord, Bill, TestAdmin, OwnerTest, HistoryRecord, AllBill, TestDemo
+    DentalCareRecord, Bill, TestAdmin, OwnerTest, HistoryRecord, AllBill, TestDemo, Medicine, EndUserTable
 } from '../pages';
 import { StaffLayout, DentistLayout, AdminLayout, OwnerLayout, DemoLayout } from '../components/layouts';
 import FindPatient from '../pages/bill/FindPatient';
-import Medicine from '../pages/medicine/Medicine';
 import OwnerUserService from '../pages/owner/OwnerUserService';
+import UserCancelServiceTable from '../pages/owner/UserCancelServiceTable';
+import CheckUpTable from '../pages/owner/CheckUpTable';
+import RevenueTable from '../pages/owner/RevenueTable';
 
 
 
@@ -65,6 +67,7 @@ export default function Router() {
                     element: <AdminLayout />,
                     children: [
                         { path: 'test', element: <TestAdmin /> },
+                        { path: 'end-user', element: <EndUserTable /> },
                     ]
                 }
             ]
@@ -78,6 +81,9 @@ export default function Router() {
                     children: [
                         { path: 'test', element: <OwnerTest /> },
                         { path: 'user-service', element: <OwnerUserService /> },
+                        { path: 'user-cancel-service', element: <UserCancelServiceTable /> },
+                        { path: 'check-up', element: <CheckUpTable /> },
+                        { path: 'revenue', element: <RevenueTable /> },
                     ]
                 }
             ]

@@ -11,7 +11,7 @@ import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
 
 import {
     DENTIST_DS_KHAM, KHAM_BENH, STAFF_BENHNHAN, STAFF_DANG_KI_KHAM, STAFF_DSDATKHAM,
-    STAFF_MAN_HINH_CHO_KHAM, STAFF_HOADON, ADMIN_TEST, OWNER_TEST, DEMO_TEST, STAFF_DANH_SACH_THUOC, OWNER_USER_SERVICE
+    STAFF_MAN_HINH_CHO_KHAM, STAFF_HOADON, ADMIN_TEST, OWNER_TEST, DEMO_TEST, STAFF_DANH_SACH_THUOC, OWNER_USER_SERVICE, ADMIN_USER, OWNER_CHECK_UP, OWNER_REVENUE, OWNER_USER_CANCEL_SERVICE
 } from './pathConstants';
 
 export const sideBarStaffConfig = [
@@ -30,12 +30,16 @@ export const sideBarDentistConfig = [
 ]
 
 export const sideBarAdminConfig = [
-    { name: "AdminTest", icon: <AppsOutageIcon />, path: ADMIN_TEST },
+    { name: "Quản Lý Nhân Sự", icon: <AppsOutageIcon />, path: ADMIN_TEST },
+    { name: "Quản Lý Người Dùng", icon: <AppsOutageIcon />, path:  ADMIN_USER},
 ]
 
 export const sideBarOwnerConfig = [
-    { name: "OwnerTest", icon: <AppsOutageIcon />, path: OWNER_TEST },
-    { name: "Lượng Người Khám", icon: <AppsOutageIcon />, path: OWNER_USER_SERVICE },
+    { name: "Quản Lý Dịch Vụ", icon: <AppsOutageIcon />, path: OWNER_TEST },
+    { name: "Quản Lý Doanh Thu", icon: <AppsOutageIcon />, path: OWNER_REVENUE },
+    { name: "Quản Lý Lượng Người Tới Khám", icon: <AppsOutageIcon />, path: OWNER_CHECK_UP },
+    { name: "Quản Lý Lượng Người Dùng Dịch Vụ", icon: <AppsOutageIcon />, path: OWNER_USER_SERVICE },
+    { name: "Quản Lý Lượng Người Hủy Dịch Vụ", icon: <AppsOutageIcon />, path: OWNER_USER_CANCEL_SERVICE },
 ]
 
 export const sideBarDemoConfig = [

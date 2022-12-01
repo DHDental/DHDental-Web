@@ -36,9 +36,9 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import SearchBar from "material-ui-search-bar";
 import TablePagination from "@mui/material/TablePagination";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 
 const medicines = [
   // {
@@ -60,14 +60,13 @@ const Medicine = () => {
   const [medicineFilter, setMedicineFilter] = useState(medicines);
   const [medicineDosage, setMedicineDosage] = useState("");
   const [values, setvalues] = useState(initialValues);
+  const [searchedVal, setSearchedVal] = useState("");
 
   const [rowSelectDelete, setRowSelectDelete] = useState(initialValues);
 
   const [isloading, setIsLoading] = useState(false);
   const [isAddNew, setIsAddNew] = useState(false);
   const [isUpdateRow, setIsUpdateRow] = useState(false);
-
-  const [searched, setSearched] = useState("");
 
   const pages = [5, 10, 25, 100];
   const [page, setPage] = useState(0);
@@ -80,6 +79,9 @@ const Medicine = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isErrorMedicineName, setIsErrorMedicineName] = useState(false);
+  const [isErrorMedicineType, setIsErrorMedicineType] = useState(false);
+  const [isErrorMedicineDosage, setIsErrorMedicineDosage] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -178,26 +180,6 @@ const Medicine = () => {
     }
   };
 
-  const requestSearch = (searchedVal) => {
-    setPage(0);
-    if (searchedVal === "") {
-      setMedicineData(medicineFilter);
-      setPage(pageSave);
-    } else {
-      const filteredRows = medicineFilter.filter((row) => {
-        return `${row.medicineName} ${row.medicineType} ${row.dosage}`
-          .toLowerCase()
-          .includes(searchedVal.toLowerCase());
-      });
-      setMedicineData(filteredRows);
-    }
-  };
-
-  const cancelSearch = () => {
-    setSearched("");
-    requestSearch(searched);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     setPageSave(newPage);
@@ -211,14 +193,51 @@ const Medicine = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (
-      values.medicineName === "" ||
-      values.medicineType === "" ||
-      medicineDosage === ""
-    ) {
-      setTextSnackbar("Lỗi: Không được để trống");
+
+    setIsErrorMedicineName(false);
+    setIsErrorMedicineType(false);
+    setIsErrorMedicineDosage(false);
+
+    if(values.medicineName === ""){
+      setIsErrorMedicineName(true);
+      setTextSnackbar("Lỗi: Không Được để rỗng");
       setOpenSnackbar(true);
-    } else {
+    }
+    else if(values.medicineType === "" ){
+      setIsErrorMedicineType(true);
+      setTextSnackbar("Lỗi: Không Được để rỗng");
+      setOpenSnackbar(true);
+    }
+    else if(medicineDosage === ""){
+      setIsErrorMedicineDosage(true);
+      setTextSnackbar("Lỗi: Vui lòng chọn liều dùng");
+      setOpenSnackbar(true);
+    }
+    else if(values.medicineType.match(/[-!$%^&*()_+|~=`{}\[\]:\/;<>?,.@#]/) ){
+      setIsErrorMedicineType(true);
+      setTextSnackbar("Lỗi: Không chọn ký tự đặt biệt");
+      setOpenSnackbar(true);
+    }
+    else if(values.medicineType.match(/[0-9]/) ){
+      setIsErrorMedicineType(true);
+      setTextSnackbar("Lỗi: Loại Thuốc Không Được Nhập Số");
+      setOpenSnackbar(true);
+    }
+    else if (
+      values.medicineName.match(/[-!$%^&*()_+|~=`{}\[\]:\/;<>?,.@#]/) 
+    ) {
+      setIsErrorMedicineName(true);
+      setTextSnackbar("Lỗi: Không chọn ký tự đặt biệt");
+      setOpenSnackbar(true);
+      
+    }
+    else if(values.medicineName.match(/^[0-9]/)){
+      setIsErrorMedicineName(true);
+      setTextSnackbar("Lỗi: Tên Thuốc không được nhập số ở ký tự đầu");
+      setOpenSnackbar(true);
+      
+    }
+    else {
       isAddNew === true
         ? createData(values, medicineDosage)
         : updateData(values, medicineDosage);
@@ -287,11 +306,10 @@ const Medicine = () => {
                         name="medicineName"
                         fullWidth
                         variant="standard"
-                        label="Tên Thuốc"
+                        label="Tên Thuốc *"
                         value={values.medicineName}
                         onChange={handleChange}
-                        // error={formik.touched.phone && Boolean(formik.errors.phone)}
-                        // helperText={formik.touched.phone && formik.errors.phone}
+                        error={isErrorMedicineName}
                       />
                     </Grid>
                     <Grid item>
@@ -300,11 +318,10 @@ const Medicine = () => {
                         name="medicineType"
                         fullWidth
                         variant="standard"
-                        label="Loại Thuốc"
+                        label="Loại Thuốc *"
                         value={values.medicineType}
                         onChange={handleChange}
-                        // error={formik.touched.password && Boolean(formik.errors.password)}
-                        // helperText={formik.touched.password && formik.errors.password}
+                        error={isErrorMedicineType}
                       />
                     </Grid>
                     <Grid item>
@@ -319,6 +336,7 @@ const Medicine = () => {
                           value={medicineDosage}
                           onChange={(e) => setMedicineDosage(e.target.value)}
                           label="Liều dùng"
+                          error={isErrorMedicineDosage}
                         >
                           <MenuItem
                             value={"Sáng 1 tối 1"}
@@ -378,10 +396,11 @@ const Medicine = () => {
             <h2>Bảng Danh Sách Thuốc</h2>
           </Grid>
           <Grid item xs={7}>
-            <SearchBar
-              value={searched}
-              onChange={(searchVal) => requestSearch(searchVal)}
-              onCancelSearch={() => cancelSearch()}
+            <TextField
+              sx={{ width: "100%" }}
+              label="Tìm Kiếm"
+              variant="outlined"
+              onChange={(e) => setSearchedVal(e.target.value)}
             />
           </Grid>
           <Grid item xs={1}>
@@ -427,7 +446,7 @@ const Medicine = () => {
         {/* <TableContainer> */}
         <Table aria-label="simple table">
           <TableHead>
-            {isloading === true ? (
+            {isloading === true || medicineData.length === 0 ? (
               <TableRow>
                 <TableCell></TableCell>
               </TableRow>
@@ -452,8 +471,25 @@ const Medicine = () => {
                   <CircularProgress />
                 </TableCell>
               </TableRow>
+            ) : medicineData.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  sx={{ width: "100%", height: "100%" }}
+                  align="center"
+                >
+                  Không Có Dữ Liệu
+                </TableCell>
+              </TableRow>
             ) : (
               medicineData
+                .filter(
+                  (row) =>
+                    !searchedVal.length ||
+                    `${row.medicineName} ${row.medicineType} ${row.dosage}`
+                      .toString()
+                      .toLowerCase()
+                      .includes(searchedVal.toString().toLowerCase())
+                )
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <TableRow key={row.id}>
@@ -466,7 +502,7 @@ const Medicine = () => {
                     <TableCell align="center">
                       <Button
                         variant="contained"
-                        sx={{ width: "100px", height: "35px" }}
+                        sx={{ width: "100%", height: "35px" }}
                         disabled={isDisabled}
                         onClick={() => {
                           setIsDisabled(true);
@@ -477,17 +513,16 @@ const Medicine = () => {
                       </Button>
                     </TableCell>
                     <TableCell align="center">
-                      <Button
-                        variant="contained"
-                        sx={{ width: "50px", height: "35px" }}
+                      <IconButton
                         disabled={isDisabled}
+                        color="info"
                         onClick={() => {
                           setRowSelectDelete(row);
                           handleClickOpenDialog();
                         }}
                       >
-                        Xóa
-                      </Button>
+                        <DoDisturbOnIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))
@@ -513,10 +548,10 @@ const Medicine = () => {
                   labelRowsPerPage="Số hàng trên một trang"
                   showFirstButton
                   showLastButton
-                  labelDisplayedRows={({ from, to, count }) =>
+                  labelDisplayedRows={({ from, to, count, page }) =>
                     `${from}–${to} của ${
                       count !== -1 ? count : `nhiều hơn ${to}`
-                    }`
+                    } | Trang ${page}`
                   }
                   onPageChange={handleChangePage}
                   onRowsPerPageChange={handleChangeRowsPerPage}

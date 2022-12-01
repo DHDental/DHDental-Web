@@ -1,77 +1,73 @@
 import React, { useEffect, useState } from "react";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { Alert, Box, Snackbar } from "@mui/material";
-import Tab from "@material-ui/core/Tab";
-import RevenueTable from "./tables/RevenueTable";
-import CheckUpTable from "./tables/CheckUpTable";
-import ServiceTable from "./tables/ServiceTable";
-import { axiosPrivate } from "../../api/axiosInstance";
 import {
-  COUNT_NUMBER_VISITED_BY_RANGE_TIME,
-  GET_ALL_SERVICES,
-  GET_ALL_TURN_OVER_RANGE_TIME,
-  GET_USER_CANCEL_SERVICE,
-  GET_USER_WITH_SERVICE,
-} from "../../common/constants/apiConstants";
+  Alert,
+  Button,
+  CircularProgress,
+  Grid,
+  IconButton,
+  Paper,
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TextField,
+} from "@mui/material";
 import moment from "moment/moment";
-import { formatYearMonthDate } from "../../common/utils/formatDate";
 import dayjs from "dayjs";
-import UserServiceTable from "./tables/UserServiceTable";
-import UserCancelServiceTable from "./tables/UserCancelServiceTable";
+import { DatePicker } from "@mui/x-date-pickers";
+import { formatYearMonthDate } from "../../common/utils/formatDate";
+import { axiosPrivate } from "../../api/axiosInstance";
+import { GET_USER_WITH_SERVICE } from "../../common/constants/apiConstants";
 
 const userWithService = [
-    // {
-    //   id: "158",
-    //   date: "2022-11-11",
-    //   money: "30,150,000",
-    // },
-  ];
-  
-  const userCancelService = [
-    // {
-    //   id: "158",
-    //   date: "2022-11-11",
-    //   money: "30,150,000",
-    // },
-  ];
+  // {
+  //   id: "158",
+  //   date: "2022-11-11",
+  //   money: "30,150,000",
+  // },
+];
 
 const OwnerUserService = () => {
-    const [userServiceData, setUserServiceData] = useState(userWithService);
-    const [userCancelServiceData, setUserCancelServiceData] = useState(userCancelService);
-    const [value, setValue] = React.useState("1");
+  const [userServiceData, setUserServiceData] = useState(userWithService);
+  const [userServiceFilter, setUserServiceFilter] = useState(userWithService);
+  const [isloading, setIsLoading] = useState(false);
 
+  const pages = [4, 10, 25, 100];
+  const [page, setPage] = useState(0);
+  const [pageSave, setPageSave] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
   const [textSnackbar, setTextSnackbar] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const [isloading, setIsLoading] = useState(false);
 
   const current = new Date();
   const date = `${current.getFullYear()}-${
     current.getMonth() + 1
   }-${current.getDate()}`;
 
-  const datePast = formatYearMonthDate(dayjs(date, "YYYY-MM-DD").add(-1, 'days'));
+  const [selectDate, setSelectDate] = useState(date);
+  const [searchedVal, setSearchedVal] = useState("");
 
   useEffect(() => {
-    loadData();
-  }, []);
+    fetchData(date);
+  }, [date]);
 
-  const loadData = async () => {
-    fetchDataUserService();
-    fetchDataUserCancelService();
-  };
-
-  const fetchDataUserService = async () => {
+  const fetchData = async (date) => {
     setIsLoading(true);
     const params = {
-      date: date,
+      date: formatYearMonthDate(dayjs(date, "DD/MM/YYYY")) ===
+      "Invalid Date"
+        ? date
+        : formatYearMonthDate(dayjs(date, "DD/MM/YYYY")),
     };
     try {
-      const response = await axiosPrivate.post(
-        GET_USER_WITH_SERVICE,
-        params
-      );
+      const response = await axiosPrivate.post(GET_USER_WITH_SERVICE, params);
       const data = [...response.data];
+      setUserServiceFilter(data);
       setUserServiceData(data);
       setIsLoading(false);
     } catch (error) {
@@ -81,49 +77,174 @@ const OwnerUserService = () => {
     }
   };
 
-  const fetchDataUserCancelService = async () => {
-    setIsLoading(true);
-    const params = {
-      date: date,
-    };
-    try {
-      const response = await axiosPrivate.post(
-        GET_USER_CANCEL_SERVICE,
-        params
-      );
-      const data = [...response.data];
-      setUserCancelServiceData(data);
-      setIsLoading(false);
-    } catch (error) {
-      setTextSnackbar("Đã xãy ra lỗi");
+  const handleDateSearch = () => {
+    if (selectDate === null) {
+      setTextSnackbar("Không thấy ngày tìm kiếm");
       setOpenSnackbar(true);
-      setIsLoading(false);
+    } else {
+      fetchData(selectDate);
     }
   };
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-      };
-    
-      const handleCloseSnackbar = () => {
-        setOpenSnackbar(false);
-      };
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+    setPageSave(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+    setPageSave(0);
+  };
+
   return (
     <>
-      <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Quản Lý Lượng Người Dùng Dịch Vụ" value="1" />
-            <Tab label="Quản Lý Lượng Người Hủy Dịch Vụ" value="2" />
-          </TabList>
-        </Box>
-        <TabPanel value="1">
-        <UserServiceTable userServiceData={userServiceData} loading={isloading} />
-        </TabPanel>
-        <TabPanel value="2">
-        <UserCancelServiceTable userCancelServiceData={userCancelServiceData} loading={isloading} />
-        </TabPanel>
-      </TabContext>
+      <Paper sx={{ width: "100%", overflow: "hidden" }}>
+        <Grid
+          sx={{ flexGrow: 1 }}
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item xs={1}></Grid>
+          <Grid item xs={5}>
+            <h2>Bảng Lượng Người Dùng Dịch Vụ</h2>
+          </Grid>
+          <Grid item xs={7}>
+          <TextField
+              sx={{ width: "100%" }}
+              label="Tìm Kiếm"
+              variant="outlined"
+              onChange={(e) => setSearchedVal(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <DatePicker
+            disableFuture
+              label="Tìm Kiếm Ngày"
+              inputFormat="DD/MM/YYYY"
+              placeholder="DD/MM/YYYY"
+              value={selectDate}
+              onChange={(newValue) => {
+                setSelectDate(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField fullWidth variant="standard" {...params} />
+              )}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Button
+              variant="contained"
+              sx={{ width: "100%", height: "35px" }}
+              onClick={() => {
+                handleDateSearch();
+              }}
+            >
+              Tìm Kiếm Theo Ngày
+            </Button>
+          </Grid>
+        </Grid>
+
+        <TableContainer>
+          <Table aria-label="simple table">
+            <TableHead>
+              {isloading === true || userServiceData.length === 0 ? (
+                <TableRow>
+                  <TableCell></TableCell>
+                </TableRow>
+              ) : (
+                <TableRow>
+                  <TableCell align="center">STT</TableCell>
+                  <TableCell align="right">Họ & Tên</TableCell>
+                  <TableCell align="right">Số Điện Thoại</TableCell>
+                  <TableCell align="right">Địa Chỉ</TableCell>
+                  <TableCell align="right">Ngày Sinh</TableCell>
+                  <TableCell align="right">Tổng Tiền</TableCell>
+                </TableRow>
+              )}
+            </TableHead>
+            <TableBody>
+              {isloading === true ? (
+                <TableRow>
+                  <TableCell
+                    sx={{ width: "100%", height: "100%" }}
+                    align="center"
+                  >
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : userServiceData.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    sx={{ width: "100%", height: "100%" }}
+                    align="center"
+                  >
+                    Không Có Dữ Liệu
+                  </TableCell>
+                </TableRow>
+              ) : (
+                userServiceData
+                .filter(
+                  (row) =>
+                    !searchedVal.length ||
+                    `${row.fullName} ${row.phoneNumber} ${row.address}`
+                      .toString()
+                      .toLowerCase()
+                      .includes(searchedVal.toString().toLowerCase())
+                )
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell align="center">
+                        {userServiceData.indexOf(row) + 1}
+                      </TableCell>
+                      <TableCell align="right">{row.fullName}</TableCell>
+                      <TableCell align="right">{row.phoneNumber}</TableCell>
+                      <TableCell align="right">{row.address}</TableCell>
+                      <TableCell align="right">
+                        {moment(row.dob).format("DD/MM/YYYY")}
+                      </TableCell>
+                      <TableCell align="right">{row.totalPrice} VND</TableCell>
+                    </TableRow>
+                  ))
+              )}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                {isloading === true ? (
+                  <></>
+                ) : (
+                  <TablePagination
+                    rowsPerPageOptions={[
+                      4
+                    ]}
+                    count={userServiceData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    labelRowsPerPage="Số hàng trên một trang"
+                    showFirstButton
+                    showLastButton
+                    labelDisplayedRows={({ from, to, count, page }) =>
+                      `${from}–${to} của ${
+                        count !== -1 ? count : `nhiều hơn ${to}`
+                      } | Trang ${page}`
+                    }
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                )}
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      </Paper>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
@@ -135,7 +256,7 @@ const OwnerUserService = () => {
         </Alert>
       </Snackbar>
     </>
-  )
-}
+  );
+};
 
 export default OwnerUserService

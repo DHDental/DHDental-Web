@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Box,
   Button,
   CircularProgress,
   Grid,
@@ -17,18 +18,15 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import SearchBar from "material-ui-search-bar";
-import { axiosPrivate } from "../../../api/axiosInstance";
-import {
-  GET_USER_CANCEL_SERVICE,
-  GET_USER_WITH_SERVICE,
-} from "../../../common/constants/apiConstants";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import moment from "moment/moment";
-import { formatYearMonthDate } from "../../../common/utils/formatDate";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
+import { formatYearMonthDate } from "../../common/utils/formatDate";
+import { axiosPrivate } from "../../api/axiosInstance";
+import { GET_ALL_TURN_OVER_RANGE_TIME } from "../../common/constants/apiConstants";
 
-const userCancelService = [
+const revenue = [
   // {
   //   id: "158",
   //   date: "2022-11-11",
@@ -36,9 +34,9 @@ const userCancelService = [
   // },
 ];
 
-const UserCancelServiceTable = (props) => {
-  const [userCancelServiceData, setUserCancelServiceData] = useState(userCancelService);
-  const [userCancelServiceFilter, setUserCancelServiceFilter] = useState(userCancelService);
+const RevenueTable = () => {
+  const [revenueData, setRevenueData] = useState(revenue);
+  // const [revenueFilter, setRevenueFilter] = useState(revenue);
   const [isloading, setIsLoading] = useState(false);
 
   const pages = [4, 10, 25, 100];
@@ -48,72 +46,63 @@ const UserCancelServiceTable = (props) => {
   const [textSnackbar, setTextSnackbar] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const [searched, setSearched] = useState("");
   const current = new Date();
   const date = `${current.getFullYear()}-${
     current.getMonth() + 1
   }-${current.getDate()}`;
+  const datePast = formatYearMonthDate(
+    dayjs(current).add(-1, "days")
+  );
 
-  const [selectDate, setSelectDate] = useState(date);
+  const [selectDateStart, setSelectDateStart] = useState(datePast);
+  const [selectDateEnd, setSelectDateEnd] = useState(date);
 
   useEffect(() => {
-    setIsLoading(props.loading);
-    setUserCancelServiceFilter(props.userCancelServiceData);
-    setUserCancelServiceData(props.userCancelServiceData);
-  }, [props.userCancelServiceData, props.loading]);
+    fetchData(date, datePast);
+  }, [date, datePast]);
 
-  const requestSearch = (searchedVal) => {
-    setPage(0);
-    if (searchedVal === "") {
-      setUserCancelServiceData(userCancelServiceFilter);
-      setPage(pageSave);
-    } else {
-      const filteredRows = userCancelServiceFilter.filter((row) => {
-        return `${row.fullName} ${row.phoneNumber} ${row.address}`
-          .toLowerCase()
-          .includes(searchedVal.toLowerCase());
-      });
-      setUserCancelServiceData(filteredRows);
-    }
-  };
-
-  const fetchData = async (date) => {
+  const fetchData = async (selectDateStart, selectDateEnd) => {
     setIsLoading(true);
     const params = {
-      date: formatYearMonthDate(dayjs(date, "DD/MM/YYYY")) ===
-      "Invalid Date"
-        ? date
-        : formatYearMonthDate(dayjs(date, "DD/MM/YYYY")),
+      from:
+        formatYearMonthDate(dayjs(selectDateStart, "DD/MM/YYYY")) ===
+        "Invalid Date"
+          ? selectDateStart
+          : formatYearMonthDate(dayjs(selectDateStart, "DD/MM/YYYY")),
+      to:
+        formatYearMonthDate(dayjs(selectDateEnd, "DD/MM/YYYY")) ===
+        "Invalid Date"
+          ? selectDateEnd
+          : formatYearMonthDate(dayjs(selectDateEnd, "DD/MM/YYYY")),
     };
+    // console.log(params);
     try {
-      const response = await axiosPrivate.post(GET_USER_CANCEL_SERVICE, params);
+      const response = await axiosPrivate.post(
+        GET_ALL_TURN_OVER_RANGE_TIME,
+        params
+      );
       const data = [...response.data];
-      setUserCancelServiceFilter(data);
-      setUserCancelServiceData(data);
+      setRevenueData(data);
       setIsLoading(false);
     } catch (error) {
       setTextSnackbar("Đã xãy ra lỗi");
       setOpenSnackbar(true);
+      setRevenueData(revenue);
       setIsLoading(false);
     }
   };
 
   const handleDateSearch = () => {
-    if (selectDate === null) {
-      setTextSnackbar("Không thấy ngày tìm kiếm");
+    if (selectDateStart === null || selectDateEnd === null) {
+      setTextSnackbar("Không để trống");
       setOpenSnackbar(true);
     } else {
-      fetchData(selectDate);
+      fetchData(selectDateStart, selectDateEnd);
     }
   };
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
-  };
-
-  const cancelSearch = () => {
-    setSearched("");
-    requestSearch(searched);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -126,6 +115,7 @@ const UserCancelServiceTable = (props) => {
     setPage(0);
     setPageSave(0);
   };
+
   return (
     <>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -137,26 +127,19 @@ const UserCancelServiceTable = (props) => {
           alignItems="center"
           spacing={2}
         >
-          <Grid item xs={1}></Grid>
-          <Grid item xs={5}>
-            <h2>Bảng Lượng Người Hủy Dịch Vụ</h2>
-          </Grid>
-          <Grid item xs={7}>
-            <SearchBar
-              value={searched}
-              onChange={(searchVal) => requestSearch(searchVal)}
-              onCancelSearch={() => cancelSearch()}
-            />
+          {/* <Grid item xs={1}></Grid> */}
+          <Grid item xs={4}>
+            <h2>Bảng Doanh Thu</h2>
           </Grid>
           <Grid item xs={2}>
             <DatePicker
-            disableFuture
-              label="Tìm Kiếm Ngày"
+              label="Tìm Kiếm Ngày Bắt Đầu"
               inputFormat="DD/MM/YYYY"
               placeholder="DD/MM/YYYY"
-              value={selectDate}
+              value={selectDateStart}
+              maxDate={selectDateEnd}
               onChange={(newValue) => {
-                setSelectDate(newValue);
+                setSelectDateStart(newValue);
               }}
               renderInput={(params) => (
                 <TextField fullWidth variant="standard" {...params} />
@@ -164,6 +147,22 @@ const UserCancelServiceTable = (props) => {
             />
           </Grid>
           <Grid item xs={2}>
+            <DatePicker
+              disableFuture
+              label="Tìm Kiếm Ngày Kết Thúc"
+              inputFormat="DD/MM/YYYY"
+              placeholder="DD/MM/YYYY"
+              value={selectDateEnd}
+              minDate={selectDateStart}
+              onChange={(newValue) => {
+                setSelectDateEnd(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField fullWidth variant="standard" {...params} />
+              )}
+            />
+          </Grid>
+          <Grid item xs={3}>
             <Button
               variant="contained"
               sx={{ width: "100%", height: "35px" }}
@@ -179,18 +178,15 @@ const UserCancelServiceTable = (props) => {
         <TableContainer>
           <Table aria-label="simple table">
             <TableHead>
-              {isloading === true || userCancelServiceData.length === 0 ? (
+              {isloading === true || revenueData.length === 0 ? (
                 <TableRow>
                   <TableCell></TableCell>
                 </TableRow>
               ) : (
                 <TableRow>
                   <TableCell align="center">STT</TableCell>
-                  <TableCell align="right">Họ & Tên</TableCell>
-                  <TableCell align="right">Số Điện Thoại</TableCell>
-                  <TableCell align="right">Địa Chỉ</TableCell>
-                  <TableCell align="right">Ngày Sinh</TableCell>
-                  <TableCell align="right">Tổng Tiền</TableCell>
+                  <TableCell align="right">Ngày Khám</TableCell>
+                  <TableCell align="right">Giá Tiền</TableCell>
                 </TableRow>
               )}
             </TableHead>
@@ -204,7 +200,7 @@ const UserCancelServiceTable = (props) => {
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
-              ) : userCancelServiceData.length === 0 ? (
+              ) : revenueData.length === 0 ? (
                 <TableRow>
                   <TableCell
                     sx={{ width: "100%", height: "100%" }}
@@ -213,21 +209,18 @@ const UserCancelServiceTable = (props) => {
                     Không Có Dữ Liệu
                   </TableCell>
                 </TableRow>
-              ) : (
-                userCancelServiceData
+              ) :(
+                revenueData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <TableRow key={row.id}>
                       <TableCell align="center">
-                        {userCancelServiceData.indexOf(row) + 1}
+                        {revenueData.indexOf(row) + 1}
                       </TableCell>
-                      <TableCell align="right">{row.fullName}</TableCell>
-                      <TableCell align="right">{row.phoneNumber}</TableCell>
-                      <TableCell align="right">{row.address}</TableCell>
                       <TableCell align="right">
-                        {moment(row.dob).format("DD/MM/YYYY")}
+                        {moment(row.date).format("DD/MM/YYYY")}
                       </TableCell>
-                      <TableCell align="right">{row.totalPrice} VND</TableCell>
+                      <TableCell align="right">{row.money} VND</TableCell>
                     </TableRow>
                   ))
               )}
@@ -241,16 +234,16 @@ const UserCancelServiceTable = (props) => {
                     rowsPerPageOptions={[
                       4
                     ]}
-                    count={userCancelServiceData.length}
+                    count={revenueData.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     labelRowsPerPage="Số hàng trên một trang"
                     showFirstButton
                     showLastButton
-                    labelDisplayedRows={({ from, to, count }) =>
+                    labelDisplayedRows={({ from, to, count, page }) =>
                       `${from}–${to} của ${
                         count !== -1 ? count : `nhiều hơn ${to}`
-                      }`
+                      } | Trang ${page}`
                     }
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
@@ -272,7 +265,7 @@ const UserCancelServiceTable = (props) => {
         </Alert>
       </Snackbar>
     </>
-  )
-}
+  );
+};
 
-export default UserCancelServiceTable
+export default RevenueTable;
