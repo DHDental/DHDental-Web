@@ -11,11 +11,50 @@ import { StaffLayout, DentistLayout, AdminLayout, OwnerLayout, DemoLayout } from
 import FindPatient from '../pages/bill/FindPatient';
 import Medicine from '../pages/medicine/Medicine';
 import OwnerUserService from '../pages/owner/OwnerUserService';
+import jwtDecode from 'jwt-decode';
+import { ADMIN_TEST, DENTIST_DS_KHAM, OWNER_TEST, STAFF_DSDATKHAM } from '../common/constants/pathConstants';
+import dayjs from 'dayjs';
+import { axiosPublic } from '../api/axiosInstance';
 
 
 
 
 export default function Router() {
+
+    let startPath = '/login';
+    const loginInfo = JSON.parse(localStorage.getItem('loginInfo'))
+    if (loginInfo != undefined) {
+        let user = jwtDecode(loginInfo?.token)
+        const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1
+        if (isExpired) {
+            const refresh = async () => {
+                const response = await axiosPublic.post(`/auth/refreshToken`, {
+                    "refreshToken": loginInfo.refreshToken
+                })
+                localStorage.setItem('loginInfo', JSON.stringify(response.data))
+                user = jwtDecode(response.data.token)
+            }
+            refresh()
+        }
+        const roleID = user?.roleID[0]?.authority
+        switch (roleID) {
+            case '3':
+                startPath = DENTIST_DS_KHAM;
+                break;
+            case '2':
+                startPath = STAFF_DSDATKHAM;
+                break;
+            case '1':
+                startPath = ADMIN_TEST;
+                break;
+            case '5':
+                startPath = OWNER_TEST;
+                break;
+            default:
+                break;
+        }
+    }
+
     return useRoutes([
         {
             path: '/staff',
@@ -94,7 +133,7 @@ export default function Router() {
             children: [
                 { path: 'login', element: <Login /> },
                 { path: '404', element: <NotFound /> },
-                { path: '/', element: <Navigate to="/login" /> },
+                { path: '/', element: <Navigate to={startPath} /> },
                 { path: '*', element: <Navigate to="/404" replace /> }
             ]
         },
