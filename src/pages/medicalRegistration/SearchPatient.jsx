@@ -20,6 +20,7 @@ import StartFirebase from '../../components/firebaseConfig';
 import { formatStringtoDate } from '../../common/utils/formatDate'
 import { CHECK_PAYMENT_OR_NOT } from "../../common/constants/apiConstants";
 import { CustomBackdrop, CustomSnackbar } from "../../components";
+import dayjs from "dayjs";
 
 const db = StartFirebase()
 
@@ -139,7 +140,7 @@ const SearchPatient = ({ reload, setReload }) => {
                 sdt: currentPatient.phoneNumber,
                 status: 0,
                 statusSpecial: 0,
-                timeBooking: '',
+                timeBooking: dayjs().format('hh:mm A'),
                 dentistName: '',
                 dentistPhone: '',
                 room: '',
@@ -159,6 +160,7 @@ const SearchPatient = ({ reload, setReload }) => {
         }
 
     }
+    // console.log(dayjs().format('hh:mm A'));
     return (
         <>
             <Box

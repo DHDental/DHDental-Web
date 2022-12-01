@@ -67,7 +67,7 @@ const MedicalRegistration = () => {
                     sdt: response.data.phoneNumber,
                     status: 0,
                     statusSpecial: 0,
-                    timeBooking: '',
+                    timeBooking: dayjs().format('hh:mm A'),
                     dentistName: '',
                     dentistPhone: '',
                     room: '',
