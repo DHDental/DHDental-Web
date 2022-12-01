@@ -60,6 +60,7 @@ const PatientNotAppointment = () => {
                         <TableRow>
                             <TableCell>Họ và tên</TableCell>
                             <TableCell>Số điện thoại</TableCell>
+                            <TableCell>Giờ check in</TableCell>
                             <TableCell>Vào khám</TableCell>
                         </TableRow>
                     </TableHead>
@@ -80,6 +81,9 @@ const PatientNotAppointment = () => {
                                         }}
                                     >
                                         {item?.data.sdt}
+                                    </TableCell>
+                                    <TableCell>
+                                        {item?.data?.timeBooking}
                                     </TableCell>
                                     <TableCell>
                                         {item?.data?.color == 'yd' ? null :
