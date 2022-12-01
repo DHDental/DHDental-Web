@@ -16,9 +16,13 @@ export const RECORD_HISTORY = '/dentist/kham-benh/lich-su-kham'
 
 // admin
 export const ADMIN_TEST = '/admin/test'
+export const ADMIN_USER = '/admin/end-user'
 
 // owner
 export const OWNER_TEST = '/owner/test'
 export const OWNER_USER_SERVICE = '/owner/user-service'
+export const OWNER_USER_CANCEL_SERVICE = '/owner/user-cancel-service'
+export const OWNER_CHECK_UP = '/owner/check-up'
+export const OWNER_REVENUE = '/owner/revenue'
 
 export const DEMO_TEST = '/test/demo'

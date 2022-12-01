@@ -8,7 +8,7 @@ import {
   Paper,
   Snackbar,
   Table,
-  TableBody,
+  TableBody,  
   TableCell,
   TableContainer,
   TableFooter,
@@ -17,17 +17,14 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import SearchBar from "material-ui-search-bar";
-import { axiosPrivate } from "../../../api/axiosInstance";
-import {
-  GET_USER_WITH_SERVICE,
-} from "../../../common/constants/apiConstants";
 import moment from "moment/moment";
-import { formatYearMonthDate } from "../../../common/utils/formatDate";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
+import { formatYearMonthDate } from "../../common/utils/formatDate";
+import { axiosPrivate } from "../../api/axiosInstance";
+import { GET_USER_CANCEL_SERVICE } from "../../common/constants/apiConstants";
 
-const userWithService = [
+const userCancelService = [
   // {
   //   id: "158",
   //   date: "2022-11-11",
@@ -35,9 +32,9 @@ const userWithService = [
   // },
 ];
 
-const UserServiceTable = (props) => {
-  const [userServiceData, setUserServiceData] = useState(userWithService);
-  const [userServiceFilter, setUserServiceFilter] = useState(userWithService);
+const UserCancelServiceTable = () => {
+  const [userCancelServiceData, setUserCancelServiceData] = useState(userCancelService);
+  const [userCancelServiceFilter, setUserCancelServiceFilter] = useState(userCancelService);
   const [isloading, setIsLoading] = useState(false);
 
   const pages = [4, 10, 25, 100];
@@ -46,8 +43,8 @@ const UserServiceTable = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
   const [textSnackbar, setTextSnackbar] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const [searched, setSearched] = useState("");
+  const [searchedVal, setSearchedVal] = useState("");
+  
   const current = new Date();
   const date = `${current.getFullYear()}-${
     current.getMonth() + 1
@@ -56,25 +53,8 @@ const UserServiceTable = (props) => {
   const [selectDate, setSelectDate] = useState(date);
 
   useEffect(() => {
-    setIsLoading(props.loading);
-    setUserServiceFilter(props.userServiceData);
-    setUserServiceData(props.userServiceData);
-  }, [props.userServiceData, props.loading]);
-
-  const requestSearch = (searchedVal) => {
-    setPage(0);
-    if (searchedVal === "") {
-      setUserServiceData(userServiceFilter);
-      setPage(pageSave);
-    } else {
-      const filteredRows = userServiceFilter.filter((row) => {
-        return `${row.fullName} ${row.phoneNumber} ${row.address}`
-          .toLowerCase()
-          .includes(searchedVal.toLowerCase());
-      });
-      setUserServiceData(filteredRows);
-    }
-  };
+    fetchData(date);
+  }, [date]);
 
   const fetchData = async (date) => {
     setIsLoading(true);
@@ -85,10 +65,10 @@ const UserServiceTable = (props) => {
         : formatYearMonthDate(dayjs(date, "DD/MM/YYYY")),
     };
     try {
-      const response = await axiosPrivate.post(GET_USER_WITH_SERVICE, params);
+      const response = await axiosPrivate.post(GET_USER_CANCEL_SERVICE, params);
       const data = [...response.data];
-      setUserServiceFilter(data);
-      setUserServiceData(data);
+      setUserCancelServiceFilter(data);
+      setUserCancelServiceData(data);
       setIsLoading(false);
     } catch (error) {
       setTextSnackbar("Đã xãy ra lỗi");
@@ -110,11 +90,6 @@ const UserServiceTable = (props) => {
     setOpenSnackbar(false);
   };
 
-  const cancelSearch = () => {
-    setSearched("");
-    requestSearch(searched);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     setPageSave(newPage);
@@ -125,7 +100,6 @@ const UserServiceTable = (props) => {
     setPage(0);
     setPageSave(0);
   };
-
   return (
     <>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -139,13 +113,14 @@ const UserServiceTable = (props) => {
         >
           <Grid item xs={1}></Grid>
           <Grid item xs={5}>
-            <h2>Bảng Lượng Người Dùng Dịch Vụ</h2>
+            <h2>Bảng Lượng Người Hủy Dịch Vụ</h2>
           </Grid>
           <Grid item xs={7}>
-            <SearchBar
-              value={searched}
-              onChange={(searchVal) => requestSearch(searchVal)}
-              onCancelSearch={() => cancelSearch()}
+          <TextField
+              sx={{ width: "100%" }}
+              label="Tìm Kiếm"
+              variant="outlined"
+              onChange={(e) => setSearchedVal(e.target.value)}
             />
           </Grid>
           <Grid item xs={2}>
@@ -179,7 +154,7 @@ const UserServiceTable = (props) => {
         <TableContainer>
           <Table aria-label="simple table">
             <TableHead>
-              {isloading === true || userServiceData.length === 0 ? (
+              {isloading === true || userCancelServiceData.length === 0 ? (
                 <TableRow>
                   <TableCell></TableCell>
                 </TableRow>
@@ -204,7 +179,7 @@ const UserServiceTable = (props) => {
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
-              ) : userServiceData.length === 0 ? (
+              ) : userCancelServiceData.length === 0 ? (
                 <TableRow>
                   <TableCell
                     sx={{ width: "100%", height: "100%" }}
@@ -214,12 +189,20 @@ const UserServiceTable = (props) => {
                   </TableCell>
                 </TableRow>
               ) : (
-                userServiceData
+                userCancelServiceData
+                .filter(
+                  (row) =>
+                    !searchedVal.length ||
+                    `${row.fullName} ${row.phoneNumber} ${row.address}`
+                      .toString()
+                      .toLowerCase()
+                      .includes(searchedVal.toString().toLowerCase())
+                )
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <TableRow key={row.id}>
                       <TableCell align="center">
-                        {userServiceData.indexOf(row) + 1}
+                        {userCancelServiceData.indexOf(row) + 1}
                       </TableCell>
                       <TableCell align="right">{row.fullName}</TableCell>
                       <TableCell align="right">{row.phoneNumber}</TableCell>
@@ -241,16 +224,16 @@ const UserServiceTable = (props) => {
                     rowsPerPageOptions={[
                       4
                     ]}
-                    count={userServiceData.length}
+                    count={userCancelServiceData.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     labelRowsPerPage="Số hàng trên một trang"
                     showFirstButton
                     showLastButton
-                    labelDisplayedRows={({ from, to, count }) =>
+                    labelDisplayedRows={({ from, to, count, page }) =>
                       `${from}–${to} của ${
                         count !== -1 ? count : `nhiều hơn ${to}`
-                      }`
+                      } | Trang ${page}`
                     }
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
@@ -272,7 +255,7 @@ const UserServiceTable = (props) => {
         </Alert>
       </Snackbar>
     </>
-  );
-};
+  )
+}
 
-export default UserServiceTable;
+export default UserCancelServiceTable

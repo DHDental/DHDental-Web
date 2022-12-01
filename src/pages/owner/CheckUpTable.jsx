@@ -1,13 +1,11 @@
 import { Alert, Button, CircularProgress, Grid, IconButton, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TextField } from '@mui/material';
-import SearchBar from 'material-ui-search-bar';
 import React, { useEffect, useState } from 'react'
-import { axiosPrivate } from '../../../api/axiosInstance';
-import { COUNT_NUMBER_VISITED_BY_RANGE_TIME } from '../../../common/constants/apiConstants';
-import RefreshIcon from "@mui/icons-material/Refresh";
 import moment from 'moment/moment';
-import { formatYearMonthDate } from '../../../common/utils/formatDate';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers';
+import { formatYearMonthDate } from '../../common/utils/formatDate';
+import { axiosPrivate } from '../../api/axiosInstance';
+import { COUNT_NUMBER_VISITED_BY_RANGE_TIME } from '../../common/constants/apiConstants';
 
 
 const checkUp = [
@@ -20,7 +18,7 @@ const checkUp = [
     // },
   ];
 
-const CheckUpTable = (props) => {
+const CheckUpTable = () => {
   const [checkUpData, setCheckUpData] = useState(checkUp);
   const [checkUpFilter, setCheckUpFilter] = useState(checkUp);
   const [isloading, setIsLoading] = useState(false);
@@ -32,34 +30,17 @@ const CheckUpTable = (props) => {
   const [textSnackbar, setTextSnackbar] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const [searched, setSearched] = useState("");
   const current = new Date();
-  const date = `${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`;
-  const datePast = formatYearMonthDate(dayjs(date, "YYYY-MM-DD").add(-1, 'days'));
+  const date = `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`;
+  const datePast = formatYearMonthDate(dayjs(current).add(-1, 'days'));
 
   const [selectDateStart, setSelectDateStart] = useState(datePast);
   const [selectDateEnd, setSelectDateEnd] = useState(date);
+  const [searchedVal, setSearchedVal] = useState("");
   
     useEffect(() => {
-      setIsLoading(props.loading);
-      setCheckUpFilter(props.checkUpData);
-      setCheckUpData(props.checkUpData);
-    }, [props.checkUpData, props.loading]);
-
-    const requestSearch = (searchedVal) => {
-      setPage(0);
-      if (searchedVal === "") {
-        setCheckUpData(checkUpFilter);
-        setPage(pageSave);
-      } else {
-        const filteredRows = checkUpFilter.filter((row) => {
-          return `${row.fullName} ${row.phoneNumber} ${row.address}`
-            .toLowerCase()
-            .includes(searchedVal.toLowerCase());
-        });
-        setCheckUpData(filteredRows);
-      }
-    };
+      fetchData(date, datePast);
+    }, [date, datePast]);
 
     const fetchData = async (selectDateStart, selectDateEnd) => {
       setIsLoading(true);
@@ -102,11 +83,6 @@ const CheckUpTable = (props) => {
       setOpenSnackbar(false);
     };
 
-    const cancelSearch = () => {
-      setSearched("");
-      requestSearch(searched);
-    };
-  
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
       setPageSave(newPage);
@@ -133,10 +109,11 @@ const CheckUpTable = (props) => {
             <h2>Bảng số lượng người đã khám theo ngày</h2>
           </Grid>
           <Grid item xs={6}>
-            <SearchBar
-              value={searched}
-              onChange={(searchVal) => requestSearch(searchVal)}
-              onCancelSearch={() => cancelSearch()}
+          <TextField
+              sx={{ width: "100%" }}
+              label="Tìm Kiếm"
+              variant="outlined"
+              onChange={(e) => setSearchedVal(e.target.value)}
             />
           </Grid>
           <Grid item xs={2}>
@@ -222,6 +199,14 @@ const CheckUpTable = (props) => {
                 </TableRow>
               ) :(
                 checkUpData
+                .filter(
+                  (row) =>
+                    !searchedVal.length ||
+                    `${row.fullName} ${row.phoneNumber} ${row.address}`
+                      .toString()
+                      .toLowerCase()
+                      .includes(searchedVal.toString().toLowerCase())
+                )
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <TableRow key={row}>
@@ -252,10 +237,10 @@ const CheckUpTable = (props) => {
                     labelRowsPerPage="Số hàng trên một trang"
                     showFirstButton
                     showLastButton
-                    labelDisplayedRows={({ from, to, count }) =>
+                    labelDisplayedRows={({ from, to, count, page }) =>
                       `${from}–${to} của ${
                         count !== -1 ? count : `nhiều hơn ${to}`
-                      }`
+                      } | Trang ${page}`
                     }
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
