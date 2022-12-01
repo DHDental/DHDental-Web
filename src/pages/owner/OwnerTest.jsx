@@ -299,8 +299,6 @@ const OwnerTest = () => {
                         fullWidth
                         type="submit"
                         sx={{ height: "35px" }}
-                        // disabled={formik.isSubmitting}
-                        // startIcon={formik.isSubmitting ? <CircularProgress size='0.9rem' /> : null}
                       >
                         {isAddNew === true ? "Tạo Thuốc" : "Cập Nhật Thuốc"}
                       </Button>
