@@ -1,12 +1,12 @@
-import { Box, Button, CircularProgress, Grid, Paper, TextField, Typography } from '@mui/material'
-import { useState } from 'react'
-import { DISABLE_BOOKING, ENABLE_BOOKING, ENABLE_NOTIFY, TEST_BOOKING } from '../../common/constants/apiConstants'
+import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { CHECK_IN_CANCEL_SCRIPT, DISABLE_BOOKING, ENABLE_BOOKING, ENABLE_NOTIFY, TEST_BOOKING } from '../../common/constants/apiConstants'
 import { axiosPublic } from '../../api/axiosInstance'
-import { push, ref, set } from 'firebase/database'
+import { onValue, push, ref, set, update } from 'firebase/database'
 import StartFirebase from '../../components/firebaseConfig'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
-import { async } from '@firebase/util'
+
 
 const db = StartFirebase()
 const TestDemo = () => {
@@ -21,6 +21,19 @@ const TestDemo = () => {
     const [soLuong2, setSoLuong2] = useState('');
 
     const [ngayNotify, setNgayNotify] = useState(null);
+
+    const [ngayCheckIn, setNgayCheckIn] = useState(null);
+    const [soLuongCheckIn, setSoLuongCheckIn] = useState('');
+    const [soLuongCancel, setSoLuongCancel] = useState('');
+
+    const [dataFirebase, setDataFirebase] = useState([])
+    const [dentistRecord, setDentistRecord] = useState('')
+
+
+
+    const handleChangeDentistRecord = (event) => {
+        setDentistRecord(event.target.value);
+    };
 
     const handleChange1 = (event) => {
         setSoLuong1(event.target.value);
@@ -88,7 +101,7 @@ const TestDemo = () => {
                             sdt: item?.phone,
                             status: 0,
                             statusSpecial: 0,
-                            timeBooking: '',
+                            timeBooking: dayjs().format('hh:mm A'),
                             dentistName: '',
                             dentistPhone: '',
                             room: '',
@@ -163,6 +176,63 @@ const TestDemo = () => {
             setResult(error.response.data.message)
         }
     }
+    const checkIn = async () => {
+        console.log(soLuongCheckIn, soLuongCancel, dayjs(ngayCheckIn).format('YYYY-MM-DD'));
+        // try {
+        //     setLoading(true)
+        //     setResult()
+        //     setResultSDT()
+        //     setAction('')
+        //     const response = await axiosPublic.post(CHECK_IN_CANCEL_SCRIPT, {
+        //         // "date": dayjs(ngayNotify).format('YYYY-MM-DD')
+        //     })
+        //     setResult(``)
+        //     setResultSDT()
+        //     setLoading(false)
+        // } catch (error) {
+        //     setLoading(false)
+        //     console.log(error);
+        //     console.log(error.response.data.message);
+        //     setResult(error.response.data.message)
+        // }
+    }
+    const handleRecord = () => {
+        let list = []
+        dataFirebase?.forEach((item) => {
+            if (item?.data?.dentistName == dentistRecord) {
+                list.push(item)
+            }
+        })
+        list?.forEach((item, index) => {
+            if (!item?.data?.record && index != (list?.length - 1)) {
+                update(ref(db, item?.key), {
+                    color: 'yd',
+                    status: 0,
+                    record: {
+                        paymentConfirmation: '0',
+                    }
+                })
+            }
+        })
+
+    }
+    useEffect(() => {
+        let isMounted = true;
+        const dbRef = ref(db)
+        onValue(dbRef, (snapshot) => {
+            let records = [];
+            snapshot.forEach(childSnapshot => {
+                let keyName = childSnapshot.key;
+                let data = childSnapshot.val();
+                records.push({ "key": keyName, "data": data })
+            })
+            isMounted && setDataFirebase(records)
+        })
+        return () => {
+            isMounted = false
+        }
+    }, [])
+    console.log(dataFirebase);
     return (
         <>
             <Grid container direction={'row'}>
@@ -214,13 +284,82 @@ const TestDemo = () => {
                         <hr style={{
                             backgroundColor: '#000', border: ' 0.005px solid'
                         }} />
-                        {/* <Button
-                            size='medium'
-                            variant='contained'
-                            disableElevation
-                            onClick={handleVanLai}
-                        >Test đăng kí khám bệnh cho nhiều bệnh nhân vãn lai
-                        </Button> */}
+
+                        < Box sx={{
+                            //  backgroundColor: '#d3d3d6',
+                            padding: '5px 5px'
+                        }}>
+                            <h4>Enable check in for demo</h4>
+                            <Button
+                                size='small'
+                                variant='contained'
+                                onClick={enableCheck}
+                                disableElevation
+                                sx={{ marginBottom: '15px', marginTop: '15px' }}
+                            >Enable check in</Button>
+                        </Box>
+                        <hr style={{
+                            backgroundColor: '#000', border: ' 0.005px solid'
+                        }} />
+
+                        < Box sx={{
+                            //  backgroundColor: '#d3d3d6',
+                            padding: '5px 5px'
+                        }}>
+
+                            <h4>Check in/ Cancel appointment</h4>
+                            <DatePicker
+                                // label='Ngày'
+                                value={ngayCheckIn}
+                                onChange={
+                                    (newValue) => {
+                                        setNgayCheckIn(newValue)
+                                    }
+                                }
+                                inputFormat="DD/MM/YYYY"
+                                placeholder="DD/MM/YYYY"
+                                // minDate={dayjs().add(1, 'day').format('YYYY-MM-DD')}
+                                renderInput={(params) =>
+                                    <TextField {...params}
+                                        variant='standard'
+                                        name='ngayCheckIn'
+                                        id='ngayCheckIn'
+                                    />
+
+                                }
+                            />
+                            <br />
+                            <TextField
+                                sx={{ marginTop: '10px' }}
+                                variant='standard'
+                                label='Số lượng check in'
+                                value={soLuongCheckIn}
+                                onChange={(event) => {
+                                    setSoLuongCheckIn(event.target.value);
+                                }}
+                            />
+                            <br />
+                            <TextField
+                                sx={{ marginTop: '10px' }}
+                                variant='standard'
+                                label='Số lượng cancel'
+                                value={soLuongCancel}
+                                onChange={(event) => {
+                                    setSoLuongCancel(event.target.value);
+                                }}
+                            />
+                            <br />
+                            <Button
+                                size='small'
+                                variant='contained'
+                                onClick={checkIn}
+                                disableElevation
+                                sx={{ marginBottom: '15px', marginTop: '15px' }}
+                            >Chạy Script</Button>
+                        </Box>
+                        <hr style={{
+                            backgroundColor: '#000', border: ' 0.005px solid'
+                        }} />
                         < Box sx={{
                             //  backgroundColor: '#d3d3d6',
                             padding: '5px 5px'
@@ -266,20 +405,35 @@ const TestDemo = () => {
                         <hr style={{
                             backgroundColor: '#000', border: ' 0.005px solid'
                         }} />
+
                         < Box sx={{
                             //  backgroundColor: '#d3d3d6',
                             padding: '5px 5px'
                         }}>
-                            <h4>Enable check in for demo</h4>
+                            <h4>Script tạo record/ hóa đơn dịch vụ</h4>
+                            <FormControl sx={{ width: '50%' }}>
+                                <InputLabel id="demo-simple-select-label">Nha sĩ khám</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={dentistRecord}
+                                    label="Nha sĩ khám"
+                                    onChange={handleChangeDentistRecord}
+                                    size='medium'
+                                // variant='standard'
+                                >
+                                    <MenuItem value={'Vũ Quốc Bảo'}>Vũ Quốc Bảo</MenuItem>
+                                    <MenuItem value={'Trần Thị Hà My'}>Trần Thị Hà My</MenuItem>
+                                </Select>
+                            </FormControl><br />
                             <Button
                                 size='small'
                                 variant='contained'
-                                onClick={enableCheck}
+                                onClick={handleRecord}
                                 disableElevation
                                 sx={{ marginBottom: '15px', marginTop: '15px' }}
-                            >Enable check in</Button>
+                            >Chạy Script</Button>
                         </Box>
-
                         <hr style={{
                             backgroundColor: '#000', border: ' 0.005px solid'
                         }} />
