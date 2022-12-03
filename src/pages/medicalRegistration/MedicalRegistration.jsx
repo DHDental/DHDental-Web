@@ -52,6 +52,7 @@ const MedicalRegistration = () => {
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             try {
+                setTitle('')
                 const response = await axiosPrivate.post(DANGKIKHAMVANLAI, {
                     "lastName": values.lastName,
                     "middleName": values.middleName,
@@ -68,8 +69,8 @@ const MedicalRegistration = () => {
                     status: 0,
                     statusSpecial: 0,
                     timeBooking: dayjs().format('hh:mm A'),
-                    dentistName: '',
-                    dentistPhone: '',
+                    dentistName: response.data.dentistName,
+                    dentistPhone: response.data.dentistPhone,
                     room: '',
                     dentalCareExamReason: values.dentalCareExamReason,
                 })

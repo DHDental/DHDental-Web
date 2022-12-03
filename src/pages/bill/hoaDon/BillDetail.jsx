@@ -1,12 +1,14 @@
 import { Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { ref, remove, update } from 'firebase/database';
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { axiosPrivate } from '../../../api/axiosInstance';
 import { CANCEL_SERVICE, UPDATE_STATUS_BILL } from '../../../common/constants/apiConstants';
 import { formatDateMonthYear, formatDateMonthYear2 } from '../../../common/utils/formatDate';
 import { CustomBackdrop, CustomSnackbar } from '../../../components';
 import CustomDialog from '../../../components/CustomDialog';
 import StartFirebase from '../../../components/firebaseConfig';
+import { STAFF_HOADON } from '../../../common/constants/pathConstants';
 
 const db = StartFirebase()
 const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
@@ -16,6 +18,7 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
 
     // console.log(item);
     // console.log(formatDateMonthYear(item?.billDateCreate));
+    const navigate = useNavigate();
     const [trangThaiCapNhat, setTrangThaiCapNhat] = useState('')
     const [openPopupCancel, setOpenPopupCancel] = useState(false)
 
@@ -108,6 +111,8 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
             setOpenBackdrop(false)
 
             setReload(!reload)
+            const handler = setTimeout(() =>
+                navigate(STAFF_HOADON, { replace: true }), 1000)
         } catch (error) {
             setOpenBackdrop(false)
             console.log(error);

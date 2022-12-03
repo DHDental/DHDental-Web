@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, Grid, Paper, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
-import { DISABLE_BOOKING, ENABLE_BOOKING, TEST_BOOKING } from '../../common/constants/apiConstants'
+import { DISABLE_BOOKING, ENABLE_BOOKING, ENABLE_NOTIFY, TEST_BOOKING } from '../../common/constants/apiConstants'
 import { axiosPublic } from '../../api/axiosInstance'
 import { push, ref, set } from 'firebase/database'
 import StartFirebase from '../../components/firebaseConfig'
@@ -19,6 +19,9 @@ const TestDemo = () => {
     const [value2, setValue2] = useState(null);
     const [soLuong1, setSoLuong1] = useState('');
     const [soLuong2, setSoLuong2] = useState('');
+
+    const [ngayNotify, setNgayNotify] = useState(null);
+
     const handleChange1 = (event) => {
         setSoLuong1(event.target.value);
     };
@@ -106,77 +109,13 @@ const TestDemo = () => {
         }
         getResult()
     }
-    // const handleVanLai = () => {
-    //     setAction('Test đăng kí khám bệnh cho nhiều bệnh nhân vãn lai')
-    //     setResult()
-    //     const list = [
-    //         {
-    //             fullName: 'Nguyễn Văn Nhị',
-    //             sdt: '0888289289',
-    //             status: 0,
-    //             statusSpecial: 0,
-    //             timeBooking: '',
-    //             dentistName: '',
-    //             dentistPhone: '',
-    //             room: '',
-    //             dentalCareExamReason: 'khám bệnh',
-    //             color: 'b'
 
-    //         },
-    //         {
-    //             fullName: 'Nguyễn Thị Hai',
-    //             sdt: '0888689689',
-    //             status: 0,
-    //             statusSpecial: 0,
-    //             timeBooking: '',
-    //             dentistName: '',
-    //             dentistPhone: '',
-    //             room: '',
-    //             dentalCareExamReason: 'khám bệnh',
-    //             color: 'b'
-    //         },
-    //         {
-    //             fullName: 'Nguyễn Văn Ba',
-    //             sdt: '0888589589',
-    //             status: 0,
-    //             statusSpecial: 0,
-    //             timeBooking: '',
-    //             dentistName: '',
-    //             dentistPhone: '',
-    //             room: '',
-    //             dentalCareExamReason: 'khám bệnh',
-    //             color: 'b'
-    //         },
-    //         {
-    //             fullName: 'Nguyễn Văn Tam',
-    //             sdt: '0888389389',
-    //             status: 0,
-    //             statusSpecial: 0,
-    //             timeBooking: '',
-    //             dentistName: '',
-    //             dentistPhone: '',
-    //             room: '',
-    //             dentalCareExamReason: 'khám bệnh',
-    //             color: 'b'
-    //         },
-    //     ]
-    //     setLoading(true)
-    //     list.forEach((item) => {
-    //         const dbRef1 = ref(db)
-    //         const newUser = push(dbRef1)
-    //         set(newUser, item)
-    //     })
-
-    //     const handler = setTimeout(() =>
-    //         setLoading(false),
-    //         1000)
-    //     setResult('Đăng kí khám bệnh cho 10 bệnh nhân vãn lai thành công')
-    // }
     const enableCheck = async () => {
         try {
             setLoading(true)
             setResult()
             setResultSDT()
+            setAction('')
             const response = await axiosPublic.post(ENABLE_BOOKING)
             setResult(`Đã enable check in`)
             setResultSDT()
@@ -193,8 +132,28 @@ const TestDemo = () => {
             setLoading(true)
             setResult()
             setResultSDT()
+            setAction('')
             const response = await axiosPublic.post(DISABLE_BOOKING)
             setResult(`Đã set check in to normal`)
+            setResultSDT()
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            console.log(error);
+            console.log(error.response.data.message);
+            setResult(error.response.data.message)
+        }
+    }
+    const enableNotify = async () => {
+        try {
+            setLoading(true)
+            setResult()
+            setResultSDT()
+            setAction('')
+            const response = await axiosPublic.post(ENABLE_NOTIFY, {
+                "date": dayjs(ngayNotify).format('YYYY-MM-DD')
+            })
+            setResult(`Đã enable notify`)
             setResultSDT()
             setLoading(false)
         } catch (error) {
@@ -337,6 +296,45 @@ const TestDemo = () => {
                                 disableElevation
                                 sx={{ marginBottom: '15px', marginTop: '15px' }}
                             >Set check in to normal</Button>
+                        </Box>
+                        <hr style={{
+                            backgroundColor: '#000', border: ' 0.005px solid'
+                        }} />
+
+                        < Box sx={{
+                            //  backgroundColor: '#d3d3d6',
+                            padding: '5px 5px'
+                        }}>
+
+                            <h4>Enable notify</h4>
+                            <DatePicker
+                                // label='Ngày'
+                                value={ngayNotify}
+                                onChange={
+                                    (newValue) => {
+                                        setNgayNotify(newValue)
+                                    }
+                                }
+                                inputFormat="DD/MM/YYYY"
+                                placeholder="DD/MM/YYYY"
+                                // minDate={dayjs().add(1, 'day').format('YYYY-MM-DD')}
+                                renderInput={(params) =>
+                                    <TextField {...params}
+                                        variant='standard'
+                                        name='ngayNotify'
+                                        id='ngayNotify'
+                                    />
+
+                                }
+                            />
+                            <br />
+                            <Button
+                                size='small'
+                                variant='contained'
+                                onClick={enableNotify}
+                                disableElevation
+                                sx={{ marginBottom: '15px', marginTop: '15px' }}
+                            >Enable notify</Button>
                         </Box>
                     </Box>
                 </Grid>

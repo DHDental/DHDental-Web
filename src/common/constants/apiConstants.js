@@ -3,7 +3,7 @@ export const BOOKING_GETALLBOOKINGSCHEDULE = '/booking/getAllBookingSchedule'
 export const BOOKING_CHECKIN = '/booking/checkInOrCancel'
 export const BOOKING_SEARCH_BOOKING_SCHEDULE = '/booking/searchBookingSchedule'
 export const LOGIN = '/auth/login'
-export const DANGKIKHAMVANLAI = '/user/createUser'
+export const DANGKIKHAMVANLAI = '/booking/createUser'
 export const GET_USER_INFO = '/user/getUserInfo'
 export const SEARCH_SERVICE = '/service/searchServices'
 export const LIST_SERVICE = '/service/getAllServices'
@@ -23,9 +23,11 @@ export const CHECK_PAYMENT_OR_NOT = '/booking/checkPaymentOrNot'
 export const LOGOUT = '/user/logoutAccount'
 
 export const GET_PATIENT_PAYMENT = '/bill/getListPatientNotPayment'
+
 export const TEST_BOOKING = '/script/testBookingOnlineAndOffline'
 export const ENABLE_BOOKING = '/script/enableCheckInEveryTime'
 export const DISABLE_BOOKING = '/script/disableCheckInEveryTime'
+export const ENABLE_NOTIFY = 'script/remindExaminationTest'
 
 export const CHECK_DANG_KY = '/booking/checkCreateBookingByStaffForPatient'
 

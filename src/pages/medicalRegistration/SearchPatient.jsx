@@ -141,8 +141,8 @@ const SearchPatient = ({ reload, setReload }) => {
                 status: 0,
                 statusSpecial: 0,
                 timeBooking: dayjs().format('hh:mm A'),
-                dentistName: '',
-                dentistPhone: '',
+                dentistName: response?.data?.dentistName,
+                dentistPhone: response?.data?.dentistPhone,
                 room: '',
                 dentalCareExamReason: currentPatientReason,
                 color: color
