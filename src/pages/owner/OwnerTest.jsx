@@ -300,7 +300,7 @@ const OwnerTest = () => {
                         type="submit"
                         sx={{ height: "35px" }}
                       >
-                        {isAddNew === true ? "Tạo Thuốc" : "Cập Nhật Thuốc"}
+                        {isAddNew === true ? "Tạo dịch vụ" : "Cập nhật dịch vụ"}
                       </Button>
                     </Grid>
                   </Grid>
@@ -353,7 +353,7 @@ const OwnerTest = () => {
                 setvalues(initialValues);
               }}
             >
-              Thêm nhân viên
+              Thêm dịch vụ
             </Button>
           </Grid>
           <Grid item xs={1}>
