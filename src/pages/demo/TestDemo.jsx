@@ -102,8 +102,8 @@ const TestDemo = () => {
                             status: 0,
                             statusSpecial: 0,
                             timeBooking: dayjs().format('hh:mm A'),
-                            dentistName: '',
-                            dentistPhone: '',
+                            dentistName: item?.dentistName,
+                            dentistPhone: item?.dentistName == 'Trần Thị Hà My' ? '0888974974' : '0192837465',
                             room: '',
                             dentalCareExamReason: 'khám bệnh',
                             color: 'b'

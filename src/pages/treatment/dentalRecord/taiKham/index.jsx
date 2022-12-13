@@ -18,12 +18,23 @@ import { axiosPrivate } from '../../../../api/axiosInstance';
 import { CREATE_RECORD } from '../../../../common/constants/apiConstants';
 import RelatedHistory from './RelatedHistory';
 import dayjs from 'dayjs';
+import jwtDecode from 'jwt-decode';
 
 const db = StartFirebase()
 
 const Record = ({ bill }) => {
     const navigate = useNavigate();
     const param = useParams()
+    const loginInfo = JSON.parse(localStorage.getItem('loginInfo'))
+    let userDentist
+    if (loginInfo != undefined) {
+        try {
+            userDentist = jwtDecode(loginInfo?.token)
+        } catch (error) {
+            userDentist = ''
+        }
+
+    }
     // console.log('record', bill);
     const location = useLocation()
     const [motaList, setMotaList] = useState([])
@@ -178,7 +189,8 @@ const Record = ({ bill }) => {
                         reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
                         recordDesc: motaList,
                         prescription: newThuocList,
-                        billDetailList: billDetailList
+                        billDetailList: billDetailList,
+                        dentistName: userDentist != '' ? userDentist?.fullName : userDentist
                     }
                     console.log(request);
                     const response = await axiosPrivate.post(CREATE_RECORD, {
@@ -187,7 +199,8 @@ const Record = ({ bill }) => {
                         reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
                         recordDesc: motaList,
                         prescription: newThuocList,
-                        billDetailList: billDetailList
+                        billDetailList: billDetailList,
+                        dentistName: userDentist != '' ? userDentist?.fullName : userDentist
                     })
                     // update(ref(db, location?.state?.patient?.key), {
                     //     status: 11,
@@ -215,7 +228,8 @@ const Record = ({ bill }) => {
                     reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
                     recordDesc: motaList,
                     prescription: newThuocList,
-                    billDetailList: billDetailList
+                    billDetailList: billDetailList,
+                    dentistName: userDentist != '' ? userDentist?.fullName : userDentist
                 }
                 console.log(request);
                 const response = await axiosPrivate.post(CREATE_RECORD, {
@@ -224,7 +238,8 @@ const Record = ({ bill }) => {
                     reExamination: ngayTaiKham == null ? '' : formatYearMonthDate(ngayTaiKham),
                     recordDesc: motaList,
                     prescription: newThuocList,
-                    billDetailList: billDetailList
+                    billDetailList: billDetailList,
+                    dentistName: userDentist != '' ? userDentist?.fullName : userDentist
                 })
                 // update(ref(db, location?.state?.patient?.key), {
                 //     status: 11,
