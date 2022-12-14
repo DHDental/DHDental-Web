@@ -29,6 +29,8 @@ export const ENABLE_BOOKING = '/script/enableCheckInEveryTime'
 export const DISABLE_BOOKING = '/script/disableCheckInEveryTime'
 export const ENABLE_NOTIFY = 'script/remindExaminationTest'
 export const CHECK_IN_CANCEL_SCRIPT = 'script/testCheckInAndCancel'
+export const RECORD_SCRIPT = '/script/createBillWithRecordTest'
+export const BILL_SCRIPT = '/script/paidOrCancelBillTest'
 
 export const CHECK_DANG_KY = '/booking/checkCreateBookingByStaffForPatient'
 
