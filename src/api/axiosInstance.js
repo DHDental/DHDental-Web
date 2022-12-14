@@ -26,7 +26,7 @@ axiosPrivate.interceptors.request.use(async req => {
     } else { req.headers.Authorization = `Bearer ${loginInfo?.token}` }
     const user = jwtDecode(loginInfo.token)
     const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1
-    console.log('isExpired:', isExpired);
+    // console.log('isExpired:', isExpired);
     // console.log('jwtToken:', req.headers.Authorization);
     if (!isExpired) return req
 

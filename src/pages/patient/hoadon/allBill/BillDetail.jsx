@@ -25,7 +25,10 @@ const BillDetail = ({ item, setReload, reload,
                 >
                     <CardContent>
                         <Grid container direction='column' spacing={2}>
-
+                            <Grid container item direction='row' spacing={1}>
+                                <Grid item sx={{ fontWeight: '500' }}>Mã hóa đơn:</Grid>
+                                <Grid item>{item?.billId}</Grid>
+                            </Grid>
                             <Grid container item direction='row' spacing={2}>
                                 <Grid item sx={{ fontWeight: '500' }}>Ngày tạo hóa đơn:</Grid>
                                 <Grid item>{formatDateMonthYear2(item?.billDateCreate)}</Grid>

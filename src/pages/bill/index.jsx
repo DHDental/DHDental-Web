@@ -61,8 +61,8 @@ const Bill = () => {
 
         }
     }, [dataFirebasePatient])
-    console.log(dataFirebasePatient[0]?.data?.record?.serviceHoaDon);
-    console.log(dataFirebasePatient);
+    // console.log(dataFirebasePatient[0]?.data?.record?.serviceHoaDon);
+    // console.log(dataFirebasePatient);
     return (
         // <button onClick={handleThanhToan}>thanh toán</button>
         <>
