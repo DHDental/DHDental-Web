@@ -178,23 +178,42 @@ const TestDemo = () => {
     }
     const checkIn = async () => {
         console.log(soLuongCheckIn, soLuongCancel, dayjs(ngayCheckIn).format('YYYY-MM-DD'));
-        // try {
-        //     setLoading(true)
-        //     setResult()
-        //     setResultSDT()
-        //     setAction('')
-        //     const response = await axiosPublic.post(CHECK_IN_CANCEL_SCRIPT, {
-        //         // "date": dayjs(ngayNotify).format('YYYY-MM-DD')
-        //     })
-        //     setResult(``)
-        //     setResultSDT()
-        //     setLoading(false)
-        // } catch (error) {
-        //     setLoading(false)
-        //     console.log(error);
-        //     console.log(error.response.data.message);
-        //     setResult(error.response.data.message)
-        // }
+        try {
+            setLoading(true)
+            setResult()
+            setResultSDT()
+            setAction('')
+            const response = await axiosPublic.post(CHECK_IN_CANCEL_SCRIPT, {
+                "checkInCount": soLuongCheckIn,
+                "cancelCount": soLuongCancel,
+                "date": dayjs(ngayCheckIn).format('YYYY-MM-DD')
+            })
+            response.data.checkInList.forEach((user) => {
+                const dbRef = ref(db)
+                const newUser = push(dbRef)
+                set(newUser, {
+                    fullName: user.fullName,
+                    sdt: user.phoneNumber,
+                    status: 0,
+                    statusSpecial: 1,
+                    timeBooking: user.slotBooking,
+                    dentistName: user.dentistName,
+                    dentistPhone: user.dentistPhone,
+                    room: '',
+                    dentalCareExamReason: user.reason,
+                    color: 'b'
+                })
+            })
+
+            setResult(`Check in / Cancel thành công`)
+            setResultSDT()
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            console.log(error);
+            console.log(error.response.data.message);
+            setResult(error.response.data.message)
+        }
     }
     const handleRecord = () => {
         let list = []
