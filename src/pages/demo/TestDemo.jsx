@@ -227,7 +227,8 @@ const TestDemo = () => {
                 }
             })
             list?.forEach((item, index) => {
-                if (!item?.data?.record && index != (list?.length - 1)) {
+                // if (!item?.data?.record && index != (list?.length - 1)) {
+                if (!item?.data?.record && item?.data?.status != '1') {
                     phoneList = [...phoneList, item?.data?.sdt]
                 }
             })
@@ -241,7 +242,7 @@ const TestDemo = () => {
             })
 
             list?.forEach((item, index) => {
-                if (!item?.data?.record && index != (list?.length - 1)) {
+                if (!item?.data?.record && item?.data?.status != '1') {
                     response.data.forEach((itemS) => {
                         if (item?.data?.sdt == itemS.phoneNumber) {
                             update(ref(db, item?.key), {
