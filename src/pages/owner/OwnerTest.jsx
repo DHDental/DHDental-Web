@@ -34,10 +34,6 @@ import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 
-// const CustomTablePagination = styled.TablePagination`
-//   display: inline;
-// `
-
 const service = [
   // {
   //   maDichVu: "123456",
