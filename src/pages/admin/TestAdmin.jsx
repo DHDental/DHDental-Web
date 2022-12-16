@@ -36,11 +36,17 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { axiosPrivate } from "../../api/axiosInstance";
-import { BAN_OR_ACTIVE_ACCOUNT_ADMIN, CRUD_ACCOUNT_ADMIN, GET_ALL_USER_ADMIN } from "../../common/constants/apiConstants";
+import {
+  BAN_OR_ACTIVE_ACCOUNT_ADMIN,
+  CRUD_ACCOUNT_ADMIN,
+  GET_ALL_USER_ADMIN,
+} from "../../common/constants/apiConstants";
 import { formatYearMonthDate } from "../../common/utils/formatDate";
-import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
-import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
+import RemoveCircleRoundedIcon from "@mui/icons-material/RemoveCircleRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
 const user = [];
 
@@ -82,7 +88,7 @@ const TestAdmin = () => {
   const [searchedVal, setSearchedVal] = useState("");
 
   useEffect(() => {
-    fetchData()
+    fetchData();
   }, []);
 
   // useEffect(() => {
@@ -449,19 +455,53 @@ const TestAdmin = () => {
             <h2>Bảng Tài Khoản Nhân Sự</h2>
           </Grid>
           <Grid item xs={7}>
-          <TextField
+            <TextField
               sx={{ width: "100%" }}
               label="Tìm Kiếm"
               variant="outlined"
               onChange={(e) => setSearchedVal(e.target.value)}
             />
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={3}>
             <IconButton color="info" onClick={() => fetchData()}>
               <RefreshIcon />
             </IconButton>
+            <IconButton
+              size="large"
+              disabled={isDisabled}
+              color="warning"
+              onClick={() => {
+                setIsDisabled(true);
+
+                setIsAddNew(true);
+                setIsUpdateRow(false);
+
+                setvalues(initialValues);
+                setSelectDob(null);
+                setSelectRole("");
+              }}
+            >
+              <AddCircleOutlineOutlinedIcon />
+            </IconButton>
+            <IconButton
+              size="large"
+              disabled={!isDisabled}
+              color="error"
+              onClick={() => {
+                setvalues(initialValues);
+                setSelectDob(null);
+                setSelectRole("");
+
+                setIsAddNew(false);
+                setIsUpdateRow(false);
+
+                setIsDisabled(false);
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
           </Grid>
-          <Grid item xs={2}>
+          {/* <Grid item xs={2}>
             <Button
               variant="contained"
               sx={{ width: "100%", height: "35px" }}
@@ -479,8 +519,8 @@ const TestAdmin = () => {
             >
               Thêm nhân viên
             </Button>
-          </Grid>
-          <Grid item xs={1}>
+          </Grid> */}
+          {/* <Grid item xs={1}>
             <Button
               variant="contained"
               sx={{ width: "50%", height: "35px" }}
@@ -498,7 +538,7 @@ const TestAdmin = () => {
             >
               Hủy
             </Button>
-          </Grid>
+          </Grid> */}
         </Grid>
         <TableContainer>
           <Table aria-label="simple table">
@@ -542,16 +582,16 @@ const TestAdmin = () => {
                     Không Có Dữ Liệu
                   </TableCell>
                 </TableRow>
-              ) :(
+              ) : (
                 staff
-                .filter(
-                  (row) =>
-                    !searchedVal.length ||
-                    `${row.lastName} ${row.middleName} ${row.firstName} ${row.userName} ${row.address} ${row.status}`
-                      .toString()
-                      .toLowerCase()
-                      .includes(searchedVal.toString().toLowerCase())
-                )
+                  .filter(
+                    (row) =>
+                      !searchedVal.length ||
+                      `${row.lastName} ${row.middleName} ${row.firstName} ${row.userName} ${row.address} ${row.status}`
+                        .toString()
+                        .toLowerCase()
+                        .includes(searchedVal.toString().toLowerCase())
+                  )
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <TableRow key={row.userName}>
@@ -566,7 +606,9 @@ const TestAdmin = () => {
                       <TableCell align="right">
                         {moment(row.dateOfBirth).format("DD/MM/YYYY")}
                       </TableCell>
-                      <TableCell align="right">{row.roleName === "Dentist"? "Nha sĩ" : "Nhân viên"}</TableCell>
+                      <TableCell align="right">
+                        {row.roleName === "Dentist" ? "Nha sĩ" : "Nhân viên"}
+                      </TableCell>
                       <TableCell align="center">
                         {row.status === "Active" ? (
                           <Chip label="Active" color="success" />
@@ -575,7 +617,6 @@ const TestAdmin = () => {
                         )}
                       </TableCell>
                       <TableCell align="center">
-                      
                         {/* <Button
                           variant="contained"
                           sx={{ width: "100%", height: "35px" }}
@@ -587,24 +628,32 @@ const TestAdmin = () => {
                         >
                           Cập Nhật
                         </Button> */}
-                        <IconButton color= "secondary" disabled={isDisabled} onClick={() => {
+                        <IconButton
+                          color="info"
+                          disabled={isDisabled}
+                          onClick={() => {
                             setIsDisabled(true);
                             handleUpdate(row);
-                          }}>
-                            <EditRoundedIcon/>
-              
-            </IconButton>
+                          }}
+                        >
+                          <EditRoundedIcon />
+                        </IconButton>
                       </TableCell>
                       <TableCell align="center">
-                      <IconButton color= {row.status === "Active"? "error": "success"}  disabled={isDisabled} onClick={() => {
+                        <IconButton
+                          color={row.status === "Active" ? "error" : "success"}
+                          disabled={isDisabled}
+                          onClick={() => {
                             setRowSelectStaff(row);
                             handleClickOpenDialog();
-                          }}>
-                            {row.status === "Active"
-                            ? <RemoveCircleOutlineRoundedIcon />
-                            : <RemoveCircleRoundedIcon/>}
-              
-            </IconButton>
+                          }}
+                        >
+                          {row.status === "Active" ? (
+                            <RemoveCircleOutlineRoundedIcon />
+                          ) : (
+                            <RemoveCircleRoundedIcon />
+                          )}
+                        </IconButton>
                         {/* <Button
                           variant="contained"
                           sx={{ width: "180px", height: "35px" }}
@@ -629,13 +678,13 @@ const TestAdmin = () => {
                   <></>
                 ) : (
                   <TablePagination
-                  rowsPerPageOptions={[
-                    5,
-                    10,
-                    25,
-                    100,
-                    { label: "Tất cả", value: -1 },
-                  ]}
+                    rowsPerPageOptions={[
+                      5,
+                      10,
+                      25,
+                      100,
+                      { label: "Tất cả", value: -1 },
+                    ]}
                     count={staff.length}
                     rowsPerPage={rowsPerPage}
                     page={page}

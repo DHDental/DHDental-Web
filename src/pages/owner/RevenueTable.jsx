@@ -25,6 +25,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { formatYearMonthDate } from "../../common/utils/formatDate";
 import { axiosPrivate } from "../../api/axiosInstance";
 import { GET_ALL_TURN_OVER_RANGE_TIME } from "../../common/constants/apiConstants";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 const revenue = [
   // {
@@ -50,9 +51,7 @@ const RevenueTable = () => {
   const date = `${current.getFullYear()}-${
     current.getMonth() + 1
   }-${current.getDate()}`;
-  const datePast = formatYearMonthDate(
-    dayjs(current).add(-1, "days")
-  );
+  const datePast = formatYearMonthDate(dayjs(current).add(-1, "days"));
 
   const [selectDateStart, setSelectDateStart] = useState(datePast);
   const [selectDateEnd, setSelectDateEnd] = useState(date);
@@ -163,7 +162,15 @@ const RevenueTable = () => {
             />
           </Grid>
           <Grid item xs={3}>
-            <Button
+            <IconButton
+              size="large"
+              onClick={() => {
+                handleDateSearch();
+              }}
+            >
+              <SearchRoundedIcon />
+            </IconButton>
+            {/* <Button
               variant="contained"
               sx={{ width: "100%", height: "35px" }}
               onClick={() => {
@@ -171,7 +178,7 @@ const RevenueTable = () => {
               }}
             >
               Tìm Kiếm Theo Ngày
-            </Button>
+            </Button> */}
           </Grid>
         </Grid>
 
@@ -209,7 +216,7 @@ const RevenueTable = () => {
                     Không Có Dữ Liệu
                   </TableCell>
                 </TableRow>
-              ) :(
+              ) : (
                 revenueData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
@@ -231,9 +238,7 @@ const RevenueTable = () => {
                   <></>
                 ) : (
                   <TablePagination
-                    rowsPerPageOptions={[
-                      4
-                    ]}
+                    rowsPerPageOptions={[4]}
                     count={revenueData.length}
                     rowsPerPage={rowsPerPage}
                     page={page}

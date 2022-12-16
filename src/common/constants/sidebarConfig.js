@@ -8,6 +8,12 @@ import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import BlurOnIcon from '@mui/icons-material/BlurOn';
 import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import GroupIcon from '@mui/icons-material/Group';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
 
 import {
     DENTIST_DS_KHAM, KHAM_BENH, STAFF_BENHNHAN, STAFF_DANG_KI_KHAM, STAFF_DSDATKHAM,
@@ -30,16 +36,16 @@ export const sideBarDentistConfig = [
 ]
 
 export const sideBarAdminConfig = [
-    { name: "Quản Lý Nhân Sự", icon: <AppsOutageIcon />, path: ADMIN_TEST },
-    { name: "Quản Lý Người Dùng", icon: <AppsOutageIcon />, path:  ADMIN_USER},
+    { name: "Quản Lý Nhân Sự", icon: <ManageAccountsIcon />, path: ADMIN_TEST },
+    { name: "Quản Lý Người Dùng", icon: <ManageAccountsIcon />, path:  ADMIN_USER},
 ]
 
 export const sideBarOwnerConfig = [
-    { name: "Quản Lý Dịch Vụ", icon: <AppsOutageIcon />, path: OWNER_TEST },
-    { name: "Quản Lý Doanh Thu", icon: <AppsOutageIcon />, path: OWNER_REVENUE },
-    { name: "Quản Lý Lượng Người Tới Khám", icon: <AppsOutageIcon />, path: OWNER_CHECK_UP },
-    { name: "Quản Lý Lượng Người Dùng Dịch Vụ", icon: <AppsOutageIcon />, path: OWNER_USER_SERVICE },
-    { name: "Quản Lý Lượng Người Hủy Dịch Vụ", icon: <AppsOutageIcon />, path: OWNER_USER_CANCEL_SERVICE },
+    { name: "Quản Lý Dịch Vụ", icon: <SupportAgentIcon />, path: OWNER_TEST },
+    { name: "Quản Lý Doanh Thu", icon: <PointOfSaleIcon />, path: OWNER_REVENUE },
+    { name: "Quản Lý Lượng Người Tới Khám", icon: <GroupIcon />, path: OWNER_CHECK_UP },
+    { name: "Quản Lý Lượng Người Dùng Dịch Vụ", icon: <GroupAddIcon />, path: OWNER_USER_SERVICE },
+    { name: "Quản Lý Lượng Người Hủy Dịch Vụ", icon: <GroupRemoveIcon />, path: OWNER_USER_CANCEL_SERVICE },
 ]
 
 export const sideBarDemoConfig = [
