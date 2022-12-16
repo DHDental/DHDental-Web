@@ -188,16 +188,16 @@ const Appointment = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  // onKeyDown={(event) => event.preventDefault()}
-                  // sx={{
-                  //     "& .MuiInputBase-root": {
-                  //         pointerEvents: "none",
-                  //     },
+                  onKeyDown={(event) => event.preventDefault()}
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      pointerEvents: "none",
+                    },
 
-                  //     "& .MuiInputBase-root button": {
-                  //         pointerEvents: "all",
-                  //     },
-                  // }}
+                    "& .MuiInputBase-root button": {
+                      pointerEvents: "all",
+                    },
+                  }}
                 />
               )}
             />
@@ -264,9 +264,9 @@ const Appointment = () => {
               ) : null}
               {(rowsPerPage > 0
                 ? userBookingList.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
                 : userBookingList
               ).map((user, i) => {
                 let gio = handleSlot(user?.slotBooking);
@@ -341,8 +341,7 @@ const Appointment = () => {
                   showFirstButton
                   showLastButton
                   labelDisplayedRows={({ from, to, count }) =>
-                    `${from}–${to} của ${
-                      count !== -1 ? count : `nhiều hơn ${to}`
+                    `${from}–${to} của ${count !== -1 ? count : `nhiều hơn ${to}`
                     }`
                   }
                   onPageChange={handleChangePage}
