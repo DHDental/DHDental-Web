@@ -6,7 +6,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { formatYearMonthDate } from '../../common/utils/formatDate';
 import { axiosPrivate } from '../../api/axiosInstance';
 import { COUNT_NUMBER_VISITED_BY_RANGE_TIME } from '../../common/constants/apiConstants';
-
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 const checkUp = [
     // {
@@ -104,8 +104,8 @@ const CheckUpTable = () => {
           alignItems="center"
           spacing={2}
         >
-          {/* <Grid item xs={1}></Grid> */}
-          <Grid item xs={5}>
+          <Grid item xs={1}></Grid>
+          <Grid item xs={6}>
             <h2>Bảng số lượng người đã khám theo ngày</h2>
           </Grid>
           <Grid item xs={6}>
@@ -147,8 +147,16 @@ const CheckUpTable = () => {
               )}
             />
           </Grid>
-          <Grid item xs={3}>
-            <Button
+          <Grid item xs={1}>
+          <IconButton
+              size="large"
+              onClick={() => {
+                handleDateSearch();
+              }}
+            >
+              <SearchRoundedIcon />
+            </IconButton>
+            {/* <Button
               variant="contained"
               sx={{ width: "100%", height: "35px" }}
               onClick={() => {
@@ -156,7 +164,7 @@ const CheckUpTable = () => {
               }}
             >
               Tìm Kiếm Theo Ngày
-            </Button>
+            </Button> */}
             </Grid>
         </Grid>
 

@@ -23,6 +23,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { formatYearMonthDate } from "../../common/utils/formatDate";
 import { axiosPrivate } from "../../api/axiosInstance";
 import { GET_USER_CANCEL_SERVICE } from "../../common/constants/apiConstants";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 const userCancelService = [
   // {
@@ -139,7 +140,15 @@ const UserCancelServiceTable = () => {
             />
           </Grid>
           <Grid item xs={2}>
-            <Button
+          <IconButton
+              size="large"
+              onClick={() => {
+                handleDateSearch();
+              }}
+            >
+              <SearchRoundedIcon />
+            </IconButton>
+            {/* <Button
               variant="contained"
               sx={{ width: "100%", height: "35px" }}
               onClick={() => {
@@ -147,7 +156,7 @@ const UserCancelServiceTable = () => {
               }}
             >
               Tìm Kiếm Theo Ngày
-            </Button>
+            </Button> */}
           </Grid>
         </Grid>
 
