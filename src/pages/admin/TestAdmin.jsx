@@ -38,6 +38,9 @@ import dayjs from "dayjs";
 import { axiosPrivate } from "../../api/axiosInstance";
 import { BAN_OR_ACTIVE_ACCOUNT_ADMIN, CRUD_ACCOUNT_ADMIN, GET_ALL_USER_ADMIN } from "../../common/constants/apiConstants";
 import { formatYearMonthDate } from "../../common/utils/formatDate";
+import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
+import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 
 const user = [];
 
@@ -572,7 +575,8 @@ const TestAdmin = () => {
                         )}
                       </TableCell>
                       <TableCell align="center">
-                        <Button
+                      
+                        {/* <Button
                           variant="contained"
                           sx={{ width: "100%", height: "35px" }}
                           disabled={isDisabled}
@@ -582,10 +586,26 @@ const TestAdmin = () => {
                           }}
                         >
                           Cập Nhật
-                        </Button>
+                        </Button> */}
+                        <IconButton color= "secondary" disabled={isDisabled} onClick={() => {
+                            setIsDisabled(true);
+                            handleUpdate(row);
+                          }}>
+                            <EditRoundedIcon/>
+              
+            </IconButton>
                       </TableCell>
                       <TableCell align="center">
-                        <Button
+                      <IconButton color= {row.status === "Active"? "error": "success"}  disabled={isDisabled} onClick={() => {
+                            setRowSelectStaff(row);
+                            handleClickOpenDialog();
+                          }}>
+                            {row.status === "Active"
+                            ? <RemoveCircleOutlineRoundedIcon />
+                            : <RemoveCircleRoundedIcon/>}
+              
+            </IconButton>
+                        {/* <Button
                           variant="contained"
                           sx={{ width: "180px", height: "35px" }}
                           disabled={isDisabled}
@@ -597,7 +617,7 @@ const TestAdmin = () => {
                           {row.status === "Active"
                             ? "Khóa Tài Khoản"
                             : "Gỡ Khóa Tài Khoản"}
-                        </Button>
+                        </Button> */}
                       </TableCell>
                     </TableRow>
                   ))
