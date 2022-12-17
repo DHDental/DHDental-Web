@@ -41,15 +41,25 @@ const BillDetail = ({ item, dataFirebasePatient, setReload, reload,
                 "billDetailId": currentService?.billDetailId
             })
             if (dataFirebasePatient.length !== 0) {
-                dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((service, i) => {
+                const lisSe = dataFirebasePatient[0]?.data?.record?.serviceHoaDon
+                // console.log(lisSe);
+                lisSe?.forEach((service, i) => {
                     if (service?.billDetailID == currentService?.billDetailId) {
-                        console.log(i);
-                        // update(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`), {
-                        //     statusThanhToan: 'cancel'
-                        // })
-                        remove(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`))
+                        lisSe.splice(i, 1);
+                        update(ref(db, `${dataFirebasePatient[0]?.key}/record`), {
+                            serviceHoaDon: lisSe
+                        })
                     }
-                });
+                })
+                // dataFirebasePatient[0]?.data?.record?.serviceHoaDon?.forEach((service, i) => {
+                //     if (service?.billDetailID == currentService?.billDetailId) {
+                //         console.log(i);
+                //         // update(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`), {
+                //         //     statusThanhToan: 'cancel'
+                //         // })
+                //         remove(ref(db, `${dataFirebasePatient[0]?.key}/record/serviceHoaDon/${i}`))
+                //     }
+                // });
             }
 
             setTextSnackbar('Hủy bỏ thành công')
