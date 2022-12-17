@@ -32,7 +32,8 @@ import {
 } from "@mui/material";
 import TablePagination from "@mui/material/TablePagination";
 import RefreshIcon from "@mui/icons-material/Refresh";
-
+import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
+import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 const user = [];
 
 const EndUserTable = () => {
@@ -243,7 +244,7 @@ const EndUserTable = () => {
                         )}
                       </TableCell>
                       <TableCell align="center">
-                        <Button
+                        {/* <Button
                           variant="contained"
                           sx={{ width: "200px", height: "35px" }}
                           onClick={() => {
@@ -254,7 +255,16 @@ const EndUserTable = () => {
                           {row.status === "Active"
                             ? "Khóa Tài Khoản"
                             : "Gỡ Khóa Tài Khoản"}
-                        </Button>
+                        </Button> */}
+                        <IconButton color= {row.status === "Active"? "error": "success"} onClick={() => {
+                            setRowSelectUser(row);
+                            handleClickOpenDialog();
+                          }}>
+                            {row.status === "Active"
+                            ? <RemoveCircleOutlineRoundedIcon />
+                            : <RemoveCircleRoundedIcon/>}
+              
+            </IconButton>
                       </TableCell>
                     </TableRow>
                   ))

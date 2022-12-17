@@ -29,10 +29,10 @@ import TablePagination from "@mui/material/TablePagination";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { CREATE_SERVICE, DELETE_SERVICE, GET_ALL_SERVICES, UPDATE_SERVICE } from "../../common/constants/apiConstants";
 import { axiosPrivate } from "../../api/axiosInstance";
-
-// const CustomTablePagination = styled.TablePagination`
-//   display: inline;
-// `
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
 const service = [
   // {
@@ -326,7 +326,7 @@ const OwnerTest = () => {
           <Grid item xs={6}>
             <h2>Bảng Dịch Vụ</h2>
           </Grid>
-          <Grid item xs={7}>
+          <Grid item xs={8}>
           <TextField
               sx={{ width: "100%" }}
               label="Tìm Kiếm"
@@ -334,16 +334,14 @@ const OwnerTest = () => {
               onChange={(e) => setSearchedVal(e.target.value)}
             />
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={3}>
             <IconButton color="info" onClick={() => fetchData()}>
               <RefreshIcon />
             </IconButton>
-          </Grid>
-          <Grid item xs={2}>
-            <Button
-              variant="contained"
-              sx={{ width: "100%", height: "35px" }}
+            <IconButton
+              size="large"
               disabled={isDisabled}
+              color="warning"
               onClick={() => {
                 setIsDisabled(true);
 
@@ -353,14 +351,12 @@ const OwnerTest = () => {
                 setvalues(initialValues);
               }}
             >
-              Thêm dịch vụ
-            </Button>
-          </Grid>
-          <Grid item xs={1}>
-            <Button
-              variant="contained"
-              sx={{ width: "50%", height: "35px" }}
+              <AddCircleOutlineOutlinedIcon />
+            </IconButton>
+            <IconButton
+              size="large"
               disabled={!isDisabled}
+              color="error"
               onClick={() => {
                 setvalues(initialValues);
 
@@ -370,8 +366,8 @@ const OwnerTest = () => {
                 setIsDisabled(false);
               }}
             >
-              Hủy
-            </Button>
+              <CloseIcon />
+            </IconButton>
           </Grid>
         </Grid>
 
@@ -434,7 +430,17 @@ const OwnerTest = () => {
                         {formatNumber(row.expectedPrice)} VND
                       </TableCell>
                       <TableCell align="center">
-                      <Button
+                      <IconButton
+                          color="info"
+                          disabled={isDisabled}
+                          onClick={() => {
+                            setIsDisabled(true);
+                            handleUpdate(row);
+                          }}
+                        >
+                          <EditRoundedIcon />
+                        </IconButton>
+                      {/* <Button
                         variant="contained"
                         sx={{ width: "150px", height: "35px" }}
                         disabled={isDisabled}
@@ -444,10 +450,21 @@ const OwnerTest = () => {
                         }}
                       >
                         Cập Nhật
-                      </Button>
+                      </Button> */}
                     </TableCell>
                     <TableCell align="center">
-                      <Button
+                    <IconButton
+              size="large"
+              disabled={isDisabled}
+              color="error"
+              onClick={() => {
+                setRowSelectDelete({ ...row, serviceId: row.id });
+                handleClickOpenDialog();
+              }}
+            >
+              <DeleteOutlinedIcon />
+            </IconButton>
+                      {/* <Button
                         variant="contained"
                         sx={{ width: "50px", height: "35px" }}
                         disabled={isDisabled}
@@ -457,7 +474,7 @@ const OwnerTest = () => {
                         }}
                       >
                         Xóa
-                      </Button>
+                      </Button> */}
                     </TableCell>
                     </TableRow>
                   ))
