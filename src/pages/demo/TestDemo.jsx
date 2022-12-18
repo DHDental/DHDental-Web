@@ -337,6 +337,25 @@ const TestDemo = () => {
             setResult('Có lỗi xảy ra, vui lòng thử lại')
         }
     }
+    const ketThucKham = () => {
+        try {
+            setLoading(true)
+            setResult()
+            setResultSDT()
+            setAction('')
+            dataFirebase?.forEach((item) => {
+                remove(ref(db, item?.key))
+            })
+            setResult(`Chạy script Thành công`)
+            setResultSDT()
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            console.log(error);
+            // console.log(error.response.data.message);
+            setResult('Có lỗi xảy ra, vui lòng thử lại')
+        }
+    }
     useEffect(() => {
         let isMounted = true;
         const dbRef = ref(db)
@@ -609,6 +628,23 @@ const TestDemo = () => {
                             >Chạy Script</Button>
                         </Box>
 
+                        <hr style={{
+                            backgroundColor: '#000', border: ' 0.005px solid'
+                        }} />
+
+                        < Box sx={{
+                            //  backgroundColor: '#d3d3d6',
+                            padding: '5px 5px'
+                        }}>
+                            <h4>Chạy script lưu record kết thúc quá trình khám</h4>
+                            <Button
+                                size='small'
+                                variant='contained'
+                                onClick={ketThucKham}
+                                disableElevation
+                                sx={{ marginBottom: '15px', marginTop: '15px' }}
+                            >Chạy script</Button>
+                        </Box>
                         <hr style={{
                             backgroundColor: '#000', border: ' 0.005px solid'
                         }} />
