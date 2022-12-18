@@ -100,7 +100,7 @@ const Navbar = () => {
                     >
                         <Button>
                             <AccountCircleOutlinedIcon />
-                            {roleID == '3' ? 'Nha sĩ' :
+                            {roleID == '3' ? `Nha sĩ ${user?.fullName}` :
                                 roleID == '2' ? 'Nhân viên' :
                                     roleID == '1' ? 'Admin' :
                                         'Chủ nha khoa'
