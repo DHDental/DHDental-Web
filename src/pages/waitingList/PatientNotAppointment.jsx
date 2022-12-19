@@ -16,6 +16,8 @@ const PatientNotAppointment = () => {
     const [name, setName] = useState()
     const [user, setUser] = useState()
 
+    const [an, setAn] = useState(false)
+
     const handleClose = (event, reason) => {
         if (reason && reason === "backdropClick")
             return;
@@ -35,13 +37,17 @@ const PatientNotAppointment = () => {
         const dbRef = ref(db)
         onValue(dbRef, (snapshot) => {
             let records = [];
+            let flag = false;
             snapshot.forEach(childSnapshot => {
                 let keyName = childSnapshot.key;
                 let data = childSnapshot.val();
                 records.push({ "key": keyName, "data": data })
+                if (childSnapshot.val().status == '1' && childSnapshot.val().dentistPhone == dentist?.PhoneNumber) {
+                    flag = true
+                }
             })
             isMounted && setDataPatient(records)
-
+            isMounted && setAn(flag)
         })
         return () => {
             isMounted = false
@@ -90,12 +96,14 @@ const PatientNotAppointment = () => {
                                     </TableCell>
                                     <TableCell>
                                         {item?.data?.color == 'yd' ? null :
-                                            <IconButton onClick={() => {
-                                                setName(item?.data.fullName)
-                                                setUser(item)
-                                                setOpen(true)
-                                            }}>
-                                                <ReplyAllIcon sx={{ color: 'orange' }} />
+                                            <IconButton
+                                                disabled={an}
+                                                onClick={() => {
+                                                    setName(item?.data.fullName)
+                                                    setUser(item)
+                                                    setOpen(true)
+                                                }}>
+                                                <ReplyAllIcon sx={{ color: !an ? 'orange' : '#e0dede' }} />
                                             </IconButton>
                                         }
                                     </TableCell>
