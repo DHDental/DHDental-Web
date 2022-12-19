@@ -14,6 +14,7 @@ import { TaoHoaDonPopUp } from '../TaoHoaDonPopUp';
 import { CustomBackdrop, CustomSnackbar } from '../../../../components';
 import StartFirebase from "../../../../components/firebaseConfig"
 import { DENTIST_DS_KHAM } from '../../../../common/constants/pathConstants';
+import jwtDecode from 'jwt-decode';
 
 const db = StartFirebase()
 const cx = classNames.bind(styles)
@@ -24,6 +25,17 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
     const location = useLocation()
     const param = useParams()
     const navigate = useNavigate();
+
+    const loginInfo = JSON.parse(localStorage.getItem('loginInfo'))
+    let userDentist
+    if (loginInfo != undefined) {
+        try {
+            userDentist = jwtDecode(loginInfo?.token)
+        } catch (error) {
+            userDentist = ''
+        }
+
+    }
 
     const [loadingService, setLoadingService] = useState(false)
     const [allService, setAllService] = useState([])
@@ -232,7 +244,8 @@ const Service = ({ serviceList, setServiceList, serviceHoaDon, setServiceHoaDon,
                 const response = await axiosPrivate.post(TAO_HOADON, {
                     "phoneNumber": param?.id,
                     "recordDesc": dataFirebasePatient[0]?.data?.record?.motaList,
-                    "billDetailIds": serviceRequest
+                    "billDetailIds": serviceRequest,
+                    "dentistName": userDentist != '' ? userDentist?.fullName : userDentist
                 })
 
                 setRecordID(response.data.recordID)
