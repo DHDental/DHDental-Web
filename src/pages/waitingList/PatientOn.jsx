@@ -1,5 +1,5 @@
 import { Card, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import { onValue, ref, remove, update } from 'firebase/database'
+import { onValue, push, ref, remove, set, update } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import jwtDecode from 'jwt-decode';
@@ -26,7 +26,49 @@ const PatientOn = () => {
     setOpen(false);
   };
   const handleYes = () => {
-    remove(ref(db, user.key))
+    // remove(ref(db, user.key))
+    // console.log(user);
+    if (user?.data?.countRemove == undefined) {
+      // console.log(user?.data?.countRemove);
+      const dbRef = ref(db)
+      const newUser = push(dbRef)
+      set(newUser, {
+        fullName: user?.data?.fullName,
+        sdt: user?.data?.sdt,
+        status: 0,
+        statusSpecial: user?.data?.statusSpecial,
+        timeBooking: user.data?.timeBooking,
+        dentistName: user.data?.dentistName,
+        dentistPhone: user.data?.dentistPhone,
+        room: user.data?.room,
+        dentalCareExamReason: user.data?.dentalCareExamReason,
+        color: user.data?.color,
+        countRemove: 1
+      })
+      remove(ref(db, user.key))
+    } else {
+      // console.log(user?.data?.countRemove);
+      if (user?.data?.countRemove >= 1) {
+        remove(ref(db, user.key))
+      } else {
+        const dbRef = ref(db)
+        const newUser = push(dbRef)
+        set(newUser, {
+          fullName: user?.data?.fullName,
+          sdt: user?.data?.sdt,
+          status: 0,
+          statusSpecial: user?.data?.statusSpecial,
+          timeBooking: user.data?.timeBooking,
+          dentistName: user.data?.dentistName,
+          dentistPhone: user.data?.dentistPhone,
+          room: user.data?.room,
+          dentalCareExamReason: user.data?.dentalCareExamReason,
+          color: user.data?.color,
+          countRemove: (user.data?.countRemove + 1)
+        })
+        remove(ref(db, user.key))
+      }
+    }
     setOpen(false);
   }
   useEffect(() => {
