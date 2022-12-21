@@ -4,7 +4,7 @@ import { useState } from "react"
 import { NavLink } from "react-router-dom"
 
 import { axiosPrivate } from "../../api/axiosInstance"
-import { STAFF_BENHNHAN, STAFF_BENHNHAN_ALL_HOADON } from "../../common/constants/pathConstants"
+import { RECORD_HISTORY_STAFF, STAFF_BENHNHAN, STAFF_BENHNHAN_ALL_HOADON } from "../../common/constants/pathConstants"
 import { formatStringtoDate } from "../../common/utils/formatDate"
 
 const FindPatient = () => {
@@ -73,18 +73,19 @@ const FindPatient = () => {
                             <TableCell align="center">Ngày sinh</TableCell>
                             <TableCell align="center">Địa chỉ</TableCell>
                             <TableCell align="center">Hóa đơn</TableCell>
+                            <TableCell align="center">Lịch sử khám</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {(loading) ? (
                             <TableRow>
-                                <TableCell colSpan={5} align='center'><CircularProgress /></TableCell>
+                                <TableCell colSpan={6} align='center'><CircularProgress /></TableCell>
                             </TableRow>
                         ) : null}
                         {
                             (patient.length === 0 && messageNodata !== '') ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} align='center'>{messageNodata}</TableCell>
+                                    <TableCell colSpan={6} align='center'>{messageNodata}</TableCell>
                                 </TableRow>
                             ) : null
                         }
@@ -115,6 +116,20 @@ const FindPatient = () => {
                                                     textDecoration: 'underline',
                                                 }}>
                                                 Xem chi tiết
+                                            </NavLink>
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <NavLink to={`${RECORD_HISTORY_STAFF}/${item?.phoneNumber}`}
+                                                state={{ patient: item }}
+                                                style={{
+                                                    color: 'blue',
+                                                    fontWeight: '500',
+                                                    textDecoration: 'underline',
+                                                }}
+                                            >
+
+                                                Xem chi tiết
+
                                             </NavLink>
                                         </TableCell>
                                     </TableRow>

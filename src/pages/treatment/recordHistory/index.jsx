@@ -121,6 +121,11 @@ const HistoryRecord = () => {
                                             }
                                             </Grid>
                                         </Grid>
+                                        <Grid container item direction='row' spacing={2}>
+                                            <Grid item sx={{ fontWeight: '500' }}>Nha sĩ:</Grid>
+                                            <Grid item>{item?.dentistName}
+                                            </Grid>
+                                        </Grid>
 
                                         <Grid container item direction='column' spacing={1}>
                                             <Grid item sx={{ fontWeight: '500' }}>Mô tả bệnh lí, công tác điều trị:</Grid>

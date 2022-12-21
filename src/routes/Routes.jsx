@@ -75,6 +75,9 @@ export default function Router() {
                         { path: 'hoa-don/:id', element: <Bill /> },
                         { path: 'dang-ki-kham-benh', element: <MedicalRegistration /> },
                         { path: 'danh-sach-thuoc', element: <Medicine /> },
+                        {
+                            path: 'lich-su-kham/:id', element: <HistoryRecord />,
+                        },
                     ]
                 }
             ]

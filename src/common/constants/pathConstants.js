@@ -13,7 +13,7 @@ export const STAFF_BILL = '/bill/getBill'
 export const DENTIST_DS_KHAM = '/dentist/ds-bn-kham'
 export const KHAM_BENH = '/dentist/kham-benh'
 export const RECORD_HISTORY = '/dentist/kham-benh/lich-su-kham'
-
+export const RECORD_HISTORY_STAFF = '/staff/lich-su-kham'
 // admin
 export const ADMIN_TEST = '/admin/test'
 export const ADMIN_USER = '/admin/end-user'
