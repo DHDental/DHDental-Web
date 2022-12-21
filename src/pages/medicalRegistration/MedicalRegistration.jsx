@@ -1,6 +1,6 @@
-import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Grid, Stack, TextField } from '@mui/material';
+import { Box, Button, Card, CardContent, CardHeader, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
 import dayjs from 'dayjs';
-import { push, ref, set } from "firebase/database";
+import { onValue, push, ref, set } from "firebase/database";
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import * as yup from 'yup';
@@ -39,6 +39,12 @@ const MedicalRegistration = () => {
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false)
     }
+
+    const [dentistKham, setDentistKham] = useState("0")
+
+    const [haMyPatient, setHaMyPatient] = useState('')
+    const [baoPatient, setBaoPatient] = useState('')
+
     const formik = useFormik({
         initialValues: {
             lastName: "",
@@ -59,7 +65,8 @@ const MedicalRegistration = () => {
                     "firstName": values.firstName,
                     "phoneNumber": values.phoneNumber,
                     "dob": formatYearMonthDate(dayjs(values.dob, "DD/MM/YYYY")),
-                    "address": values.address
+                    "address": values.address,
+                    "dentistName": dentistKham
                 })
                 const dbRef = ref(db)
                 const newUser = push(dbRef)
@@ -79,6 +86,7 @@ const MedicalRegistration = () => {
                 setOpenSnackbar(true)
                 // console.log('res', response);
                 formik.resetForm();
+                setDentistKham("0")
                 setReload(!reload)
             } catch (error) {
                 console.log("error:", error)
@@ -114,7 +122,37 @@ const MedicalRegistration = () => {
             isMounted = false;
         }
     }, [reload])
-    console.log(dangKi);
+    const handleChangeDentistKham =
+        (event) => {
+            setDentistKham(event.target.value);
+        };
+    // console.log(dangKi);
+    useEffect(() => {
+        let isMounted = true;
+        const dbRef = ref(db)
+        onValue(dbRef, (snapshot) => {
+            // let records = [];
+            let count1 = 0;
+            let count2 = 0;
+            snapshot.forEach(childSnapshot => {
+                let keyName = childSnapshot.key;
+                let data = childSnapshot.val();
+                // records.push({ "key": keyName, "data": data })
+                if (childSnapshot.val().dentistPhone == '0888974974') {
+                    count1 = count1 + 1
+                }
+                if (childSnapshot.val().dentistPhone == '0192837465') {
+                    count2 = count2 + 1
+                }
+            })
+            // isMounted && setUserRegister(records)
+            isMounted && setHaMyPatient(count1)
+            isMounted && setBaoPatient(count2)
+        })
+        return () => {
+            isMounted = false
+        }
+    }, [])
     return (
         <>
             {
@@ -230,6 +268,26 @@ const MedicalRegistration = () => {
                                     error={formik.touched.dentalCareExamReason && Boolean(formik.errors.dentalCareExamReason)}
                                     helperText={formik.touched.dentalCareExamReason && formik.errors.dentalCareExamReason}
                                 />
+
+                                <FormControl
+                                    sx={{ width: '100%' }}
+                                >
+                                    <InputLabel id="demo-simple-select-label">Nha sĩ khám</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={dentistKham}
+                                        label="Nha sĩ khám"
+                                        onChange={handleChangeDentistKham}
+                                        size='medium'
+                                        variant='standard'
+                                    >
+                                        <MenuItem value={'0'}>Chọn tự động</MenuItem>
+                                        <MenuItem value={'Trần Thị Hà My'}>{`Trần Thị Hà My (${haMyPatient})`}</MenuItem>
+                                        <MenuItem value={'Vũ Quốc Bảo'}>{`Vũ Quốc Bảo (${baoPatient})`}</MenuItem>
+                                    </Select>
+                                </FormControl>
+
                                 <br />
                                 <Button type='submit' variant="contained"
                                     disabled={formik.isSubmitting}

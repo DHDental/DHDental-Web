@@ -10,7 +10,11 @@ import {
     DialogContentText,
     DialogActions,
     Grid,
-    Typography
+    Typography,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
 } from "@mui/material"
 import { equalTo, get, onValue, orderByChild, push, query, ref, set } from "firebase/database";
 import { useEffect, useState } from "react"
@@ -33,6 +37,9 @@ const SearchPatient = ({ reload, setReload }) => {
 
     const [userRegister, setUserRegister] = useState([])
 
+    const [haMyPatient, setHaMyPatient] = useState('')
+    const [baoPatient, setBaoPatient] = useState('')
+
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false)
     }
@@ -41,12 +48,22 @@ const SearchPatient = ({ reload, setReload }) => {
         const dbRef = ref(db)
         onValue(dbRef, (snapshot) => {
             let records = [];
+            let count1 = 0;
+            let count2 = 0;
             snapshot.forEach(childSnapshot => {
                 let keyName = childSnapshot.key;
                 let data = childSnapshot.val();
                 records.push({ "key": keyName, "data": data })
+                if (childSnapshot.val().dentistPhone == '0888974974') {
+                    count1 = count1 + 1
+                }
+                if (childSnapshot.val().dentistPhone == '0192837465') {
+                    count2 = count2 + 1
+                }
             })
             isMounted && setUserRegister(records)
+            isMounted && setHaMyPatient(count1)
+            isMounted && setBaoPatient(count2)
         })
         return () => {
             isMounted = false
@@ -73,6 +90,8 @@ const SearchPatient = ({ reload, setReload }) => {
     const [messageCurrentPatientReason, setMesageCurrentPatientReason] = useState('')
 
     const [loadingDangKi, setLoadingDangKi] = useState(false)
+
+    const [dentistKham, setDentistKham] = useState("0")
 
     const handleSubmit = async (e) => {
         if (searchTerm === '') {
@@ -106,6 +125,7 @@ const SearchPatient = ({ reload, setReload }) => {
         if (reason && reason === "backdropClick")
             return;
         setMesageCurrentPatientReason('')
+        setDentistKham("0")
         setOpenPopup(false);
     };
     const handleYesPopup = async () => {
@@ -118,6 +138,7 @@ const SearchPatient = ({ reload, setReload }) => {
             setLoadingDangKi(true)
             const response = await axiosPrivate.post(CHECK_PAYMENT_OR_NOT, {
                 "phoneNumber": currentPatient.phoneNumber,
+                "dentistName": dentistKham
             })
 
             // setOpenBackdrop(false)
@@ -151,6 +172,7 @@ const SearchPatient = ({ reload, setReload }) => {
             setLoadingDangKi(false)
             setOpenPopup(false)
             setCurrentPatientReason('')
+            setDentistKham("0")
             setReload(!reload)
         } catch (error) {
             console.log(error);
@@ -160,6 +182,11 @@ const SearchPatient = ({ reload, setReload }) => {
         }
 
     }
+    const handleChangeDentistKham =
+        (event) => {
+            setDentistKham(event.target.value);
+        };
+
     // console.log(dayjs().format('hh:mm A'));
     return (
         <>
@@ -309,6 +336,32 @@ const SearchPatient = ({ reload, setReload }) => {
                                 </Grid>
                             </Grid> : null
                         }
+                        <br />
+                        <Grid container spacing={2} direction='row' sx={{ alignItems: 'flex-end' }}>
+                            <Grid item xs={4}>
+                                <Typography >Nha sĩ</Typography>
+                            </Grid>
+                            <Grid item xs={6} >
+                                <FormControl
+                                    sx={{ width: '100%' }}
+                                >
+                                    {/* <InputLabel id="demo-simple-select-label">Nha sĩ khám</InputLabel> */}
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={dentistKham}
+                                        // label="Nha sĩ khám"
+                                        onChange={handleChangeDentistKham}
+                                        size='medium'
+                                        variant='standard'
+                                    >
+                                        <MenuItem value={'0'}>Chọn tự động</MenuItem>
+                                        <MenuItem value={'Trần Thị Hà My'}>{`Trần Thị Hà My (${haMyPatient})`}</MenuItem>
+                                        <MenuItem value={'Vũ Quốc Bảo'}>{`Vũ Quốc Bảo (${baoPatient})`}</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
                     </Box>
                 </DialogContent>
                 <DialogActions>
