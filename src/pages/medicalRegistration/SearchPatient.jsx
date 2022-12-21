@@ -356,8 +356,8 @@ const SearchPatient = ({ reload, setReload }) => {
                                         variant='standard'
                                     >
                                         <MenuItem value={'0'}>Chọn tự động</MenuItem>
-                                        <MenuItem value={'Trần Thị Hà My'}>{`Trần Thị Hà My (${haMyPatient})`}</MenuItem>
-                                        <MenuItem value={'Vũ Quốc Bảo'}>{`Vũ Quốc Bảo (${baoPatient})`}</MenuItem>
+                                        <MenuItem value={'0888974974'}>{`Trần Thị Hà My (${haMyPatient})`}</MenuItem>
+                                        <MenuItem value={'0192837465'}>{`Vũ Quốc Bảo (${baoPatient})`}</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
