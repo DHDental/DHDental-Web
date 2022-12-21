@@ -110,7 +110,7 @@ const HistoryRecord = ({ open, handleClose }) => {
                                                                     <TableCell align='center'>Đặc tả</TableCell>
                                                                     <TableCell align='center'>Số lượng</TableCell>
                                                                     <TableCell align='center'>Số lần thực hiện dự kiến</TableCell>
-                                                                    <TableCell></TableCell>
+                                                                    <TableCell align='center'>Trạng thái</TableCell>
                                                                 </TableRow>
                                                             </TableHead>
                                                             <TableBody>
@@ -136,7 +136,11 @@ const HistoryRecord = ({ open, handleClose }) => {
                                                                                 <TableCell align='center' sx={{ color: 'red', borderTop: '1px solid rgba(224, 224, 224, 1)' }}>
                                                                                     Đã hủy bỏ
                                                                                 </TableCell> :
-                                                                                null
+                                                                                <TableCell align='center' sx={{ borderTop: '1px solid rgba(224, 224, 224, 1)' }}>
+                                                                                    {service?.serviceStatus == 'In Progress' ? 'Chưa hoàn tất' :
+                                                                                        service?.serviceStatus == 'Done' ? 'Hoàn tất' :
+                                                                                            'Chưa làm'}
+                                                                                </TableCell>
                                                                             }
 
                                                                         </TableRow>
